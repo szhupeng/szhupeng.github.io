@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Android,Shortcuts," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Android 7.1允许定义应用程序中特定操作的快捷方式。这些快捷方式可以显示在支持的启动器中，例如Nexus和Pixel设备提供的启动器。快捷方式可让用户在应用程序中快速启动常用或推荐的任务。">
+<meta name="keywords" content="Android,Shortcuts">
+<meta property="og:type" content="article">
+<meta property="og:title" content="App Shortcuts">
+<meta property="og:url" content="http://zhupeng.space/2016/10/16/app-shortcuts/index.html">
+<meta property="og:site_name" content="Coding Life">
+<meta property="og:description" content="Android 7.1允许定义应用程序中特定操作的快捷方式。这些快捷方式可以显示在支持的启动器中，例如Nexus和Pixel设备提供的启动器。快捷方式可让用户在应用程序中快速启动常用或推荐的任务。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2016-11-12T13:22:55.393Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="App Shortcuts">
+<meta name="twitter:description" content="Android 7.1允许定义应用程序中特定操作的快捷方式。这些快捷方式可以显示在支持的启动器中，例如Nexus和Pixel设备提供的启动器。快捷方式可让用户在应用程序中快速启动常用或推荐的任务。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://zhupeng.space/2016/10/16/app-shortcuts/"/>
+
+
+
+
+
+  <title>App Shortcuts | Coding Life</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Coding Life</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">思路决定出路</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://zhupeng.space/2016/10/16/app-shortcuts/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="朱鹏">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://ob0r3vf26.bkt.clouddn.com/blog_logo.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Coding Life">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">App Shortcuts</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-10-16T09:17:26+08:00">
+                2016-10-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/10/16/app-shortcuts/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/16/app-shortcuts/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2016/10/16/app-shortcuts/" class="leancloud_visitors" data-flag-title="App Shortcuts">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Android 7.1允许定义应用程序中特定操作的快捷方式。这些快捷方式可以显示在支持的启动器中，例如Nexus和Pixel设备提供的启动器。快捷方式可让用户在应用程序中快速启动常用或推荐的任务。</p>
+<a id="more"></a>
+<p>每个快捷方式引用一个或多个意图，每个意图在用户选择快捷方式时会在应用程序中执行特定操作。可以指定快捷方式的操作包括：</p>
+<ul>
+<li>在地图应用程序中将用户导航到特定位置。</li>
+<li>在社交应用程序中给朋友发送消息。</li>
+<li>在媒体应用程序中播放电视节目的下一集。</li>
+<li>在游戏应用程序中加载最后一个存档点。</li>
+</ul>
+<p>可以为应用程序发布两种不同类型的快捷方式：</p>
+<ul>
+<li>静态快捷方式在打包到APK中的资源文件中定义。因此，必须等到更新整个应用程序，才能更改这些静态快捷方式的详细信息。</li>
+<li>动态快捷方式在运行时使用<strong>ShortcutManager</strong> API发布。在运行时，应用可以发布，更新和删除其动态快捷方式。</li>
+</ul>
+<p>一次最多可为应用程序发布五个快捷方式（静态快捷方式和动态快捷方式的总数）。但是，用户可以将应用程序的快捷方式复制到启动器上，从而创建固定的快捷方式。用户可以创建和访问无限数量的固定快捷方式，以触发应用中的操作。应用程序无法移除这些固定的快捷键，但可以禁用它们。</p>
+<blockquote>
+<p>注意：虽然其他应用无法访问快速方式中的元数据，但启动器本身可以访问这些数据。因此，这些元数据应该隐藏敏感的用户信息。</p>
+</blockquote>
+<h3 id="使用静态快捷方式"><a href="#使用静态快捷方式" class="headerlink" title="使用静态快捷方式"></a>使用静态快捷方式</h3><p>静态快捷方式应提供指向应用内通用操作的链接，这些操作应该在应用当前版本的生命周期内保持一致。对于静态快捷方式的良好候选包括查看发送的消息，设置闹钟，以及显示用户一天的锻炼活动。</p>
+<p>要创建静态快捷方式，请按顺序完成以下步骤：</p>
+<ol>
+<li>在应用程序的清单文件（AndroidManifest.xml）中，找到意图过滤器中action为<strong>android.intent.action.MAIN</strong>并且category为<strong>android.intent.category.LAUNCHER</strong>的activity。</li>
+<li>向此activity添加一个<strong>&lt;meta-data&gt;</strong>元素，引用定义应用程序快捷方式的资源文件：<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">manifest</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></span><br><span class="line"><span class="tag">             <span class="attr">package</span>=<span class="string">"com.example.myapplication"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">application</span> <span class="attr">...</span> &gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">activity</span> <span class="attr">android:name</span>=<span class="string">"Main"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">intent-filter</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">action</span> <span class="attr">android:name</span>=<span class="string">"android.intent.action.MAIN"</span> /&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">category</span> <span class="attr">android:name</span>=<span class="string">"android.intent.category.LAUNCHER"</span> /&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">intent-filter</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">meta-data</span> <span class="attr">android:name</span>=<span class="string">"android.app.shortcuts"</span></span></span><br><span class="line"><span class="tag">                    <span class="attr">android:resource</span>=<span class="string">"@xml/shortcuts"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">activity</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">application</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">manifest</span>&gt;</span></span><br></pre></td></tr></table></figure></li>
+<li>创建定义应用程序清单快捷方式的新资源文件（res/xml/shortcuts.xml）。</li>
+<li>在此新资源文件中，添加一个<strong>&lt;shortcuts&gt;</strong>根元素，其中包含<strong>lt;shortcut&gt;</strong>元素的列表。每个<strong>lt;shortcut&gt;</strong>元素又包含有关静态快捷方式的信息，包括其图标，其描述标签以及在应用程序中启动的意图：<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">shortcuts</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">shortcut</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:shortcutId</span>=<span class="string">"compose"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:enabled</span>=<span class="string">"true"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:icon</span>=<span class="string">"@drawable/compose_icon"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:shortcutShortLabel</span>=<span class="string">"@string/compose_shortcut_short_label1"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:shortcutLongLabel</span>=<span class="string">"@string/compose_shortcut_long_label1"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:shortcutDisabledMessage</span>=<span class="string">"@string/compose_disabled_message1"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">intent</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:action</span>=<span class="string">"android.intent.action.VIEW"</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:targetPackage</span>=<span class="string">"com.example.myapplication"</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:targetClass</span>=<span class="string">"com.example.myapplication.ComposeActivity"</span> /&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- If your shortcut is associated with multiple intents, include them</span></span><br><span class="line"><span class="comment">             here. The last intent in the list is what the user sees when they</span></span><br><span class="line"><span class="comment">             launch this shortcut. --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">categories</span> <span class="attr">android:name</span>=<span class="string">"android.shortcut.conversation"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">shortcut</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- Specify more shortcuts here. --&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">shortcuts</span>&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="使用动态快捷方式"><a href="#使用动态快捷方式" class="headerlink" title="使用动态快捷方式"></a>使用动态快捷方式</h3><p>动态快捷方式应提供指向应用程序中特定的上下文相关操作的链接。这些操作可以在应用程序使用之间更改，即使应用程序正在运行，它们也可以更改。动态快捷方式的好候选包括调用特定人员，导航到特定位置，以及查看特定游戏的当前分数。</p>
+<p>ShortcutManager API允许你对动态快捷方式完成以下操作：</p>
+<ul>
+<li><strong>发布：</strong>使用<strong>setDynamicShortcuts(List)</strong>重新定义动态快捷方式的整个列表，或使用<strong>addDynamicShortcuts(List)</strong>来扩充现有的动态快捷方式列表。</li>
+<li><strong>更新：</strong>使用<strong>updateShortcuts(List)</strong>方法。</li>
+<li><strong>删除：</strong>使用<strong>removeDynamicShortcuts(List)</strong>删除一组动态快捷方式，或使用<strong>removeAllDynamicShortcuts()</strong>删除所有动态快捷方式。</li>
+</ul>
+<p>以下代码展示了创建动态快捷方式并将其与应用相关联：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">ShortcutManager shortcutManager = getSystemService(ShortcutManager.class);</span><br><span class="line"></span><br><span class="line">ShortcutInfo shortcut = <span class="keyword">new</span> ShortcutInfo.Builder(<span class="keyword">this</span>, <span class="string">"id1"</span>)</span><br><span class="line">    .setShortLabel(<span class="string">"Web site"</span>)</span><br><span class="line">    .setLongLabel(<span class="string">"Open the web site"</span>)</span><br><span class="line">    .setIcon(Icon.createWithResource(context, R.drawable.icon_website))</span><br><span class="line">    .setIntent(<span class="keyword">new</span> Intent(Intent.ACTION_VIEW,</span><br><span class="line">                   Uri.parse(<span class="string">"https://www.mysite.example.com/"</span>)))</span><br><span class="line">    .build();</span><br><span class="line"></span><br><span class="line">shortcutManager.setDynamicShortcuts(Arrays.asList(shortcut));</span><br></pre></td></tr></table></figure>
+<h3 id="跟踪快捷方式使用"><a href="#跟踪快捷方式使用" class="headerlink" title="跟踪快捷方式使用"></a>跟踪快捷方式使用</h3><p>要确定出现静态和动态快捷方式的情况，启动器将检查快捷方式的激活历史记录。可以通过调用<strong>reportShortcutUsed(String)</strong>方法，传递快捷方式的ID来跟踪用户何时完成应用程序中的特定操作，当发生以下任一事件时：</p>
+<ul>
+<li>用户选择具有给定ID的快捷方式。</li>
+<li>用户打开应用程序并手动完成对应于相同快捷方式的操作。</li>
+</ul>
+<h3 id="禁用快捷键"><a href="#禁用快捷键" class="headerlink" title="禁用快捷键"></a>禁用快捷键</h3><p>由于用户可以将应用的任何快捷方式固定到设备的启动器，因此这些固定的快捷方式可能会将用户引导到应用中过期或不再存在的操作。要管理这种情况，可以通过调用<strong>disableShortcuts(List)</strong>来禁用不希望用户选择的动态快捷方式，这会删除指定的动态快捷方式，并禁用这些动态快捷方式的任何固定副本。还可以使用此方法的一个变体<strong>disableShortcuts(List, CharSequence)</strong>来定义当用户尝试启动已禁用的动态快捷方式时应显示的错误消息。</p>
+<blockquote>
+<p>注意：如果在更新应用程序时移除部分应用程序的静态快捷方式，系统会自动停用这些快捷方式。</p>
+</blockquote>
+<h3 id="测试快捷方式"><a href="#测试快捷方式" class="headerlink" title="测试快捷方式"></a>测试快捷方式</h3><p>有几个设备（包括Nexus和Pixel设备）包含支持快捷方式的默认启动器。要测试应用的快捷方式，请在使用其中一个支持的启动器的设备上安装你的应用。然后，应该能够执行以下操作：</p>
+<ul>
+<li>长按应用程序启动器图标，即可查看为应用定义的快捷方式。</li>
+<li>点击并拖动快捷方式将其固定到设备的启动器。</li>
+</ul>
+<p>可以使用这些交互来测试添加，更新，禁用和删除快捷方式的效果。</p>
+<h3 id="指定多个意图"><a href="#指定多个意图" class="headerlink" title="指定多个意图"></a>指定多个意图</h3><p>使用<strong>ShortcutInfo.Builder</strong>创建快捷方式时，可以使用<strong>setIntents(Intent[])</strong>而不是<strong>setIntent(Intent)</strong>。通过使用数组参数调用此方法的版本，可以在用户选择快捷方式时，在应用程序中启动多个活动，将除列表中的最后一个activity之外的所有activity放到回退栈上。如果用户决定按下设备的返回按钮，则他们会在应用中看到另一个activity，而不是返回到设备的启动器。</p>
+<h3 id="级别限制"><a href="#级别限制" class="headerlink" title="级别限制"></a>级别限制</h3><p>当使用<strong>setDynamicShortcuts(List)</strong>, <strong>addDynamicShortcuts(List)</strong>和<strong>updateShortcuts(List)</strong>方法时，请记住，可能只能在后台应用程序（无任何activity或service在前台的应用程序）中调用这些方法特定次数。在生产环境中，可以通过将应用程序置于前台来重置此级别限制。</p>
+<p>如果在开发或测试期间遇到级别限制，可以在设备的开发者选项设置中选择重置Reset ShortcutManager rate-limiting，也可以在adb中输入以下命令：</p>
+<pre><code>$ adb shell cmd shortcut reset-throttling [ --user your-user-id ]
+</code></pre><h3 id="备份还原"><a href="#备份还原" class="headerlink" title="备份还原"></a>备份还原</h3><p>如果你允许用户在应用清单文件中包含<strong>android:allowBackup=”true”</strong>属性来在更改设备时备份和还原应用，请注意，只有固定的快捷键会自动恢复到设备的启动器。此外，系统不会备份与固定快捷键相关联的图标，因此应该将快捷方式的图片保存在应用程序中，以便轻松地在新设备上恢复这些图标。</p>
+<p>只有用户在新设备上重新安装应用之后，系统才会自动重新发布静态快捷键。另一方面，动态快捷方式未备份，因此必须在应用中包含逻辑，以便用户在新设备上打开应用时重新发布它们。</p>
+<h3 id="最佳实践"><a href="#最佳实践" class="headerlink" title="最佳实践"></a>最佳实践</h3><p>在设计和创建应用的快捷方式时，应该遵循以下准则：</p>
+<ul>
+<li><strong>遵循快捷方式设计指南</strong><br>要使应用程序快捷方式与用于系统应用程序的快捷方式一致，请按照快捷方式设计指南操作。</li>
+<li><strong>仅发布四个不同的快捷键</strong><br>虽然API目前支持在任何给定时间为应用程序最多添加五个静态快捷方式和动态快捷方式的组合，但建议每次只发布四个不同的快捷方式，以改善快捷方式在启动器中的外观。</li>
+<li><strong>限制快捷方式的描述长度</strong><br>在启动器中显示应用快捷方式的菜单中，空间受到限制。如果可能，将快捷方式的“简述”的长度限制为10个字符，并将“详述”的长度限制为25个字符。</li>
+<li><strong>维护快捷方式和操作的使用历史记录</strong><br>对创建的每个快捷方式，请考虑用户可以在应用程序中直接完成相同任务的不同方式。请记住在每种情况下调用<strong>reportShortcutUsed(String)</strong>，以便启动器维护代表快捷方式的操作的准确历史记录。</li>
+<li><strong>仅当保留其含义时更新快捷方式</strong><br>更改动态快捷方式时，仅在更改保留其含义的快捷方式的信息时，调用updateShortcuts(List)。 否则，应该使用addDynamicShortcuts(List)或setDynamicShortcuts(List)来创建一个带有新ID的快捷方式，代表新的含义。<br>例如，如果创建了用于导航到超市的快捷方式，则只要更改超市的名称，但其位置保持不变即可更新快捷方式。然而，如果用户在不同的超市位置开始购物，则最好创建新的快捷方式。</li>
+<li><strong>在备份和恢复期间不保留动态快捷方式</strong><br>当设备进行备份和恢复操作时，不会保留动态快捷方式。因此，建议每次启动应用程序并根据需要重新发布动态快捷方式时检查由getDynamicShortcuts()返回的对象数，如下代码所示：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">Activity</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        ShortcutManager shortcutManager =</span><br><span class="line">                getSystemService(ShortcutManager.class);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (shortcutManager.getDynamicShortcuts().size() == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="comment">// Application restored. Need to re-publish dynamic shortcuts.</span></span><br><span class="line">            <span class="keyword">if</span> (shortcutManager.getPinnedShortcuts().size() &gt; <span class="number">0</span>) &#123;</span><br><span class="line">                <span class="comment">// Pinned shortcuts have been restored. Use</span></span><br><span class="line">                <span class="comment">// updateShortcuts(List) to make sure they</span></span><br><span class="line">                <span class="comment">// contain up-to-date information.</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>完结！</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/Shortcuts/" rel="tag"># Shortcuts</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/10/16/android-code-style/" rel="next" title="Android编程风格以及命名规范">
+                <i class="fa fa-chevron-left"></i> Android编程风格以及命名规范
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/10/17/loader/" rel="prev" title="Android Loaders">
+                Android Loaders <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  
+    <div class="comments" id="comments">
+      <div class="ds-thread" data-thread-key="2016/10/16/app-shortcuts/"
+           data-title="App Shortcuts" data-url="http://zhupeng.space/2016/10/16/app-shortcuts/">
+      </div>
+    </div>
+  
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="http://ob0r3vf26.bkt.clouddn.com/blog_logo.jpg"
+                alt="朱鹏" />
+            
+              <p class="site-author-name" itemprop="name">朱鹏</p>
+              <p class="site-description motion-element" itemprop="description">享受技术带来的快乐</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">59</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#使用静态快捷方式"><span class="nav-number">1.</span> <span class="nav-text">使用静态快捷方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用动态快捷方式"><span class="nav-number">2.</span> <span class="nav-text">使用动态快捷方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#跟踪快捷方式使用"><span class="nav-number">3.</span> <span class="nav-text">跟踪快捷方式使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#禁用快捷键"><span class="nav-number">4.</span> <span class="nav-text">禁用快捷键</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#测试快捷方式"><span class="nav-number">5.</span> <span class="nav-text">测试快捷方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#指定多个意图"><span class="nav-number">6.</span> <span class="nav-text">指定多个意图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#级别限制"><span class="nav-number">7.</span> <span class="nav-text">级别限制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#备份还原"><span class="nav-number">8.</span> <span class="nav-text">备份还原</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最佳实践"><span class="nav-number">9.</span> <span class="nav-text">最佳实践</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">朱鹏</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> 您是第
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      个访客
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i> 本站总访问量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"zhupeng"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("niXM6CtlVEgvUHEvwNmi0F7S", "LbP8mNzXFXinVUqMloOIy3fW");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

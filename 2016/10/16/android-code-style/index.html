@@ -1,0 +1,1376 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Android,规范," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="编程风格 代码中尽量不要出现中文。注释和除外。代码中通过strings.xml引用来显示中文 控件声明放在activity级别，这样在activity其他地方可以使用 不要重用父类的handler，对应一个类的handler也不应该让其子类用到，否则会导致message.what冲突 在一个View.OnClickLi">
+<meta name="keywords" content="Android,规范">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android编程风格以及命名规范">
+<meta property="og:url" content="http://zhupeng.space/2016/10/16/android-code-style/index.html">
+<meta property="og:site_name" content="Coding Life">
+<meta property="og:description" content="编程风格 代码中尽量不要出现中文。注释和除外。代码中通过strings.xml引用来显示中文 控件声明放在activity级别，这样在activity其他地方可以使用 不要重用父类的handler，对应一个类的handler也不应该让其子类用到，否则会导致message.what冲突 在一个View.OnClickListener中处理所有的点击事件逻辑，这样看起来很集中和直观 strings.x">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2016-12-13T12:43:53.150Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android编程风格以及命名规范">
+<meta name="twitter:description" content="编程风格 代码中尽量不要出现中文。注释和除外。代码中通过strings.xml引用来显示中文 控件声明放在activity级别，这样在activity其他地方可以使用 不要重用父类的handler，对应一个类的handler也不应该让其子类用到，否则会导致message.what冲突 在一个View.OnClickListener中处理所有的点击事件逻辑，这样看起来很集中和直观 strings.x">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://zhupeng.space/2016/10/16/android-code-style/"/>
+
+
+
+
+
+  <title>Android编程风格以及命名规范 | Coding Life</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Coding Life</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">思路决定出路</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://zhupeng.space/2016/10/16/android-code-style/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="朱鹏">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://ob0r3vf26.bkt.clouddn.com/blog_logo.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Coding Life">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android编程风格以及命名规范</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-10-16T09:17:26+08:00">
+                2016-10-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/10/16/android-code-style/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/16/android-code-style/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2016/10/16/android-code-style/" class="leancloud_visitors" data-flag-title="Android编程风格以及命名规范">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="编程风格"><a href="#编程风格" class="headerlink" title="编程风格"></a>编程风格</h3><ul>
+<li>代码中尽量不要出现中文。注释和除外。代码中通过strings.xml引用来显示中文</li>
+<li>控件声明放在activity级别，这样在activity其他地方可以使用</li>
+<li>不要重用父类的handler，对应一个类的handler也不应该让其子类用到，否则会导致message.what冲突</li>
+<li>在一个View.OnClickListener中处理所有的点击事件逻辑，这样看起来很集中和直观</li>
+<li>strings.xml中使用%1$s等实现字符串的通配<a id="more"></a></li>
+<li>布局文件中的字体大小，都定义在dimens.xml中</li>
+<li>有关margin和padding的值也都放在dimens.xml中</li>
+<li>界面之间传值尽量使用intent方式。少用全局变量</li>
+<li>不建议在布局文件中添加点击事件</li>
+<li>数据类型转换一定要校验</li>
+<li>使用常量代替枚举</li>
+<li>实体不要在不同模块间共享，但是可以在统一模块下的不同页面共享</li>
+<li>建议采用左括号与方法名称在同一行的代码格式来进行代码的编写和格式化。</li>
+<li>业务稍微复杂一些，都有可能提炼一个BaseActivity或BaseFragment出来做为公共父类</li>
+<li>类注释一定要写，重要的方法也要写方法注释。常量尽量写注释</li>
+<li>编写SQL语句时，对于关键字使用全部大写。对于数据库元素（如表、列和视图）使用大小写混合。例如SELECT * FROM Table1</li>
+<li>一个方法尽量不要超过30行，如果方法太长，说明当前方法业务逻辑已经非常复杂，那么就需要进行方法拆分，保证每个方法只做一件事。</li>
+<li>一个方法的参数尽可能的不要超过4个</li>
+<li>如果一个方法返回的是一个错误码，请使用异常，尽可能不要使用null，替代为异常或者使用空变量。如返回List则可以使用Collections.emptyList()</li>
+<li>代码中不允许出现单独的数字，字符。如果需要使用数字或字符，则将它们按照含义封装为静态常量（for语句中除外）。</li>
+<li>判断中如有常量，则应将常量置于判断式的右侧。如：if(true == isAdmin())</li>
+<li>按钮要避免重复点击</li>
+<li>使用静态变量方式实现界面间共享要慎重</li>
+<li>尽量使用shape和selector</li>
+<li>复杂布局使用RelativeLayout</li>
+<li>自适应屏幕，使用dp替代px</li>
+<li>使用animation-list制作动画效果</li>
+<li>图片尽量分拆成多个可重用的图片</li>
+</ul>
+<h3 id="命名规范"><a href="#命名规范" class="headerlink" title="命名规范"></a>命名规范</h3><p>驼峰命名法：除了首个单词首字母小写除外，其余所有单词所有首字母都要大写。</p>
+<h4 id="包的命名"><a href="#包的命名" class="headerlink" title="包的命名"></a>包的命名</h4><p>包名一律小写, 少用缩写和长名。<br>规则：<strong>[com].[公司名/组织名].[项目名].[模块名/层级名称]</strong><br>例如：com.google.gson</p>
+<table>
+<thead>
+<tr>
+<th>包名</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>com.xxx.xxx.base</td>
+<td>基础共享的类</td>
+</tr>
+<tr>
+<td>com.xxx.xxx.view/widget</td>
+<td>自定义的View类等</td>
+</tr>
+<tr>
+<td>com.xxx.xxx.activity</td>
+<td>Activity类</td>
+</tr>
+<tr>
+<td>com.xxx.xxx.fragment</td>
+<td>Fragment类</td>
+</tr>
+<tr>
+<td>com.xxx.xxx.adapter</td>
+<td>适配器类</td>
+</tr>
+<tr>
+<td>com.xxx.xxx.utils</td>
+<td>工具类</td>
+</tr>
+<tr>
+<td>com.xxx.xxx.vo</td>
+<td>界面显示的数据对象</td>
+</tr>
+<tr>
+<td>com.xxx.xxx.service</td>
+<td>Service服务</td>
+</tr>
+<tr>
+<td>com.xxx.xxx.receiver</td>
+<td>BroadcastReceiver类</td>
+</tr>
+<tr>
+<td>com.xxx.xxx.db</td>
+<td>数据库操作类</td>
+</tr>
+<tr>
+<td>com.xxx.xxx.persenter</td>
+<td>中间对象</td>
+</tr>
+<tr>
+<td>com.xxx.xxx.model</td>
+<td>模型类</td>
+</tr>
+</tbody>
+</table>
+<h4 id="类的命名"><a href="#类的命名" class="headerlink" title="类的命名"></a>类的命名</h4><p>Android中类的命名与JAVA开发采用相同的规范。采用大驼峰命名法，所有单词的首字母大写。</p>
+<table>
+<thead>
+<tr>
+<th>类</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Activity</td>
+<td>xxxActivity.java</td>
+</tr>
+<tr>
+<td>Service</td>
+<td>xxxService.java</td>
+</tr>
+<tr>
+<td>Fragment</td>
+<td>xxxFragment.java</td>
+</tr>
+<tr>
+<td>BroadcastReceiver</td>
+<td>xxxReceiver.java</td>
+</tr>
+<tr>
+<td>ContentProvider</td>
+<td>xxxProvider.java</td>
+</tr>
+<tr>
+<td>Adapter</td>
+<td>xxxAdapter.java</td>
+</tr>
+<tr>
+<td>Persenter</td>
+<td>xxxPersenter.java</td>
+</tr>
+<tr>
+<td>Handler</td>
+<td>xxxHandler.java</td>
+</tr>
+<tr>
+<td>公共父类</td>
+<td>BaseXxx.java</td>
+</tr>
+<tr>
+<td>接口</td>
+<td>xxxInter.java</td>
+</tr>
+<tr>
+<td>接口实现类</td>
+<td>xxxImpl.java</td>
+</tr>
+<tr>
+<td>工具类</td>
+<td>xxxUtil.java或xxxManager.hava</td>
+</tr>
+<tr>
+<td>数据库类</td>
+<td>xxxDBHelper.java</td>
+</tr>
+<tr>
+<td>解析类</td>
+<td>xxxParser.java</td>
+</tr>
+</tbody>
+</table>
+<h4 id="接口的命名"><a href="#接口的命名" class="headerlink" title="接口的命名"></a>接口的命名</h4><p>接口名称以 <strong>I</strong> 为前缀或者以 <strong>able，ible，er</strong> 为后缀，如果有多个单词，每个单词首字母大写。例如：IBinder</p>
+<h4 id="事件监听器命名"><a href="#事件监听器命名" class="headerlink" title="事件监听器命名"></a>事件监听器命名</h4><p>以 <strong>On</strong> 开头，如果有多个单词，每个单词首字母大写。例如：OnClickListener</p>
+<h4 id="方法的命名"><a href="#方法的命名" class="headerlink" title="方法的命名"></a>方法的命名</h4><p>方法名通常是动词或动词短语。第一个单词的首字母小写，其后单词的首字母大写。</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>initXX()</td>
+<td>初始化相关方法</td>
+</tr>
+<tr>
+<td>isXX()/checkXX()</td>
+<td>方法返回值为boolean型的请使用is或check为前缀标识</td>
+</tr>
+<tr>
+<td>getXX()</td>
+<td>返回某个值的方法</td>
+</tr>
+<tr>
+<td>handleXX()</td>
+<td>对数据进行处理的方法</td>
+</tr>
+<tr>
+<td>displayXX()/showXX()</td>
+<td>弹出提示框和提示信息</td>
+</tr>
+<tr>
+<td>saveXX()</td>
+<td>与保存数据相关的</td>
+</tr>
+<tr>
+<td>resetXX()</td>
+<td>对数据重置的</td>
+</tr>
+<tr>
+<td>clearXX()</td>
+<td>清除数据相关的</td>
+</tr>
+<tr>
+<td>removeXX()</td>
+<td>移除数据相关的</td>
+</tr>
+<tr>
+<td>drawXX()</td>
+<td>绘制数据或效果相关的</td>
+</tr>
+</tbody>
+</table>
+<h4 id="变量的命名"><a href="#变量的命名" class="headerlink" title="变量的命名"></a>变量的命名</h4><p>只在代码块的开始处声明变量;<br>变量名不应以下划线或美元符号开头;<br>尽量避免单个字符的变量名;<br>集合类型变量，例如数组和矢量，应采用复数命名或使用表示该集合的名词作后缀。</p>
+<h5 id="成员变量"><a href="#成员变量" class="headerlink" title="成员变量"></a>成员变量</h5><p>以小写字母 <strong>m</strong> 开头，其余所有单词首字母都要大写，例如：mFile</p>
+<h5 id="静态变量"><a href="#静态变量" class="headerlink" title="静态变量"></a>静态变量</h5><p>以小写字母 <strong>s</strong> 开头，其余所有单词首字母都要大写，例如：sInstance</p>
+<h5 id="局部变量"><a href="#局部变量" class="headerlink" title="局部变量"></a>局部变量</h5><p>指方法中的变量和方法的参数。第一个单词的首字母小写，其后单词的首字母大写，即使局部变量是final类型的，也不应该把它视为常量，自然也不能用常量的规则去命名。</p>
+<h5 id="临时变量"><a href="#临时变量" class="headerlink" title="临时变量"></a>临时变量</h5><p>临时变量通常被取名为i，j，k，m和n，它们一般用于整型；c，d，e，它们一般用于字符型</p>
+<h4 id="常量的命名"><a href="#常量的命名" class="headerlink" title="常量的命名"></a>常量的命名</h4><p>全部采用大写，单词之间用下划线连接，例如：MAX_SIZE</p>
+<h4 id="控件的命名"><a href="#控件的命名" class="headerlink" title="控件的命名"></a>控件的命名</h4><p>控件缩写+控件逻辑，控件逻辑首字母大写。类中控件名称必须与xml布局id保持一致。</p>
+<p>常用控件的缩写：</p>
+<table>
+<thead>
+<tr>
+<th>控件</th>
+<th>缩写</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LinearLayout</td>
+<td>ll</td>
+<td>llFriend</td>
+</tr>
+<tr>
+<td>RelativeLayout</td>
+<td>rl</td>
+<td>rlMessage</td>
+</tr>
+<tr>
+<td>FrameLayout</td>
+<td>fl</td>
+<td>flCart</td>
+</tr>
+<tr>
+<td>TableLayout</td>
+<td>tl</td>
+<td>tlCourse</td>
+</tr>
+<tr>
+<td>TextView</td>
+<td>tv</td>
+<td>tvName</td>
+</tr>
+<tr>
+<td>EditText</td>
+<td>et</td>
+<td>etAddress</td>
+</tr>
+<tr>
+<td>Button</td>
+<td>btn</td>
+<td>btnLogin</td>
+</tr>
+<tr>
+<td>ImageView</td>
+<td>iv</td>
+<td>ivAvatar</td>
+</tr>
+<tr>
+<td>ListView</td>
+<td>lv</td>
+<td>lvGoods</td>
+</tr>
+<tr>
+<td>RecyclerView</td>
+<td>rv</td>
+<td>rvStudent</td>
+</tr>
+<tr>
+<td>GridView</td>
+<td>gv</td>
+<td>gvPhoto</td>
+</tr>
+<tr>
+<td>ImageButton</td>
+<td>ibtn</td>
+<td>ibtnPlay</td>
+</tr>
+<tr>
+<td>CheckBox</td>
+<td>chk</td>
+<td>chkHobby</td>
+</tr>
+<tr>
+<td>RadioButton</td>
+<td>rb</td>
+<td>rbSex</td>
+</tr>
+<tr>
+<td>ProgressBar</td>
+<td>pb</td>
+<td>pbLoading</td>
+</tr>
+<tr>
+<td>WebView</td>
+<td>wv</td>
+<td>wvNews</td>
+</tr>
+<tr>
+<td>ToggleButton</td>
+<td>tb</td>
+<td>tbXXX</td>
+</tr>
+<tr>
+<td>Spinner</td>
+<td>spn</td>
+<td>spnXXX</td>
+</tr>
+<tr>
+<td>Menu</td>
+<td>mnu</td>
+<td>mnuXXX</td>
+</tr>
+</tbody>
+</table>
+<h4 id="资源的命名"><a href="#资源的命名" class="headerlink" title="资源的命名"></a>资源的命名</h4><p>全部采用小写，单词之间使用下划线分割。</p>
+<h5 id="控件ID的命名"><a href="#控件ID的命名" class="headerlink" title="控件ID的命名"></a>控件ID的命名</h5><p>采用控件缩写_控件功能的格式。例如：btn_login</p>
+<h5 id="drawable的命名"><a href="#drawable的命名" class="headerlink" title="drawable的命名"></a>drawable的命名</h5><p>采用前缀_逻辑名称{_后缀}的格式。以下为常用的命名格式：</p>
+<ul>
+<li>图标类，使用 <strong>ic</strong> 前缀。例如：ic_logo.png</li>
+<li>背景类，使用 <strong>bg</strong> 前缀。例如：bg_splash.png</li>
+<li>分隔类，使用 <strong>div</strong> 前缀。</li>
+<li>默认类，使用 <strong>def</strong> 前缀。</li>
+<li>选择器类，使用 <strong>selector</strong> 前缀。<ul>
+<li>默认状态，使用 <strong>normal</strong> 后缀。</li>
+<li>按下状态，使用 <strong>pressed</strong> 后缀</li>
+<li>选中状态，使用 <strong>selected</strong> 后缀。</li>
+<li>禁用状态，使用 <strong>disable</strong> 后缀。</li>
+</ul>
+</li>
+</ul>
+<h5 id="layout的命名"><a href="#layout的命名" class="headerlink" title="layout的命名"></a>layout的命名</h5><p>采用组件类型_功能的格式。以下为常用的命名格式：</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>格式</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>共用布局</td>
+<td>common_xxx</td>
+<td>common_date.xml</td>
+</tr>
+<tr>
+<td>嵌入布局</td>
+<td>inc_xxx</td>
+<td>inc_topbar.xml</td>
+</tr>
+<tr>
+<td>Activity布局</td>
+<td>activity_xxx</td>
+<td>activity_main.xml</td>
+</tr>
+<tr>
+<td>Fragment布局</td>
+<td>fragment_xxx</td>
+<td>fragment_settings.xml</td>
+</tr>
+<tr>
+<td>Dialog布局</td>
+<td>dialog_xxx</td>
+<td>dialog_update.xml</td>
+</tr>
+<tr>
+<td>PopupWindow布局</td>
+<td>ppw_xxx</td>
+<td>ppw _info.xml</td>
+</tr>
+<tr>
+<td>ListView的Item布局</td>
+<td>item_list_xxx</td>
+<td>item_list_house.xml</td>
+</tr>
+<tr>
+<td>GridView的Item布局</td>
+<td>item_grid_xxx</td>
+<td>item_grid_photo.xml</td>
+</tr>
+<tr>
+<td>ListView的HeaderView布局</td>
+<td>header_list_xxx</td>
+<td>–</td>
+</tr>
+<tr>
+<td>ListView的FooterView布局</td>
+<td>footer_list_xxx</td>
+<td>–</td>
+</tr>
+</tbody>
+</table>
+<h5 id="colors的命名"><a href="#colors的命名" class="headerlink" title="colors的命名"></a>colors的命名</h5><p>采用前缀_逻辑名称{_后缀}的格式。以下为常用的命名格式：</p>
+<ul>
+<li>背景颜色，使用 <strong>bg</strong> 前缀</li>
+<li>文本颜色，使用 <strong>text</strong> 前缀</li>
+<li>分隔线颜色，使用 <strong>div</strong> 前缀</li>
+<li>多种状态下<ul>
+<li>默认状态颜色，使用 <strong>normal</strong> 后缀</li>
+<li>按下状态颜色，使用 <strong>pressed</strong> 后缀</li>
+<li>选中状态颜色，使用 <strong>selected</strong> 后缀</li>
+<li>禁用状态颜色，使用 <strong>disabled</strong> 后缀</li>
+</ul>
+</li>
+</ul>
+<h5 id="strings的命名"><a href="#strings的命名" class="headerlink" title="strings的命名"></a>strings的命名</h5><p>采用类型_逻辑名称的格式。</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>格式</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>界面标题</td>
+<td>title_页面</td>
+<td>title_settings</td>
+</tr>
+<tr>
+<td>按钮文字</td>
+<td>btn_按钮事件</td>
+<td>btn_login</td>
+</tr>
+<tr>
+<td>标签文字</td>
+<td>label_标签文字</td>
+<td>label_password</td>
+</tr>
+<tr>
+<td>选项卡文字</td>
+<td>tab_选项卡文字</td>
+<td>label_login</td>
+</tr>
+<tr>
+<td>消息框文字</td>
+<td>toast_消息</td>
+<td>toast_exit</td>
+</tr>
+<tr>
+<td>编辑框提示文字</td>
+<td>hint_提示信息</td>
+<td>hint_password</td>
+</tr>
+<tr>
+<td>图片描述文字</td>
+<td>desc_描述</td>
+<td>desc_avatar</td>
+</tr>
+<tr>
+<td>对话框文字</td>
+<td>dialog_文字</td>
+<td>dialog_info</td>
+</tr>
+<tr>
+<td>Menu的Item文字</td>
+<td>action_文字</td>
+<td>–</td>
+</tr>
+</tbody>
+</table>
+<h5 id="anim的命名"><a href="#anim的命名" class="headerlink" title="anim的命名"></a>anim的命名</h5><p>采用动画类型_动画方向的格式。</p>
+<ul>
+<li>fade_in，淡入</li>
+<li>fade_out，淡出</li>
+<li>push_down_in，从下方推入</li>
+<li>push_down_out，从下方推出</li>
+<li>slide_in_from_top，从头部滑入</li>
+<li>zoom_enter，变形进入</li>
+<li>push_left，推向左方</li>
+<li>shrink_to_middle，中间缩小</li>
+</ul>
+<h5 id="styles的命名"><a href="#styles的命名" class="headerlink" title="styles的命名"></a>styles的命名</h5><p>采用大驼峰命名法。每个单词首字母大写。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/规范/" rel="tag"># 规范</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/10/14/nfc-sharing-files/" rel="next" title="Android使用NFC共享文件">
+                <i class="fa fa-chevron-left"></i> Android使用NFC共享文件
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/10/16/app-shortcuts/" rel="prev" title="App Shortcuts">
+                App Shortcuts <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  
+    <div class="comments" id="comments">
+      <div class="ds-thread" data-thread-key="2016/10/16/android-code-style/"
+           data-title="Android编程风格以及命名规范" data-url="http://zhupeng.space/2016/10/16/android-code-style/">
+      </div>
+    </div>
+  
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="http://ob0r3vf26.bkt.clouddn.com/blog_logo.jpg"
+                alt="朱鹏" />
+            
+              <p class="site-author-name" itemprop="name">朱鹏</p>
+              <p class="site-description motion-element" itemprop="description">享受技术带来的快乐</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">59</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#编程风格"><span class="nav-number">1.</span> <span class="nav-text">编程风格</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#命名规范"><span class="nav-number">2.</span> <span class="nav-text">命名规范</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#包的命名"><span class="nav-number">2.1.</span> <span class="nav-text">包的命名</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#类的命名"><span class="nav-number">2.2.</span> <span class="nav-text">类的命名</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#接口的命名"><span class="nav-number">2.3.</span> <span class="nav-text">接口的命名</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#事件监听器命名"><span class="nav-number">2.4.</span> <span class="nav-text">事件监听器命名</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#方法的命名"><span class="nav-number">2.5.</span> <span class="nav-text">方法的命名</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#变量的命名"><span class="nav-number">2.6.</span> <span class="nav-text">变量的命名</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#成员变量"><span class="nav-number">2.6.1.</span> <span class="nav-text">成员变量</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#静态变量"><span class="nav-number">2.6.2.</span> <span class="nav-text">静态变量</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#局部变量"><span class="nav-number">2.6.3.</span> <span class="nav-text">局部变量</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#临时变量"><span class="nav-number">2.6.4.</span> <span class="nav-text">临时变量</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#常量的命名"><span class="nav-number">2.7.</span> <span class="nav-text">常量的命名</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#控件的命名"><span class="nav-number">2.8.</span> <span class="nav-text">控件的命名</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#资源的命名"><span class="nav-number">2.9.</span> <span class="nav-text">资源的命名</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#控件ID的命名"><span class="nav-number">2.9.1.</span> <span class="nav-text">控件ID的命名</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#drawable的命名"><span class="nav-number">2.9.2.</span> <span class="nav-text">drawable的命名</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#layout的命名"><span class="nav-number">2.9.3.</span> <span class="nav-text">layout的命名</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#colors的命名"><span class="nav-number">2.9.4.</span> <span class="nav-text">colors的命名</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#strings的命名"><span class="nav-number">2.9.5.</span> <span class="nav-text">strings的命名</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#anim的命名"><span class="nav-number">2.9.6.</span> <span class="nav-text">anim的命名</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#styles的命名"><span class="nav-number">2.9.7.</span> <span class="nav-text">styles的命名</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">朱鹏</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> 您是第
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      个访客
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i> 本站总访问量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"zhupeng"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("niXM6CtlVEgvUHEvwNmi0F7S", "LbP8mNzXFXinVUqMloOIy3fW");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

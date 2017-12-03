@@ -1,0 +1,1260 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Android,Graphics," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="原文链接：https://source.android.com/devices/graphics/architecture 底层组件 BufferQueue和gralloc BufferQueue 将可生成图形数据缓冲区的组件（生产者）连接到接受数据以便进行显示或进一步处理的组件（消费者）。通过供应商专用HAL接口实现">
+<meta name="keywords" content="Android,Graphics">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android图形架构">
+<meta property="og:url" content="http://zhupeng.space/2017/06/04/graphics-architecture/index.html">
+<meta property="og:site_name" content="Coding Life">
+<meta property="og:description" content="原文链接：https://source.android.com/devices/graphics/architecture 底层组件 BufferQueue和gralloc BufferQueue 将可生成图形数据缓冲区的组件（生产者）连接到接受数据以便进行显示或进一步处理的组件（消费者）。通过供应商专用HAL接口实现的gralloc内存分配器将用于执行缓冲区分配任务。 SurfaceFlinge">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://ob0r3vf26.bkt.clouddn.com/images/ape_graphics_vulkan.png">
+<meta property="og:image" content="http://ob0r3vf26.bkt.clouddn.com/images/continuous_capture_activity.png">
+<meta property="og:image" content="http://ob0r3vf26.bkt.clouddn.com/images/graphics_secure_texture_playback.png">
+<meta property="og:updated_time" content="2017-08-31T14:57:17.142Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android图形架构">
+<meta name="twitter:description" content="原文链接：https://source.android.com/devices/graphics/architecture 底层组件 BufferQueue和gralloc BufferQueue 将可生成图形数据缓冲区的组件（生产者）连接到接受数据以便进行显示或进一步处理的组件（消费者）。通过供应商专用HAL接口实现的gralloc内存分配器将用于执行缓冲区分配任务。 SurfaceFlinge">
+<meta name="twitter:image" content="http://ob0r3vf26.bkt.clouddn.com/images/ape_graphics_vulkan.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://zhupeng.space/2017/06/04/graphics-architecture/"/>
+
+
+
+
+
+  <title>Android图形架构 | Coding Life</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Coding Life</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">思路决定出路</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://zhupeng.space/2017/06/04/graphics-architecture/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="朱鹏">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://ob0r3vf26.bkt.clouddn.com/blog_logo.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Coding Life">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android图形架构</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-04T19:40:13+08:00">
+                2017-06-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/06/04/graphics-architecture/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/06/04/graphics-architecture/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2017/06/04/graphics-architecture/" class="leancloud_visitors" data-flag-title="Android图形架构">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>原文链接：<a href="https://source.android.com/devices/graphics/architecture" target="_blank" rel="noopener">https://source.android.com/devices/graphics/architecture</a></p>
+<h2 id="底层组件"><a href="#底层组件" class="headerlink" title="底层组件"></a>底层组件</h2><ul>
+<li><span style="color:#039be5">BufferQueue和gralloc</span> BufferQueue 将可生成图形数据缓冲区的组件（生产者）连接到接受数据以便进行显示或进一步处理的组件（消费者）。通过供应商专用HAL接口实现的gralloc内存分配器将用于执行缓冲区分配任务。</li>
+<li><span style="color:#039be5">SurfaceFlinger，Hardware Composer和虚拟显示屏</span> SurfaceFlinger 接受来自多个源的数据缓冲区，然后将它们进行合成并发送到显示屏。Hardware Composer HAL (HWC)确定使用可用硬件合成缓冲区的最有效的方法，虚拟显示屏使合成输出可在系统内使用（录制屏幕或通过网络发送屏幕）。</li>
+<li><span style="color:#039be5">Surface，Canvas，和SurfaceHolder</span> Surface 可生成一个通常由SurfaceFlinger使用的缓冲区队列。当渲染到Surface上时，结果最终将出现在传送给消费者的缓冲区中。Canvas API提供一种软件实现方法（支持硬件加速），用于直接在Surface上绘图（OpenGL ES 的低级别替代方案）。与视图有关的任何内容均涉及到SurfaceHolder，其API可用于获取和设置Surface参数（如大小和格式）。</li>
+<li><span style="color:#039be5">EGLSurface和OpenGL ES</span> OpenGL ES (GLES) 定义了用于与EGL结合使用的图形渲染API。EGI是一个规定如何通过操作系统创建和访问窗口的库（要绘制纹理多边形，请使用GLES调用；要将渲染放到屏幕上，请使用EGL调用）。</li>
+<li><span style="color:#039be5">Vulkan</span> Vulkan是一种用于高性能3D图形的低开销、跨平台API。与OpenGL ES一样，Vulkan提供用于在应用中创建高质量实时图形的工具。Vulkan的优势包括降低CPU开销以及支持SPIR-V二进制中间语言。</li>
+</ul>
+<a id="more"></a>
+<h2 id="高层组件"><a href="#高层组件" class="headerlink" title="高层组件"></a>高层组件</h2><ul>
+<li><span style="color:#039be5">SurfaceView和GLSurfaceView</span> SurfaceView结合了Surface和View。SurfaceView的View组件由SurfaceFlinger（而不是应用）合成，从而可以通过单独的线程/进程渲染，并与应用界面渲染隔离。GLSurfaceView提供帮助程序类来管理EGL上下文、线程间通信以及与“Activity生命周期”的交互（但使用 GLES时并不需要GLSurfaceView）。</li>
+<li><span style="color:#039be5">SurfaceTexture</span> SurfaceTexture将Surface和GLES纹理相结合来创建BufferQueue，而您的应用是BufferQueue的消费者。当生产者将新的缓冲区排入队列时，它会通知您的应用。您的应用会依次释放先前占有的缓冲区，从队列中获取新缓冲区并执行EGL调用，从而使GLES可将此缓冲区作为外部纹理使用。Android 7.0增加了对安全纹理视频播放的支持，以便用户能够对受保护的视频内容进行GPU后处理。</li>
+<li><span style="color:#039be5">TextureView</span> TextureView结合了View和SurfaceTexture。TextureView对SurfaceTexture进行包装，并负责响应回调以及获取新的缓冲区。在绘图时，TextureView使用最近收到的缓冲区的内容作为其数据源，根据View状态指示，在它应该渲染的任何位置和以它应该采用的任何渲染方式进行渲染。View 合成始终通过GLES来执行，这意味着内容更新可能会导致其他View元素重绘。</li>
+</ul>
+<h2 id="BufferQueue和gralloc"><a href="#BufferQueue和gralloc" class="headerlink" title="BufferQueue和gralloc"></a>BufferQueue和gralloc</h2><p>从使用BufferQueue和gralloc HAL的具体场景来理解Android图形系统。</p>
+<p>BufferQueue类是Android中整个图形绘制系统的核心。它的作用很简单：将生成图形数据缓冲区（生产者）的模块和接受数据进行显示或做进一步处理（消费者）的模块相连。几乎所有通过系统移动图形数据缓冲区的过程都依赖于BufferQueue。</p>
+<p>gralloc内存分配器执行缓冲区分配，并通过具体厂商的HAL接口实现（参见hardware/libhardware/include/hardware/gralloc.h）。<strong>alloc()</strong>函数接受所需的参数（宽度，高度，像素格式）以及一组使用标志（详见下文）。</p>
+<h3 id="BufferQueue生产者和消费者"><a href="#BufferQueue生产者和消费者" class="headerlink" title="BufferQueue生产者和消费者"></a>BufferQueue生产者和消费者</h3><p>基本用法很简单：生产者申请一块空闲的缓冲区（<strong>dequeueBuffer()</strong>），在申请时指定一组特征，包括宽度，高度，像素格式和使用标志。生产者填充缓冲区后将其返回到队列（<strong>queueBuffer()</strong>）。之后，消费者获取缓冲区（<strong>acquireBuffer()</strong>）并使用缓冲区数据。当消费者使用完成后，它将缓冲区返回到队列（<strong>releaseBuffer()</strong>）。</p>
+<p>最新的Android设备支持<em>同步框架</em>（sync framework），这使得系统能够与可以异步处理图形数据的硬件组件结合使用。例如，生产者可以提交一系列OpenGL ES绘图命令，然后在渲染完成之前将其入队到输出缓冲区。缓冲区会伴随有一个内容准备就绪时会发出信号的fence。当缓冲区返回到空闲列表时，会伴随有第二个fence，因此消费者可以在内容仍在使用中的时候释放缓冲区。当缓冲区在系统中移动时，这种方法可以提高速度和吞吐量。</p>
+<p>队列的一些特性，例如可以容纳的最大缓冲区数，是由生产者和消费者共同决定的。但是，BufferQueue负责根据需要分配缓冲区。除非一些属性发生变化，否则缓冲区会被保留；例如，如果生产者申请具有不同大小的缓冲区，则会释放旧的缓冲区，并根据需要分配新的缓冲区。</p>
+<p>生产者和消费者可以存在于不同的进程中。目前，消费者一直创建并持有<strong>数据结构</strong>。在较旧版本的Android中，只有生产者一端是“binder化的”（即生产者可能处于远程进程，但消费者必须存在于创建队列的进程中）。Android 4.4和更高版本转向更一般的实现。</p>
+<p>缓冲区数据永远不会被BufferQueue复制（因为移动如此多的数据效率将十分低下）。相反，缓冲区只会以句柄的方式被传递。</p>
+<h3 id="gralloc-HAL使用标志"><a href="#gralloc-HAL使用标志" class="headerlink" title="gralloc HAL使用标志"></a>gralloc HAL使用标志</h3><p>gralloc分配器不仅仅是在本地堆（native heap）上分配内存的另一种方法；在某些情况下，分配的内存可能不是缓存一致性的，或者可能完全不能从用户空间访问。分配到的内存具有哪些特性，取决于在创建时传入的使用标志（usage flags）：</p>
+<ul>
+<li>从软件层次访问内存的频率（CPU）</li>
+<li>从硬件层次访问内存的频率（GPU）</li>
+<li>内存是否被用作OpenGL ES的材质（GLES）</li>
+<li>内存是否被视频编码器使用</li>
+</ul>
+<p>例如，如果像素格式指定为RGBA 8888，并且指示缓冲区将被软件访问（意味着应用程序可以直接修改像素的数据），则分配器必须按照R-G-B-A的顺序为每个像素创建4个字节的缓冲区。相反，如果缓冲区只能从硬件和GLES材质访问，分配器可以执行GLES驱动程序所需的任何操作–BGRA排序，非线性布局，可选颜色格式等。设置成硬件推荐的数据格式可以提高性能。</p>
+<p>某些平台上无法组合一些值。例如，视频编码器标志可能需要YUV像素格式，因此如果加入软件访问（software access）并指定格式为RGBA 8888将导致失败。</p>
+<p>gralloc分配器返回的句柄可以通过Binder在进程之间传递。</p>
+<h3 id="使用systrace跟踪BufferQueue"><a href="#使用systrace跟踪BufferQueue" class="headerlink" title="使用systrace跟踪BufferQueue"></a>使用systrace跟踪BufferQueue</h3><p>要真正了解图形缓冲区如何移动，请使用systrace。系统级的图形代码是很好的测试，像很多相关的应用程序框架代码一样。</p>
+<p>有关如何高效地使用systrace的完整说明会写出相当长的文档。首先启用<strong>gfx</strong>，<strong>view</strong>和<strong>sched</strong>标签。还会在跟踪中看到BufferQueues。如果以前使用过systrace，可能已经见到过它们，但可能不知道它们是什么。例如，如果在Grafika的”播放视频（SurfaceView）”正在运行时抓取踪迹，则标有“SurfaceView”的行会给出在任何给定时间排队的缓冲区数量。</p>
+<p>当应用程序处于活动状态时，值会递增 - 触发MediaCodec解码器帧渲染，而在SurfaceFlinger正在进行工作时，会消耗缓冲区。当以30fps显示视频时，队列的值从0变为1，因为〜60fps显示可以轻松跟踪源。（请注意，SurfaceFlinger只有在完成工作时才会唤醒，而不是每秒60次，如果没有更新屏幕，系统会尽量避免工作，并且会完全禁用VSYNC）。</p>
+<p>如果切换到Grafika的“播放视频（TextureView）”并获取新的跟踪，将会看到标有com.android.grafika/com.android.grafika.PlayMovieActivity的行。这是主UI界面，它只是另一个BufferQueue。因为TextureView渲染到UI层（而不是单独的图层），将在此看到所有视频驱动的更新。</p>
+<h2 id="SurfaceFlinger和Hardware-Composer"><a href="#SurfaceFlinger和Hardware-Composer" class="headerlink" title="SurfaceFlinger和Hardware Composer"></a>SurfaceFlinger和Hardware Composer</h2><h3 id="SurfaceFlinger"><a href="#SurfaceFlinger" class="headerlink" title="SurfaceFlinger"></a>SurfaceFlinger</h3><p>SurfaceFlinger的作用是接受来自多个来源的数据缓冲区，将这些数据混合并发送到显示器。曾几何时，这些功能是由软件直接复制数据到硬件的framebuffer（即/dev/graphics/fb0）上的，但这样的日子早已一去不复返。</p>
+<p>当app进入前台时，WindowManager服务会要求SurfaceFlinger绘制一个surface。SurfaceFlinger创建一个SurfaceFlinger作为消费者的层（其主要组件是BufferQueue）。生产者端的Binder对象通过WindowManager传递给app，然后app可以直接将帧数据发送到SurfaceFlinger。</p>
+<p style="background: rgb(225, 245, 254);color: rgb(2, 136, 209);padding: 12px 24px 12px 24px;border-radius: 4px;">注意：虽然本节使用SurfaceFlinger术语，但WindowManager使用的是window这个术语，而不是layer这个术语…并使用layer来表示其他内容。（可以认为SurfaceFlinger更应该被称作LayerFlinger）<br></p>
+
+<p>大多数应用程序在屏幕上一般总是有三个layer：屏幕顶部的状态栏，底部或侧面的导航栏以及应用本身的UI。一些应用的layer可能会有所不同（例如，默认的home app有一个单独的壁纸层，而全屏游戏可能会隐藏状态栏。每个层都可以单独被更新。状态栏和导航栏是被系统进程渲染的，而应用程序层是由应用程序渲染，两者之间不会有协同作业。</p>
+<p>设备以一定的频率刷新显示，通常在手机和平板电脑上每秒刷新60帧。如果显示内容在刷新中间更新（刷新不够迅速），就可能出现显示撕裂的情况; 所以在刷新周期内更新内容是很重要的。当显示器可以安全的更新内容时，它会发送一个信号给系统。由于某种历史原因，这个信号被称为<strong>VSYNC</strong>信号。</p>
+<p>刷新率可能随时间而变化，例如：基于当前的条件，一些移动设备的范围会从58到62fps变化。对于HDMI连接的电视，刷新率理论上可以下降到24或48Hz来匹配视频。因为只能在每次刷新周期更新屏幕，所以以200fps提交缓冲区数据给显示器将是浪费的，因为大多数的帧数据并不会被显示。当应用程序提交缓冲区时，SurfaceFlinger不会做任何操作，而是在显示器可以接受新数据时才唤醒SurfaceFlinger。</p>
+<p>当VSYNC信号到达时，SurfaceFlinger会遍历其layer列表来查找新的缓冲区。如果找到一个新的，SurfaceFlinger会获取它；否则它会继续使用之前获取的缓冲区。SurfaceFlinger总是需要一些数据来显示，所以它会挂在一个缓冲区上。如果在layer上没有缓冲区被提交，则忽略该layer。</p>
+<p>在SurfaceFlinger收集了所有可见layer的缓冲区之后，将会请求Hardware Composer来执行混合的操作。</p>
+<h3 id="Hardware-Composer"><a href="#Hardware-Composer" class="headerlink" title="Hardware Composer"></a>Hardware Composer</h3><p>Hardware Composer HAL（HWC）是在Android 3.0中引入的，多年来逐渐变得稳定。其主要目的是使用现有的硬件确定最有效的方式来组合缓冲区。作为一个HAL层接口，它是由特定设备实现的，通常由显示器硬件OEM完成。</p>
+<p>如果设想一下”overlay planes”的场景，那么这个方法的价值是显而易见的。“overlay planes”的目的是在显示器硬件而不是GPU中将多个缓冲区组合在一起。例如，考虑一个典型的纵向显示的Android手机，状态栏在顶部，导航栏在底部，应用程序内容在其他地方。每个layer的内容都在独立的缓冲区中。可以使用以下任一方法处理组合：</p>
+<ul>
+<li>将应用程序内容呈现到暂存缓冲区中，然后将状态栏呈现在其上，导航栏位于其上，最后将暂存缓冲区传递给显示硬件</li>
+<li>将三个缓冲区全部传递到显示硬件，并告诉它从不同缓冲区读取屏幕不同部分的数据</li>
+</ul>
+<p>后一种方法可以显著提高效率。</p>
+<p>显示处理器性能差距很大。覆盖层的数量，层是否可以旋转或混合，还有位置和遮盖上的限制都难以通过API来表达。HWC试图通过一系列决策来适应这种多样性：</p>
+<ul>
+<li>SurfaceFlinger为HWC提供了一个完整的layer列表，然后问“你打算如何处理？”</li>
+<li>HWC通过将每个layer标记为overlay或GLES composition来对SurfaceFlinger进行回复</li>
+<li>SurfaceFlinger处理被标记为GLES composition的layer，将输出缓冲区传递给HWC，并让HWC处理剩下的工作</li>
+</ul>
+<p>由于硬件厂商可以自定义定制决策代码，因此可以在每个设备上获得最佳性能。</p>
+<p>当屏幕上没有任何东西变化时，Overlay planes的效率并不如GL composition的效率高。当overlay的内容中具有透明像素并且重叠层混合在一起时，这种差距尤其明显。在这种情况下，HWC可以选择为某些或所有层请求GLES composition，并保留合成的缓冲区。如果SurfaceFlinger又来请求组合相同的缓冲区，则HWC可以继续显示之前合成的暂存缓冲区。这可以可以提升设备待机时间。</p>
+<p>运行Android 4.4和更高版本的设备通常支持四个overlay planes。尝试组合更多layer而不是覆盖层（overlay）会导致系统对其中的部分使用GLES composition，这意味着应用程序使用了层数会影响到系统的功耗和性能。</p>
+<h3 id="虚拟显示（Virtual-displays）"><a href="#虚拟显示（Virtual-displays）" class="headerlink" title="虚拟显示（Virtual displays）"></a>虚拟显示（Virtual displays）</h3><p>SurfaceFlinger支持一个主显示（即手机或平板电脑内置的），一个外部显示（如通过HDMI连接的电视机）以及一个或多个使系统中的混合输出可用的虚拟显示。虚拟显示器可用于录制屏幕或通过网络发送。</p>
+<p>虚拟显示可以共享与主显示（the layer stack）相同的层，也可以具有自己的层集合。虚拟显示没有VSYNC，因此主显示的VSYNC用于触发所有显示的合成工作。</p>
+<p>在旧版本的Android中，虚拟显示一直是与GLES组合并且Hardware Composer只是为主显示管理组合合成。在Android 4.4中，Hardware Composer也可以参与虚拟显示的合成。</p>
+<p>正如所预期的，为虚拟显示生成的帧将写入BufferQueue。</p>
+<h3 id="案例研究：screenrecord"><a href="#案例研究：screenrecord" class="headerlink" title="案例研究：screenrecord"></a>案例研究：screenrecord</h3><p>screenrecord命令可以将显示在屏幕上的所有内容作为.mp4文件记录在磁盘上。要实现screenrecord，必须从SurfaceFlinger接收合成帧，将它们写入视频编码器，然后将编码的视频数据写入文件。视频编解码器由独立的进程（mediaserver）进行管理，因此必须在系统周围移动大型图形缓冲区。为了使其更具挑战性，我们正在尝试以全分辨率录制60fps视频。使这个工作高效的关键是BufferQueue。</p>
+<p>MediaCodec类允许应用程序以缓冲区中的原始字节或通过Surface提供数据。当screenrecord请求访问视频编码器时，mediaserver创建一个BufferQueue，将其自身连接到消费者端，然后将生产者端传回到screenrecord作为Surface。</p>
+<p>然后，screenrecord命令要求SurfaceFlinger创建一个反映主显示的虚拟显示（即它具有所有相同的图层），并指示它将输出发送到来自mediaserver的Surface。在这种情况下，SurfaceFlinger是缓冲区而不是消费者的生产者。</p>
+<p>配置完成后，screenrecord等待编码数据出现。随着应用程序的绘制，缓冲区前往SurfaceFlinger，SurfaceFlinger将它们组合到单个缓冲区中，直接通过mediaserver发送到视频编码器。整个画面从来没有被屏幕录制进程所看到。在内部，mediaserver有自己的移动缓冲区的方式，也通过处理传递数据，最大限度地减少开销。</p>
+<h3 id="案例研究：Simulate-secondary-displays"><a href="#案例研究：Simulate-secondary-displays" class="headerlink" title="案例研究：Simulate secondary displays"></a>案例研究：Simulate secondary displays</h3><p>WindowManager可以要求SurfaceFlinger创建一个可见层，SurfaceFlinger作为BufferQueue消费者。也可以要求SurfaceFlinger创建一个虚拟显示，为此SurfaceFlinger充当了BufferQueue生产者。如果连接它们会发生什么，配置渲染到可见层的虚拟显示？</p>
+<p>创建一个闭合循环，其中合成屏幕出现在窗口中。该窗口现在是合成输出的一部分，所以在下一次刷新窗口中的合成图像也将显示窗口内容（and then it’s turtles all the way down）。</p>
+<h2 id="Surface和SurfaceHolder"><a href="#Surface和SurfaceHolder" class="headerlink" title="Surface和SurfaceHolder"></a>Surface和SurfaceHolder</h2><p>从1.0开始，Surface类就是公共API的一部分。它的描述：“处理由屏幕合成器管理的原始缓冲区（raw buffer）”。该声明在起初编写时是准确的，但是在现代的操作系统的标准下这句话已经远远落后。</p>
+<p>Surface代表了buffer queue的生产者端，这个buffer queue一般（但不是总是）被Surfaceflinger来消费。当向一个Surface渲染时，结果最终在一个缓冲区内被运送到消费者那里。一个Surface并不是一个可以任意修改的简单raw内存数据块。</p>
+<p>显示Surface的BufferQueue通常配置为三重缓冲区；但是缓冲区是按需分配的。所以如果生产者生产缓冲区足够缓慢（比如在一个刷新率60的设备上只有30的刷新率），这种情况下可能队列中只有两个被分配的缓冲区。这样可以有效的降低内存消耗。通过命令dumpsys SurfaceFlinger，可以看到每个layer关连的buffer的汇总。</p>
+<h3 id="画布渲染（Canvas-Rendering）"><a href="#画布渲染（Canvas-Rendering）" class="headerlink" title="画布渲染（Canvas Rendering）"></a>画布渲染（Canvas Rendering）</h3><p>曾经，所有的渲染工作都可以由软件来完成，现在依然可以这么做。底层的实现是由Skia图形库来完成的。如果想绘制一个矩形，只需调用一个库函数，函数就会设置好缓冲区中的数据。为了确保buffer不会同时被两个客户端更新，或者在显示时被写入，必须锁定缓冲区才能访问它。<strong>lockCanvas()</strong>会锁定缓冲区并且返回canvas用于绘图，<strong>unlockCanvasAndPost()</strong>解锁缓冲区并将其发送给合成器。</p>
+<p>随着时间的推移，具有通用3D加速引擎的设备出现了。Android围绕OpenGL ES做了调整。然而，保证旧的API可以运行于应用程序和应用程序框架代码上同样重要。所以努力使得Canvas的API支持硬件加速。从<a href="../hardware-acceleration/">Hardware Acceleration</a>页面可以看出，这是一段艰苦的旅程。特别要注意的是，Canvas提供给View的<strong>onDraw()</strong>方法可能是硬件加速的；而通过<strong>lockCanvas()</strong>方法获取到的Canvas则绝不可能是硬件加速的。</p>
+<p>当为了使用Canvas而锁定一个Surface的时候，”CPU渲染器”连接到了BufferQueue的生产者端，直到Surface被销毁才会断开连接。大多数其他的生产者（比如GLES）可以断开连接，并且重新连接到Surface上；但是基于CPU渲染器的Canvas不行。这意味着，一旦为了使用Canvas而锁定Surface，就不能使用GLES绘制这个Surface，也不能将视频解码器生成的帧发送给它。</p>
+<p>生产者首次从BufferQueue请求缓冲区时，将被分配并初始化为零。为了避免无意间在进程之间共享数据，初始化是必要的。然而当重新使用缓冲区时，以前的内容仍然存在。如果反复调用<strong>lockCanvas()</strong>和<strong>unlockCanvasAndPost()</strong>而不绘制任何内容，则会循环显示前面渲染过的帧。</p>
+<p>Surface锁定/解锁代码保留了对之前渲染的缓冲区的引用。如果在锁定Surface时指定了脏区域，那么它会将前一个缓冲区内非脏区域的像素拷贝过来。有相当大的可能这块缓冲区会被Surfaceflinger或者HWC处理，但是由于只是从中读取内容，因此没必要一直等待互斥锁。</p>
+<p>应用程序不通过Canvas方法，而直接在Surface上绘制的主要办法是通过OpenGL ES。</p>
+<h3 id="SurfaceHolder"><a href="#SurfaceHolder" class="headerlink" title="SurfaceHolder"></a>SurfaceHolder</h3><p>一些在surface上工作的东西需要一个SurfaceHolder，尤其是SurfaceView。最初的想法是，Surface代表原始的合成器管理的缓冲区，而SurfaceHolder由应用程序管理，并跟踪更高层次的信息，如大小和格式。Java语言定义了底层本地实现的镜像。这种分层方法目前已经不再有意义，但是它已经长时间成为了公共API中的一部分。</p>
+<p>一般而言，对View所做的一切事情都涉及到SurfaceHolder。一些其他API，如MediaCodec，将直接在Surface上操作。可以很容易的从SurfaceHolder中获取Surface。</p>
+<p>获取和设置Surface参数的一些API，比如大小和格式，都是通过SurfaceHolder实现。</p>
+<h2 id="EGLSurfaces和OpenGL-ES"><a href="#EGLSurfaces和OpenGL-ES" class="headerlink" title="EGLSurfaces和OpenGL ES"></a>EGLSurfaces和OpenGL ES</h2><p>OpenGL ES定义了一组用于渲染图形的API。它并没有定义窗口系统。为了让GLES在各种平台上工作，它被设计为与知道如何通过操作系统创建和访问窗口的库相结合。这个用于Android的库称为EGL。如果想绘制纹理多边形，则使用GLES调用；如果想要将它渲染到屏幕上，则使用EGL调用。</p>
+<p>在使用GLES之前，需要创建一个GL上下文。在EGL中，这意味着创建一个EGLContext和一个EGLSurface。GLES的操作适用于当前上下文，而上下文更多是依赖本地线程的存储而不是作为参数的传递。这意味着需要关注渲染代码执行在哪个线程之上，并且这个线程的当前上下文是什么。</p>
+<h3 id="EGLSurfaces"><a href="#EGLSurfaces" class="headerlink" title="EGLSurfaces"></a>EGLSurfaces</h3><p>EGLSurface可以是由EGL分配的离屏缓冲区（称为“pbuffer”）或者是由操作系统分配的窗口。EGL window surfaces由<strong>eglCreateWindowSurface()</strong>函数创建。它将一个“窗口对象”作为参数，在Android上，这个对象可以是一个SurfaceView，一个SurfaceTexture，一个SurfaceHolder，或者一个Surface—-所有的这些都有一个BuffferQueue。当调用这个函数时，ELG将创建一个新的EGLSurface对象，并且将其连接到窗口对象的BufferQueue的生产者接口上。从这一刻开始，渲染到EGLSurface上将导致缓冲区经历出队，渲染，入队供消费者使用这个过程。（术语“窗口”表示预期用途，实际上，输出可能并不显示在屏幕上）</p>
+<p>EGL并没有提供lock/unlock的调用。而是需要发出绘图命令，然后调用<strong>eglSwapBuffers()</strong>函数来提交当前的帧。这个方法名称来自前后缓冲区的传统交换，但是目前实际的实现可能会有很大的不同。</p>
+<p>一次只能有一个EGLSurface与一个Surface相关联 —- 只能将一个生产者连接到一个BufferQueue上 —- 但是如果销毁了这个EGLSurface，它将与BufferQueue断开连接，这样就可以用其他的东西连接这个BufferQueue了。</p>
+<p>一个给定的线程可以通过更改哪个是“current”来在多个EGLSurfaces之间切换，一个线程同时只能有一个EGLSurface作为current。</p>
+<p>在考虑EGLSurface时最常见的错误是把EGLSurface当做是Surface的另一种表现（就像是SurfaceHolder）。这二者之间有关系，但是这是两个独立的概念。可以在EGLSurface上绘制而不需要Surface的支持，也可以不通过EGL而使用一个Surface。EGLSurface只不过给GLES提供了一个绘制的地方而已。</p>
+<h3 id="ANativeWindow"><a href="#ANativeWindow" class="headerlink" title="ANativeWindow"></a>ANativeWindow</h3><p>公共的Surface类是由Java编程语言实现的。在C/C++层对应的是ANativeWindow类，半暴露在Android NDK中。可以通过调用<strong>ANativeWindow_fromSurface()</strong>从Surface中获得一个ANativeWindow。就像是java语言的表亲一样，可以锁定（lock）它，在软件中进行渲染并且解锁（unlock-and-post）。</p>
+<p>要从本地代码中创建一个EGL window surface，需要给<strong>eglCreateWindowSurface()</strong>方法传递一个EGLNativeWindowType实例。EGLNativeWindowType等同于ANativeWindow，因此可以在二者之间自由的进行转换。</p>
+<p>事实上，“native window”的本质不过是BufferQueue在生产者端的包装罢了。</p>
+<h2 id="OpenGLRenderer配置"><a href="#OpenGLRenderer配置" class="headerlink" title="OpenGLRenderer配置"></a>OpenGLRenderer配置</h2><p>这里描述了可以做的性能调优，以便充分利用硬件。</p>
+<h3 id="OpenGLRenderer（libhwui）属性"><a href="#OpenGLRenderer（libhwui）属性" class="headerlink" title="OpenGLRenderer（libhwui）属性"></a>OpenGLRenderer（libhwui）属性</h3><p>下面列出了可用于控制Android 2D硬件加速渲染管道的所有属性。在<strong>device.mk</strong>中将这些属性设置为<strong>PRODUCT_PROPERTY_OVERRIDES</strong>。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">属性</th>
+<th style="text-align:center">类型</th>
+<th style="text-align:center">默认值</th>
+<th style="text-align:center">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">ro.hwui.disable_scissor_opt</td>
+<td style="text-align:center">boolean</td>
+<td style="text-align:center">false</td>
+<td style="text-align:center">用于启用或禁用剪裁优化（scissor optimization）。接受的值是true和false。当剪裁优化启用时，OpenGLRenderer尝试通过选择性地启用和禁用GL剪裁测试（scissor test）来最小化使用剪裁。<br>当优化被禁用时，OpenGLRenderer会保持GL剪裁测试的启用，并根据需要更改剪裁矩形（scissor rect）。大多数情况下，当改变剪裁矩形时，有些GPU（例如，SGX 540）的效果会比常规地启用或禁用剪裁测试更好。</td>
+</tr>
+<tr>
+<td style="text-align:center">ro.hwui.texture_cache_size</td>
+<td style="text-align:center">float</td>
+<td style="text-align:center">24</td>
+<td style="text-align:center">定义每个进程纹理缓存的大小（以兆字节为单位）。建议使用足够大的缓存来容纳多个屏幕的32位纹理（例如，在1280x800显示屏上，全屏缓冲区使用大约4MB，因此缓存应至少为20MB）。</td>
+</tr>
+<tr>
+<td style="text-align:center">ro.hwui.layer_cache_size</td>
+<td style="text-align:center">float</td>
+<td style="text-align:center">16</td>
+<td style="text-align:center">定义每个进程图层缓存的大小（以兆字节为单位）。建议使用一个足够大的缓存来保存32位屏幕的4倍。例如，在1280x800显示器上，全屏缓冲区使用大约4MB，因此缓存应至少为16MB。</td>
+</tr>
+<tr>
+<td style="text-align:center">ro.hwui.gradient_cache_size</td>
+<td style="text-align:center">float</td>
+<td style="text-align:center">0.5</td>
+<td style="text-align:center">定义每个进程梯度缓存的大小（以兆字节为单位）。单个梯度通常占用1到4KB的内存。建议使用足够大的缓存来保存至少十二个梯度。</td>
+</tr>
+<tr>
+<td style="text-align:center">ro.hwui.patch_cache_size</td>
+<td style="text-align:center">integer</td>
+<td style="text-align:center">128</td>
+<td style="text-align:center">定义每个进程的9个补丁缓存的大小（以千字节为单位）。该缓存仅保存顶点数据，因此可以保持较小。每个顶点由4个浮点或16个字节组成。</td>
+</tr>
+<tr>
+<td style="text-align:center">ro.hwui.path_cache_size</td>
+<td style="text-align:center">float</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">定义每个进程路径缓存的大小（以兆字节为单位）。建议使用足够大的缓存来至少保存一个屏幕的32位纹理。例如，在1280x800显示屏上，全屏缓冲区使用大约4MB，因此缓存应至少为4MB。</td>
+</tr>
+<tr>
+<td style="text-align:center">ro.hwui.shape_cache_size</td>
+<td style="text-align:center">float</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">定义每个进程形状缓存的大小（以兆字节为单位）。该值由多个缓存（如圆形和圆形矩形）使用。建议使用足够大的缓存来至少保存一个8位屏幕。例如，在1280x800显示屏上，全屏缓冲区使用约1MB，因此缓存应至少为1MB。</td>
+</tr>
+<tr>
+<td style="text-align:center">ro.hwui.drop_shadow_cache_size</td>
+<td style="text-align:center">float</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">定义每个进程文本阴影缓存的大小（以兆字节为单位）。建议使用足够大的缓存来容纳两个屏幕的8位纹理。例如，在1280x800显示屏上，全屏缓冲区使用约1MB，因此缓存应至少为2MB。</td>
+</tr>
+<tr>
+<td style="text-align:center">ro.hwui.r_buffer_cache_size</td>
+<td style="text-align:center">float</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">定义每个进程的渲染缓冲区缓存的大小（以兆字节为单位）。建议使用足够大的缓存来容纳两次8位屏幕。例如，在1280x800显示器上，全屏缓冲区使用大约1MB，因此缓存应至少为2MB。如果设备支持4位或1位模板缓冲区，则缓存可以更小。</td>
+</tr>
+<tr>
+<td style="text-align:center">ro.hwui.texture_cache_flush_rate</td>
+<td style="text-align:center">float</td>
+<td style="text-align:center">0.6</td>
+<td style="text-align:center">定义内存刷新后要保留的纹理缓存的百分比。当系统需要在所有应用程序中回收内存时，会触发内存刷新。在这种情况下，建议释放约50％的缓存。</td>
+</tr>
+<tr>
+<td style="text-align:center">ro.hwui.text_small_cache_width</td>
+<td style="text-align:center">integer</td>
+<td style="text-align:center">1024</td>
+<td style="text-align:center">定义默认字体缓存的宽度（以像素为单位）。上限取决于GPU可以上传纹理的速度。建议使用至少1024像素，但最多使用2048像素。也应该使用2的指数幂值</td>
+</tr>
+<tr>
+<td style="text-align:center">ro.hwui.text_small_cache_height</td>
+<td style="text-align:center">integer</td>
+<td style="text-align:center">256</td>
+<td style="text-align:center">定义默认字体缓存的高度（以像素为单位）。上限取决于GPU可以上传纹理的速度。建议使用至少256像素，但最多1024像素。</td>
+</tr>
+<tr>
+<td style="text-align:center">ro.hwui.text_large_cache_width</td>
+<td style="text-align:center">integer</td>
+<td style="text-align:center">2048</td>
+<td style="text-align:center">定义大字体缓存的宽度（以像素为单位）。该缓存用于太大的字形以适应默认字体缓存。上限取决于GPU可以上传纹理的速度。建议使用至少2048像素，但最多使用4096像素。也应该使用2的指数幂值。</td>
+</tr>
+<tr>
+<td style="text-align:center">ro.hwui.text_large_cache_height</td>
+<td style="text-align:center">integer</td>
+<td style="text-align:center">512</td>
+<td style="text-align:center">定义大字体缓存的高度（像素）。大字体缓存用于字形太大，无法适应默认字体缓存。上限取决于GPU可以上传纹理的速度。建议至少使用512像素，但最多使用2048像素。也应该使用2的指数幂值。</td>
+</tr>
+<tr>
+<td style="text-align:center">ro.zygote.disable_gl_preload</td>
+<td style="text-align:center">boolean</td>
+<td style="text-align:center">false</td>
+<td style="text-align:center">用于在启动时启用/禁用Zygote中的EGL/GL驱动程序的预加载。当此属性设置为false时，Zygote将通过调用eglGetDisplay（EGL_DEFAULT_DISPLAY）来预加载GL驱动程序。目的是在Zygote中加载动态库代码，以便与所有其他进程共享。如果驱动程序不支持共享，请将此属性设置为true。</td>
+</tr>
+<tr>
+<td style="text-align:center">hwui.text_gamma_correction</td>
+<td style="text-align:center">string</td>
+<td style="text-align:center">lookup</td>
+<td style="text-align:center">选择文本伽玛校正技术。有四种可能的选择： <br>  lookup3：基于查找表的校正。伽玛校正对于黑白文本是不同的（见下面的阈值）。<br> lookup：基于单个查找表的校正。 <br> shader3：由GLSL着色器应用的校正。伽玛校正对于黑白文本是不同的（见下面的阈值）。<br> shader：由GLSL着色器应用的校正。<br>最好在具有有限的着色器数学的GPU上查找伽马校正功能。着色器伽玛校正最适合节省内存。建议使用默认查找技术，这在质量，速度和内存使用方面提供了一个很好的折中。</td>
+</tr>
+<tr>
+<td style="text-align:center">hwui.text_gamma</td>
+<td style="text-align:center">float</td>
+<td style="text-align:center">1.4</td>
+<td style="text-align:center">定义用于文本伽马校正的伽玛值。该值可以根据设备使用的显示器进行调整。</td>
+</tr>
+<tr>
+<td style="text-align:center">hwui.text_gamma.black_threshold</td>
+<td style="text-align:center">integer</td>
+<td style="text-align:center">64</td>
+<td style="text-align:center">定义应用黑伽马校正的亮度阈值。该值必须在0..255范围内定义。</td>
+</tr>
+<tr>
+<td style="text-align:center">hwui.text_gamma.white_threshold</td>
+<td style="text-align:center">integer</td>
+<td style="text-align:center">192</td>
+<td style="text-align:center">定义应用白伽马校正的亮度阈值。该值必须在0..255范围内定义。</td>
+</tr>
+<tr>
+<td style="text-align:center">hwui.use_gpu_pixel_buffers</td>
+<td style="text-align:center">boolean</td>
+<td style="text-align:center">true</td>
+<td style="text-align:center">用于启用或禁用在OpenGL ES 3.0硬件上使用PBO。渲染器使用PBO来执行异步纹理上传，特别是对于字体缓存。该属性应始终保持启用，但如果使用PBOs导致性能很糟糕，则可以在升级或开发期间禁用此属性。这就是为什么该属性不是只读的。</td>
+</tr>
+</tbody>
+</table>
+<h2 id="Vulkan"><a href="#Vulkan" class="headerlink" title="Vulkan"></a>Vulkan</h2><p>Android 7.0增加了对Vulkan的支持，Vulkan是高性能3D图形的低开销跨平台API。像OpenGL ES一样，Vulkan提供了在应用程序中创建高质量，实时图形的工具。Vulkan优势包括降低CPU开销并支持SPIR-V二进制中级语言。</p>
+<p>片上供应商（SoC）如GPU独立硬件供应商（IHV）可以为Android编写Vulkan驱动程序; OEM只需要为特定设备集成这些驱动程序。</p>
+<p>应用程序开发人员可以利用Vulkan来创建在GPU上执行命令并大大减少开销的应用程序。 Vulkan还提供了更直接的映射到当前图形硬件中发现的性能问题，最大限度地减少驱动程序错误的可能性，并减少开发人员测试时间（例如排除Vulkan错误所需的时间更少）。</p>
+<h3 id="Vulkan组件"><a href="#Vulkan组件" class="headerlink" title="Vulkan组件"></a>Vulkan组件</h3><p>Vulkan支持包括以下组件：</p>
+<p><img src="http://ob0r3vf26.bkt.clouddn.com/images/ape_graphics_vulkan.png" alt="暂无图片" title="Vulkan components"></p>
+<ul>
+<li><strong>Vulkan Validation Layers</strong>（在Android NDK中提供）：开发人员在开发Vulkan应用程序期间使用的一组库。来自图形处理器的Vulkan运行库和Vulkan驱动程序不包含运行时错误检查，以保持Vulkan运行时的有效性。相反是使用验证库（仅在开发过程中）在应用程序使用Vulkan API中查找错误。Vulkan验证库在开发过程中链接到应用程序中，并执行此错误检查。在找到所有API使用问题之后，应用程序不再需要将这些库包含在应用程序中。</li>
+<li><strong>Vulkan Runtime</strong>（由Android提供）：一个本地库（<strong>libvulkan.so</strong>），它提供一个名为Vulkan的新的公共API。 大多数功能由GPU供应商提供的驱动程序实现; 运行时包装驱动程序，提供API拦截功能（用于调试和其他开发人员工具），并管理驱动程序和平台依赖关系（如BufferQueue）之间的交互。</li>
+<li><strong>Vulkan Driver</strong>（由SoC提供）：将Vulkan API映射到与具有硬件特性的GPU命令并且与内核图形驱动程序的交互。</li>
+</ul>
+<h3 id="修改的组件（Modified-components）"><a href="#修改的组件（Modified-components）" class="headerlink" title="修改的组件（Modified components）"></a>修改的组件（Modified components）</h3><p>Android 7.0修改了以下现有的图形组件来支持Vulkan：</p>
+<ul>
+<li><strong>BufferQueue</strong>：Vulkan Runtime通过现有的<strong>ANativeWindow</strong>界面与现有的BufferQueue组件进行交互。包括对<strong>ANativeWindow</strong>和BufferQueue的小修改（新的枚举值和新的方法），但架构没有更改。</li>
+<li><strong>Gralloc HAL</strong>：包括一个新的可选接口，用于发现给定格式是否可以用于特定的生产者/消费者组合而不实际分配缓冲区。</li>
+</ul>
+<h3 id="Vulkan-API"><a href="#Vulkan-API" class="headerlink" title="Vulkan API"></a>Vulkan API</h3><p>Android平台包括来自Khronos集团的Vulkan API规范的Android特定实现。Android应用程序必须使用Window系统集成（WSI）扩展来输出其渲染。</p>
+<h3 id="资源（Resources）"><a href="#资源（Resources）" class="headerlink" title="资源（Resources）"></a>资源（Resources）</h3><p>使用以下资源了解有关Vulkan的更多信息：</p>
+<ul>
+<li><span style="color:#039be5;">Vulkan Loader</span>（libvulkan.so）在platform/frameworks/native/vulkan中。包含Android的Vulkan加载程序，以及一些适用于平台开发人员的Vulkan相关工具。</li>
+<li><span style="color:#039be5;">Vulkan Implementor’s Guide</span> 旨在为GPU IHV编写适用于Android的Vulkan驱动程序和将这些驱动程序集成到特定设备的OEM。它描述了Vulkan驱动程序如何与系统进行交互，如何安装GPU特定工具以及Android特定的要求。</li>
+<li><span style="color:#039be5;">Vulkan Graphics API Guide</span> 包括有关在Android应用程序中使用Vulkan的入门信息，有关Android平台上的Vulkan设计指南的详细信息，如何使用Vulkan的着色器编译器，以及如何使用验证层来确保使用Vulkan的应用程序的稳定性。</li>
+<li><span style="color:#039be5;">Vulkan News</span> 涵盖事件，补丁，教程和更多Vulkan相关的新闻文章。</li>
+</ul>
+<h2 id="SurfaceView和GLSurfaceView"><a href="#SurfaceView和GLSurfaceView" class="headerlink" title="SurfaceView和GLSurfaceView"></a>SurfaceView和GLSurfaceView</h2><p>Android应用框架界面是以使用View开头的对象层次结构为基础。所有界面元素都会经过一个复杂的测量和布局过程，该过程会将这些元素融入到矩形区域中，并且所有可见View对象都会渲染到一个由SurfaceFlinger创建的Surface（在应用置于前台时，由WindowManager进行设置）。应用的界面线程会执行布局并渲染到单个缓冲区（不考虑Layout和View的数量以及View是否已经过硬件加速）。</p>
+<p>SurfaceView采用与其他视图相同的参数，因此可以为SurfaceView设置位置和大小，并在其周围填充其他元素。但是，当需要渲染时，内容会变得完全透明；SurfaceView的View部分只是一个透明的占位符。</p>
+<p>当SurfaceView的View组件即将变得可见时，框架会要求WindowManager命令SurfaceFlinger创建一个新的Surface。（这个过程并非同步发生，因此应该提供回调，以便在 Surface创建完毕后收到通知。）默认情况下，新的Surface将放置在应用界面Surface的后面，但可以替换默认的Z排序，将Surface放在顶层。</p>
+<p>渲染到该Surface上的内容将会由SurfaceFlinger（而非应用）进行合成。这是SurfaceView的真正强大之处：获得的Surface可以由单独的线程或单独的进程进行渲染，并与应用界面执行的任何渲染隔离开，而缓冲区可直接转至SurfaceFlinger。不能完全忽略界面线程，因为仍然需要与Activity生命周期相协调，并且如果View的大小或位置发生变化，可能需要调整某些内容，但是可以拥有整个Surface。与应用界面和其他图层的混合由Hardware Composer处理。</p>
+<p>新的Surface是BufferQueue的生产者端，其消费者是SurfaceFlinger层。可以使用任意提供BufferQueue的机制（例如，提供Surface的Canvas函数）来更新Surface，附加EGLSurface并使用GLES进行绘制，或者配置MediaCodec视频解码器以便于写入。</p>
+<h3 id="合成与硬件缩放"><a href="#合成与硬件缩放" class="headerlink" title="合成与硬件缩放"></a>合成与硬件缩放</h3><p>仔细研究一下dumpsys SurfaceFlinger。当在Nexus 5上，以纵向方向在Grafika的“播放视频(SurfaceView)”活动中播放电影时，采用以下输出；视频是QVGA(320x240)：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">type</th>
+<th style="text-align:center">source crop</th>
+<th style="text-align:center">frame           name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">HWC</td>
+<td style="text-align:center">[0.0,  0.0,  320.0,  240.0]</td>
+<td style="text-align:center">[48,  411,  1032,  1149]  SurfaceView</td>
+</tr>
+<tr>
+<td style="text-align:center">HWC</td>
+<td style="text-align:center">[0.0,  75.0, 1080.0, 1776.0]</td>
+<td style="text-align:center">[0,  75,  1080,  1776]  com.android.grafika/com.android.grafika.PlayMovieSurfaceActivity</td>
+</tr>
+<tr>
+<td style="text-align:center">HWC</td>
+<td style="text-align:center">[0.0,  0.0,  1080.0,  75.0]</td>
+<td style="text-align:center">[0,  0,  1080,  75]  StatusBar</td>
+</tr>
+<tr>
+<td style="text-align:center">HWC</td>
+<td style="text-align:center">[0.0,  0.0,  1080.0,  144.0]</td>
+<td style="text-align:center">[0,  1776,  1080,  1920]  NavigationBar</td>
+</tr>
+<tr>
+<td style="text-align:center">FB TARGET</td>
+<td style="text-align:center">[0.0,  0.0,  1080.0,  1920.0]</td>
+<td style="text-align:center">[0,  0,  1080,  1920] HWC_FRAMEBUFFER_TARGET</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>列表顺序</strong>是从后到前：SurfaceView的Surface位于后面，应用界面层位于其上，其次是处于最前方的状态栏和导航栏。</li>
+<li><strong>源剪裁</strong>值表示Surface缓冲区中SurfaceFlinger将显示的部分。应用界面会获得一个与显示屏的完整尺寸(1080x1920)一样大的Surface，但是由于渲染和合成将被状态栏和导航栏遮挡的像素毫无意义，因此将源剪裁为一个矩形（上自离顶部75个像素，下至离底部144个像素）。状态栏和导航栏的Surface较小，并且源剪裁描述了一个矩形（起点位于左上角(0,0)并且会横跨其内容）。</li>
+<li><strong>框架</strong>值指定在显示屏上显示像素的矩形。对于应用界面层，框架会与源剪裁匹配，因为我们会将与显示屏同样大小的图层的一部分复制（或叠加）到另一个与显示屏同样大小的图层中的相同位置。对于状态栏和导航栏，两者的框架矩形大小相同，但是位置经过调整，所以导航栏出现在屏幕底部。</li>
+<li><strong>SurfaceView层</strong>容纳我们的视频内容。源剪裁与视频的大小相匹配，而SurfaceFlinger了解该信息，因为MediaCodec解码器（缓冲区生成器）正在将同样大小的缓冲区移出队列。框架矩形具有完全不同的尺寸：984x738。</li>
+</ul>
+<p>SurfaceFlinger通过缩放（根据需要放大或缩小）缓冲区内容来填充框架矩形，以处理大小差异。之所以选择这种特定尺寸，是因为它具有与视频相同的宽高比(4:3)，并且由于View布局的限制（为了美观，在屏幕边缘处留有一定的内边距），因此应尽可能地宽。</p>
+<p>如果在同一Surface上开始播放不同的视频，底层BufferQueue会将缓冲区自动重新分配为新的大小，而SurfaceFlinger将调整源剪裁。如果新视频的宽高比不同，则应用需要强制重新布局View才能与之匹配，这将导致WindowManager通知SurfaceFlinger更新框架矩形。</p>
+<p>如果通过其他方式（如GLES）在Surface上进行渲染，则可以使用SurfaceHolder#setFixedSize()调用设置Surface尺寸。例如，可以将游戏配置为始终采用1280x720的分辨率进行渲染，这将大大减少填充2560x1440平板电脑或4K电视机屏幕所需处理的像素数。显示处理器会处理缩放。如果不希望给游戏加上水平或垂直黑边，可以通过设置尺寸来调整游戏的宽高比，使窄尺寸为720像素，但长尺寸设置为维持物理显示屏的宽高比（例如，设置为1152x720来匹配2560x1600的显示屏）。</p>
+<h3 id="GLSurfaceView"><a href="#GLSurfaceView" class="headerlink" title="GLSurfaceView"></a>GLSurfaceView</h3><p>GLSurfaceView类提供帮助程序类，用于管理EGL上下文、线程间通信以及与Activity生命周期的交互。这就是其功能。无需使用GLSurfaceView来应用GLES。</p>
+<p>例如，GLSurfaceView创建一个渲染线程，并配置EGL上下文。当活动暂停时，状态将自动清除。大多数应用都不需要知道EGL，便可通过GESurfaceView使用 GLES。</p>
+<p>在大多数情况下，GLSurfaceView非常实用，可简化GLES的使用。但在某些情况下，却会造成妨碍。请在有用时使用，无用时弃用。</p>
+<h3 id="SurfaceView和Activity生命周期"><a href="#SurfaceView和Activity生命周期" class="headerlink" title="SurfaceView和Activity生命周期"></a>SurfaceView和Activity生命周期</h3><p>当使用SurfaceView时，使用主界面线程之外的线程渲染Surface是很好的做法。不过，这样就会产生一些与线程和Activity生命周期之间的交互相关的问题。</p>
+<p>对于具有SurfaceView的Activity，存在两个单独但相互依赖的状态机：</p>
+<ol>
+<li>状态为onCreate/onResume/onPause的应用</li>
+<li>已创建/更改/销毁的Surface</li>
+</ol>
+<p>当Activity开始时，将按以下顺序获得回调：</p>
+<ul>
+<li>onCreate</li>
+<li>onResume</li>
+<li>surfaceCreated</li>
+<li>surfaceChanged</li>
+</ul>
+<p>如果回击，将得到：</p>
+<ul>
+<li>onPause</li>
+<li>surfaceDestroyed（在Surface消失前调用）</li>
+</ul>
+<p>如果旋转屏幕，Activity将被消解并重新创建，而将获得整个周期。可以通过检查isFinishing()告知屏幕快速重新启动。启动/停止Activity可能非常快速，从而可能导致surfaceCreated()实际上是在onPause()之后发生。</p>
+<p>如果点按电源按钮锁定屏幕，则只会得到onPause()（没有surfaceDestroyed()）。Surface仍处于活跃状态，并且渲染可以继续。如果继续请求，甚至可以持续获得Choreographer事件。如果使用强制变向的锁屏，则当设备未锁定时，Activity可能会重新启动；但如果没有，可以使用与之前相同的Surface脱离屏幕锁定。</p>
+<p>当使用具有SurfaceView的单独渲染器线程时，会引发一个基本问题：线程寿命是否依赖Surface或Activity的寿命？答案取决于锁屏时您想要看到的情况：(1)在Activity启动/停止时启动/停止线程，或(2)在Surface创建/销毁时启动/停止线程。</p>
+<p>选项1与应用生命周期交互良好。在onResume()中启动渲染器线程，并在onPause()中将其停止。当创建和配置线程时，会显得有点奇怪，因为有时Surface已经存在，有时不存在（例如，在使用电源按钮切换屏幕后，它仍然存在）。必须先等待Surface完成创建，然后再在线程中进行一些初始化操作，但是不能简单地在surfaceCreated()回调中进行操作，因为如果未重新创建Surface，将不会再次触发。因此，需要查询或缓存Surface状态，并将其转发到渲染器线程。</p>
+<p style="background: rgb(225, 245, 254);color: rgb(2, 136, 209);padding: 12px 24px 12px 24px;border-radius: 4px;">注意：在线程之间传递对象时要小心。最好通过处理程序消息传递Surface或SurfaceHolder（而不仅仅是将其填充到线程中），以避免多核系统出现问题。<br></p>
+
+<p>选项2非常具有吸引力，因为Surface和渲染器在逻辑上互相交织。在创建Surface后启动线程，避免了一些线程间通信问题，也可轻松转发Surface已创建/更改的消息。当屏幕锁定时，需要确保渲染停止，并在未锁定时恢复渲染；要实现这一点，可能只需告知Choreographer停止调用框架绘图回调。当且仅当渲染器线程正在运行时，onResume()才需要恢复回调。尽管如此，如果根据框架之间的已播放时长进行动画绘制，可能发现在下一个事件到来前存在很大的差距；应使用一个明确的暂停/恢复消息。</p>
+<p>这两个选项主要关注如何配置渲染器线程以及线程是否正在执行。一个相关问题是，终止Activity时（在onPause()或onSaveInstanceState()中）从线程中提取状态；在此情况下，选项1最有效，因为在渲染器线程加入后，不需要使用同步基元就可以访问其状态。</p>
+<h2 id="SurfaceTexture"><a href="#SurfaceTexture" class="headerlink" title="SurfaceTexture"></a>SurfaceTexture</h2><p>SurfaceTexture类在Android 3.0中引入。就像SurfaceView是Surface和View的组合一样，SurfaceTexture是Surface和GLES纹理（有几个注意事项）的粗略组合。</p>
+<p>当创建一个SurfaceTexture时，就会创建一个BufferQueue，而应用程序是消费者。当一个新的缓冲区被生产者排队时，应用程序会被回调函数通知（<strong>onFrameAvailable()</strong>）。应用程序会调用<strong>updateTexImage()</strong>，释放先前持有的缓冲区，从队列中获取新缓冲区，并进行一些EGL调用，使得一些缓冲区可以作为额外的纹理被GLES获取。</p>
+<h3 id="外部纹理（External-textures）"><a href="#外部纹理（External-textures）" class="headerlink" title="外部纹理（External textures）"></a>外部纹理（External textures）</h3><p>外部纹理（GL_TEXTURE_EXTERNAL_OES）与GLES（GL_TEXTURE_2D）创建的纹理不完全相同：必须配置的渲染器有所不同，也有一些事情是不能做的。关键是可以使用从BufferQueue中收到的数据直接渲染多边形。gralloc支持各种格式，所以需要保证缓冲区中数据的格式是GLES可以识别的。为此，当SurfaceTexture创建了BufferQueue时，它将消费者使用标志设置为GRALLOC_USAGE_HW_TEXTURE，确保由gralloc创建的任何缓冲区可由GLES使用。</p>
+<p>因为SurfaceTexture要和EGL上下文交互，所以务必保证从正确的线程调用其方法。</p>
+<h3 id="时间戳和转换（Timestamps-and-transformations）"><a href="#时间戳和转换（Timestamps-and-transformations）" class="headerlink" title="时间戳和转换（Timestamps and transformations）"></a>时间戳和转换（Timestamps and transformations）</h3><p>如果对这个类的文档做更深入的研究，会发现一些古怪的函数。一个调用检索一个时间戳，另一个调用则变换一个矩阵，这两个值都是由前面那个<strong>updateTexImage()</strong>调用设置的。事实证明，BufferQueue传给消费者的不仅仅是一个缓冲区的句柄。每一个缓冲区都伴随着一个时间戳参数和一个变换参数。</p>
+<p>变换参数用于提高效率。在某些情况下，提供给消费者的源数据可能方向是错误的；但是相比发送之前旋转数据，可以发送一个当前方向的数据，同时一起发送一个变换参数用以变换。变换矩阵（transformation matrix）可以跟其他一些变换参数一起传递，用以减小系统开销。</p>
+<p>时间戳则是为了明确具体的缓冲区源数据。例如，假设将生产者界面连接到相机的输出（使用setPreviewTexture()）。要创建视频，需要为每个帧设置演示时间戳；但是想要基于帧被录制的时间，而不是应用程序收到缓冲区的时间。因此这个时间戳是被相机的代码提供的，这些时间戳将更加准确一致。</p>
+<h3 id="SurfaceTexture和Surface"><a href="#SurfaceTexture和Surface" class="headerlink" title="SurfaceTexture和Surface"></a>SurfaceTexture和Surface</h3><p>如果仔细查看API，将看到应用程序创建一个简单的Surface的唯一方法是通过一个构造函数，它将SurfaceTexture作为唯一的参数。（在API 11之前，Surface根本没有公有的构造函数。）如果将SurfaceTexture视为Surface和纹理的组合，则可能看起来有点落后。</p>
+<p>在底层，SurfaceTexture被称为GLConsumer，这个名字更能反应出它作为一个BufferQueue的持有者和消费者的角色。当使用SurfaceTexture创建Surface时，实际上是创建了BufferQueue（SurfaceTexture持有的）的生产者端。</p>
+<h3 id="案例研究：Grafika的持续捕获"><a href="#案例研究：Grafika的持续捕获" class="headerlink" title="案例研究：Grafika的持续捕获"></a>案例研究：Grafika的持续捕获</h3><p>相机可以提供适合作为视频录制的帧流。要在屏幕上显示，需要创建一个SurfaceView，将Surface传递给<strong>setPreviewDisplay()</strong>，并让生产者（相机）和消费者（SurfaceFlinger）完成所有工作。要录制视频，可以使用MediaCodec的<strong>createInputSurface()</strong>创建一个Surface，并将其传递给相机，然后等待。要同时显示和记录它，必须做更多的事。</p>
+<p>随着视频被录制，持续拍摄（continuous capture）activity会从相机显示视频。在这种情况下，编码视频被写入存储器中的环形缓冲区内，可以随时保存到磁盘。只要跟踪所有内容，就可以直接实现。</p>
+<p>此流程涉及三个BufferQueues：一个由应用程序创建，一个由SurfaceFlinger创建，另一个由mediaserver创建：</p>
+<ul>
+<li><strong>Application</strong> 应用程序使用SurfaceTexture从Camera接收帧，将其转换为外部GLES纹理。</li>
+<li><strong>SurfaceFlinger</strong> 应用程序声明一个SurfaceView，用它来显示帧。</li>
+<li><strong>MediaServer</strong> 可以使用输入Surface配置MediaCodec编码器来创建视频。</li>
+</ul>
+<p><img src="http://ob0r3vf26.bkt.clouddn.com/images/continuous_capture_activity.png" alt="暂无图片"></p>
+<p>图1.Grafika的持续捕获活动。箭头指示从相机开始数据的传输，并且BufferQueues是彩色的（生产者是深绿色，消费者是绿色的）。</p>
+<p>编码的H.264视频在应用进程中进入RAM中的环形缓冲区内，并在捕获按钮被击中时使用MediaMuxer类写入到磁盘上的MP4文件。</p>
+<p>所有的三组BufferQueue都是由应用程序中同一个EGL上下文来处理的，GLES的操作是在UI线程中执行的。在UI线程中执行SurfaceView的渲染工作一般是不推荐的。但是鉴于只需要做一些简单的操作，（其余的）由GLES来做异步的处理，所以应该问题不大（如果视频编码器死锁，那么试图获取Buffer的操作将被阻塞，应用程序将会发生ANR。但是在这种情况下，无论如何错误都会发生）。编码的数据的处理—-管理这个环形缓冲区和将它写到磁盘上——是在一个单独的线程上的。</p>
+<p>大量的配置工作发生在SurfaceView的<strong>surfaceCreated()</strong>函数被调用时。EGLContext被创建，用于显示和视频编码器的EGLSurfaces也同样被创建。当新的一帧来临时，会通知SurfaceTexture来获取并且使之变为GLES纹理，然后使用GLES命令来在每个EGLSurface上渲染（从SurfaceTexture来转发变换和时间戳）。解码器线程从MediaCodec取出数据并且把它存放在内存里。</p>
+<h3 id="安全纹理视频播放"><a href="#安全纹理视频播放" class="headerlink" title="安全纹理视频播放"></a>安全纹理视频播放</h3><p>Android 7.0支持GPU后处理受保护视频内容。这允许使用GPU用于复杂的非线性视频效果（例如弯曲），将受保护的视频内容映射到纹理以用于一般图形场景（例如，使用OpenGL ES）和虚拟现实（VR）。</p>
+<p><img src="http://ob0r3vf26.bkt.clouddn.com/images/graphics_secure_texture_playback.png" alt="暂无图片" title="Secure texture video playback"></p>
+<p>支持启用以下两个扩展名：</p>
+<ul>
+<li><strong>EGL扩展</strong>（<span style="color:#039be5;">EGL_EXT_protected_content</span>）允许创建受保护的GL上下文和曲面，它们都可以对受保护的内容进行操作。</li>
+<li><strong>GLES扩展</strong>（<span style="color:#039be5;">GL_EXT_protected_textures</span>）允许将纹理标记为受保护的，以便它们可以用作帧缓冲区纹理附加物。</li>
+</ul>
+<p>即使windows surface没有排队到window composer（即SurfaceFlinger）并提供受保护的video surface以在受保护的上下文中使用，Android 7.0还会更新SurfaceTexture和ACodec（libstagefright.so）以允许发送受保护的内容。这通过在受保护的上下文（由ACodec验证）中创建的surfaces上设置正确的受保护的消费者位（GRALLOC_USAGE_PROTECTED）来完成。</p>
+<p>这些变化有利于应用开发人员，他们可以创建应用程序，以执行增强的视频效果或使用GL中的受保护内容（例如VR）应用视频纹理，可以在GL环境中查看高质量的视频内容（如电影和电视节目）的最终用户（例如VR），以及由于添加设备功能（例如在VR中观看高清电影）而可以实现更高销售量的OEM。新的EGL和GLES扩展可以由片上系统（SoC）提供商和其他供应商使用，目前在Nexus 6P中使用的Qualcomm MSM8994 SoC芯片组上实现。</p>
+<p>安全纹理视频播放为OpenGL ES环境中强大的DRM实施奠定了基础。如果没有诸如Widevine Level 1这样的强大的DRM实现，许多内容提供商将不允许在OpenGL ES环境中渲染其高质量内容，从而防止重要的VR使用案例，例如在VR中观看DRM保护的内容。</p>
+<p>AOSP包括用于安全纹理视频播放的框架代码;驱动程序支持取决于供应商。设备实现者必须实现EGL_EXT_protected_content和GL_EXT_protected_textures扩展。当使用自己的编解码器库（替换libstagefright）时，请注意/frameworks/av/media/libstagefright/SurfaceUtils.cpp中允许将标记为GRALLOC_USAGE_PROTECTED的缓冲区发送到ANativeWindows的更改（即使ANativeWindow不直接排队到window composer），只要消费者使用位包含GRALLOC_USAGE_PROTECTED。</p>
+<p>设备实现者还可能需要进行硬件更改，以确保映射到GPU上的受保护内存由未受保护的代码保持保护和不可读。</p>
+<h2 id="TextureView"><a href="#TextureView" class="headerlink" title="TextureView"></a>TextureView</h2>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/Graphics/" rel="tag"># Graphics</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/06/04/hardware-acceleration/" rel="next" title="Hardware Acceleration">
+                <i class="fa fa-chevron-left"></i> Hardware Acceleration
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/06/12/kotlin-basics/" rel="prev" title="Kotlin基础语法">
+                Kotlin基础语法 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  
+    <div class="comments" id="comments">
+      <div class="ds-thread" data-thread-key="2017/06/04/graphics-architecture/"
+           data-title="Android图形架构" data-url="http://zhupeng.space/2017/06/04/graphics-architecture/">
+      </div>
+    </div>
+  
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="http://ob0r3vf26.bkt.clouddn.com/blog_logo.jpg"
+                alt="朱鹏" />
+            
+              <p class="site-author-name" itemprop="name">朱鹏</p>
+              <p class="site-description motion-element" itemprop="description">享受技术带来的快乐</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">59</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#底层组件"><span class="nav-number">1.</span> <span class="nav-text">底层组件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#高层组件"><span class="nav-number">2.</span> <span class="nav-text">高层组件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BufferQueue和gralloc"><span class="nav-number">3.</span> <span class="nav-text">BufferQueue和gralloc</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#BufferQueue生产者和消费者"><span class="nav-number">3.1.</span> <span class="nav-text">BufferQueue生产者和消费者</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gralloc-HAL使用标志"><span class="nav-number">3.2.</span> <span class="nav-text">gralloc HAL使用标志</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用systrace跟踪BufferQueue"><span class="nav-number">3.3.</span> <span class="nav-text">使用systrace跟踪BufferQueue</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SurfaceFlinger和Hardware-Composer"><span class="nav-number">4.</span> <span class="nav-text">SurfaceFlinger和Hardware Composer</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SurfaceFlinger"><span class="nav-number">4.1.</span> <span class="nav-text">SurfaceFlinger</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Hardware-Composer"><span class="nav-number">4.2.</span> <span class="nav-text">Hardware Composer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#虚拟显示（Virtual-displays）"><span class="nav-number">4.3.</span> <span class="nav-text">虚拟显示（Virtual displays）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#案例研究：screenrecord"><span class="nav-number">4.4.</span> <span class="nav-text">案例研究：screenrecord</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#案例研究：Simulate-secondary-displays"><span class="nav-number">4.5.</span> <span class="nav-text">案例研究：Simulate secondary displays</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Surface和SurfaceHolder"><span class="nav-number">5.</span> <span class="nav-text">Surface和SurfaceHolder</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#画布渲染（Canvas-Rendering）"><span class="nav-number">5.1.</span> <span class="nav-text">画布渲染（Canvas Rendering）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SurfaceHolder"><span class="nav-number">5.2.</span> <span class="nav-text">SurfaceHolder</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#EGLSurfaces和OpenGL-ES"><span class="nav-number">6.</span> <span class="nav-text">EGLSurfaces和OpenGL ES</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#EGLSurfaces"><span class="nav-number">6.1.</span> <span class="nav-text">EGLSurfaces</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ANativeWindow"><span class="nav-number">6.2.</span> <span class="nav-text">ANativeWindow</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#OpenGLRenderer配置"><span class="nav-number">7.</span> <span class="nav-text">OpenGLRenderer配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#OpenGLRenderer（libhwui）属性"><span class="nav-number">7.1.</span> <span class="nav-text">OpenGLRenderer（libhwui）属性</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Vulkan"><span class="nav-number">8.</span> <span class="nav-text">Vulkan</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Vulkan组件"><span class="nav-number">8.1.</span> <span class="nav-text">Vulkan组件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#修改的组件（Modified-components）"><span class="nav-number">8.2.</span> <span class="nav-text">修改的组件（Modified components）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Vulkan-API"><span class="nav-number">8.3.</span> <span class="nav-text">Vulkan API</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#资源（Resources）"><span class="nav-number">8.4.</span> <span class="nav-text">资源（Resources）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SurfaceView和GLSurfaceView"><span class="nav-number">9.</span> <span class="nav-text">SurfaceView和GLSurfaceView</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#合成与硬件缩放"><span class="nav-number">9.1.</span> <span class="nav-text">合成与硬件缩放</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GLSurfaceView"><span class="nav-number">9.2.</span> <span class="nav-text">GLSurfaceView</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SurfaceView和Activity生命周期"><span class="nav-number">9.3.</span> <span class="nav-text">SurfaceView和Activity生命周期</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SurfaceTexture"><span class="nav-number">10.</span> <span class="nav-text">SurfaceTexture</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#外部纹理（External-textures）"><span class="nav-number">10.1.</span> <span class="nav-text">外部纹理（External textures）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#时间戳和转换（Timestamps-and-transformations）"><span class="nav-number">10.2.</span> <span class="nav-text">时间戳和转换（Timestamps and transformations）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SurfaceTexture和Surface"><span class="nav-number">10.3.</span> <span class="nav-text">SurfaceTexture和Surface</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#案例研究：Grafika的持续捕获"><span class="nav-number">10.4.</span> <span class="nav-text">案例研究：Grafika的持续捕获</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安全纹理视频播放"><span class="nav-number">10.5.</span> <span class="nav-text">安全纹理视频播放</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TextureView"><span class="nav-number">11.</span> <span class="nav-text">TextureView</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">朱鹏</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> 您是第
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      个访客
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i> 本站总访问量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"zhupeng"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("niXM6CtlVEgvUHEvwNmi0F7S", "LbP8mNzXFXinVUqMloOIy3fW");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

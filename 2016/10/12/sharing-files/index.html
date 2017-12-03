@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Android,FileProvider," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="一个应用程序通常有向其他应用程序提供文件的需要。例如，一个图片画廊可能要向图片编辑器提供图片文件，或者一个文件管理应用程序可能希望允许用户在外部存储中的区域之间复制和粘贴文件。发送应用程序可以共享文件的一种方式是响应来自接收应用程序的请求。 任何情况下，你的应用程序共享文件给其他应用程序的唯一安全的方法是向接收应用程序">
+<meta name="keywords" content="Android,FileProvider">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android应用程序间文件共享">
+<meta property="og:url" content="http://zhupeng.space/2016/10/12/sharing-files/index.html">
+<meta property="og:site_name" content="Coding Life">
+<meta property="og:description" content="一个应用程序通常有向其他应用程序提供文件的需要。例如，一个图片画廊可能要向图片编辑器提供图片文件，或者一个文件管理应用程序可能希望允许用户在外部存储中的区域之间复制和粘贴文件。发送应用程序可以共享文件的一种方式是响应来自接收应用程序的请求。 任何情况下，你的应用程序共享文件给其他应用程序的唯一安全的方法是向接收应用程序发送文件的内容URI并给该URI授予临时权限。有临时权限的内容URI因为只提供给">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2016-10-21T01:46:27.427Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android应用程序间文件共享">
+<meta name="twitter:description" content="一个应用程序通常有向其他应用程序提供文件的需要。例如，一个图片画廊可能要向图片编辑器提供图片文件，或者一个文件管理应用程序可能希望允许用户在外部存储中的区域之间复制和粘贴文件。发送应用程序可以共享文件的一种方式是响应来自接收应用程序的请求。 任何情况下，你的应用程序共享文件给其他应用程序的唯一安全的方法是向接收应用程序发送文件的内容URI并给该URI授予临时权限。有临时权限的内容URI因为只提供给">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://zhupeng.space/2016/10/12/sharing-files/"/>
+
+
+
+
+
+  <title>Android应用程序间文件共享 | Coding Life</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Coding Life</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">思路决定出路</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://zhupeng.space/2016/10/12/sharing-files/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="朱鹏">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://ob0r3vf26.bkt.clouddn.com/blog_logo.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Coding Life">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android应用程序间文件共享</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-10-12T11:35:26+08:00">
+                2016-10-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/10/12/sharing-files/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/12/sharing-files/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2016/10/12/sharing-files/" class="leancloud_visitors" data-flag-title="Android应用程序间文件共享">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>一个应用程序通常有向其他应用程序提供文件的需要。例如，一个图片画廊可能要向图片编辑器提供图片文件，或者一个文件管理应用程序可能希望允许用户在外部存储中的区域之间复制和粘贴文件。发送应用程序可以共享文件的一种方式是响应来自接收应用程序的请求。</p>
+<p>任何情况下，你的应用程序共享文件给其他应用程序的唯一安全的方法是向接收应用程序发送文件的内容URI并给该URI授予临时权限。有临时权限的内容URI因为只提供给了接收该URI的应用程序并且能自动过期所以是安全的。android的 <strong>FileProvider</strong> 组件提供了方法 <strong>getUriForFile()</strong> 来生成文件的内容URI。</p>
+<p>如果你想在应用程序之间共享少量的文本或者数字数据，你应该发送一个包含这些数据的 <strong>Intent</strong>。</p>
+<a id="more"></a>
+<h4 id="FileProvider继承关系"><a href="#FileProvider继承关系" class="headerlink" title="FileProvider继承关系"></a>FileProvider继承关系</h4><p>java.lang.Object<br>   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↳ android.content.ContentProvider<br>       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↳ android.support.v4.content.FileProvider</p>
+<p><strong>FileProvider</strong>是<strong>ContentProvider</strong>的一个特殊子类，通过为文件创建<strong>content://</strong>Uri而不是<strong>file:///</strong>Uri来使得和应用程序相关联的文件的安全共享。</p>
+<p>内容URI允许你授予临时读取和写入访问权限。当你创建包含内容URI的Intent时，为了将内容URI发送到客户端应用程序，可以调用<strong>Intent.setFlags()</strong>添加权限。只要接收Activity的堆栈处于活动状态，客户端应用程序就可以使用这些权限。对于传到<strong>Service</strong>的意图(Intent)，只要服务正在运行，权限就可用。</p>
+<p>相比之下，为了控制对<strong>file:///</strong>Uri的访问你必须修改底层文件的文件系统权限。你提供的权限可供任何应用程序使用，并且在你更改权限之前一直都有效。这种访问级别从根本上是不安全的。</p>
+<p>内容URI提供的文件访问安全级别的提高使FileProvider成为Android安全基础设施的关键部分。下面开始实践。</p>
+<h4 id="设置文件共享"><a href="#设置文件共享" class="headerlink" title="设置文件共享"></a>设置文件共享</h4><p>为了安全地共享文件给另一个应用程序，必须配置你的应用程序，以内容URI的形式为文件提供一个安全的句柄。<strong>FileProvider</strong> 组件根据你在XML中提供的规范来生成文件的内容URI。</p>
+<blockquote>
+<p>注意: <strong>FileProvider</strong> 类是v4支持库中的一部分</p>
+</blockquote>
+<h4 id="指定FileProvider"><a href="#指定FileProvider" class="headerlink" title="指定FileProvider"></a>指定FileProvider</h4><p>为应用程序定义FileProvider需要在清单文件中提供入口。 该入口指定用于生成内容URI的权限，以及指定你的应用程序可以共享的目录的XML文件的名称。</p>
+<p>以下代码显示如何向清单文件中添加指定FileProvider类，权限和XML文件名的<provider>元素：</provider></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">manifest</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></span><br><span class="line"><span class="tag">  <span class="attr">package</span>=<span class="string">"com.example.myapp"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">application</span></span></span><br><span class="line"><span class="tag">        <span class="attr">...</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">provider</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:name</span>=<span class="string">"android.support.v4.content.FileProvider"</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:authorities</span>=<span class="string">"com.example.myapp.fileprovider"</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:grantUriPermissions</span>=<span class="string">"true"</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:exported</span>=<span class="string">"false"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">meta-data</span></span></span><br><span class="line"><span class="tag">                <span class="attr">android:name</span>=<span class="string">"android.support.FILE_PROVIDER_PATHS"</span></span></span><br><span class="line"><span class="tag">                <span class="attr">android:resource</span>=<span class="string">"@xml/filepaths"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">provider</span>&gt;</span></span><br><span class="line">        ...</span><br><span class="line">    <span class="tag">&lt;/<span class="name">application</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">manifest</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>上面的示例中，<strong>android:authorities</strong> 属性指定了通过 <strong>FileProvider</strong> 生成内容URI的URI权限。对于你自己的应用程序，该权限由应用程序的 <strong>android:package</strong> 值然后紧接着 <strong>fileprovider</strong> 组成。</p>
+<p><strong>&lt;provider&gt;</strong> 的子元素 <strong>&lt;meta-data&gt;</strong> 指向了指定你要共享的目录的XML文件。<strong>android:resource</strong> 属性是XML文件的路径和名称，不需要带上 <strong>.xml</strong> 扩展名。</p>
+<h4 id="指定共享目录"><a href="#指定共享目录" class="headerlink" title="指定共享目录"></a>指定共享目录</h4><p>一旦你将 <strong>FileProvider</strong> 添加到清单文件中，需要指定包含要共享的文件的目录。要指定目录，首先在项目的res/xml/子目录下创建文件filepaths.xml。<br>在此文件中，通过为每个目录添加一个XML元素来指定目录。以下代码显示了res/xml/filepaths.xml的内容。该代码还展示了如何在内部存储区域中共享文件/目录的子目录：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">paths</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">files-path</span> <span class="attr">path</span>=<span class="string">"images/"</span> <span class="attr">name</span>=<span class="string">"myimages"</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">paths</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>在此示例中，<strong>&lt;files-path&gt;</strong> 标签共享应用程序内部存储的files/目录下的目录。path属性共享files/目录下的images/目录。 name属性告诉FileProvider将路径段myimages添加到files/images/子目录下的文件的内容URI中。</p>
+<p><strong>&lt;paths&gt;</strong> 元素可以有多个子节点，每个子节点指定了一个要共享的不同的目录。&lt;paths&gt;元素支持以下子元素：</p>
+<ul>
+<li><p>&lt;files-path name=”name” path=”path” /&gt;<br>表示应用程序内部存储区的<strong>files/</strong>子目录下的文件。该子目录与<strong>Context.getFilesDir()</strong>返回的值相同。例如：/data/data/com.zhupeng.example/files</p>
+</li>
+<li><p>&lt;cache-path name=”name” path=”path” /&gt;<br>表示应用程序内部存储区的缓存子目录下的文件。该子目录的根路径与<strong>getCacheDir()</strong>返回的值相同。例如：/data/data/com.zhupeng.example/cache</p>
+</li>
+<li><p>&lt;external-path name=”name” path=”path” /&gt;<br>表示外部存储区根目录下的文件。该子目录的根路径与<strong>Environment.getExternalStorageDirectory()</strong>返回的值相同。例如：/storage/emulated/0</p>
+</li>
+<li><p>&lt;external-files-path name=”name” path=”path” /&gt;<br>表示应用程序的外部存储区根目录下的文件。该子目录的根路径与**Context＃getExternalFilesDir(String) Context.getExternalFilesDir(null)返回的值相同。例如：/storage/emulated/0/Android/com.zhupeng.example/files</p>
+</li>
+<li><p>&lt;external-cache-path name=”name” path=”path” /&gt;<br>表示应用程序的外部缓存区域根目录下的文件。该子目录的根路径与<strong>Context.getExternalCacheDir()</strong>返回的值相同。例如：/storage/emulated/0/Android/com.zhupeng.example/cache</p>
+</li>
+</ul>
+<p>所有的子元素都使用相同的属性：</p>
+<ul>
+<li>name=”name”<br>URI路径段。为了安全性，该值隐藏了要共享的子目录的名称。该值的子目录名称包含在path属性中。</li>
+<li>path=”path”<br>要共享的子目录。虽然name属性是URI路径段，但path值是实际的子目录名称。请注意，该值指的是子目录，而不是单个文件。不能通过其文件名共享单个文件，也不能使用通配符指定文件的子集。</li>
+</ul>
+<blockquote>
+<p>注意：XML文件是你可以指定要共享的目录的唯一方法; 你不能以编程方式添加目录。</p>
+</blockquote>
+<p>你现在有一个完整的为应用程序内部存储器的files/目录或者files/子目录下的文件生成内容URI的 <strong>FileProvider</strong> 规范。当你的应用程序为文件生成内容URI时，这个URI包含了指定在 <strong>&lt;provider&gt;</strong> 元素中的权限(com.example.myapp.fileprovider)，路径myimages/和文件的名称。</p>
+<p>例如，如果按以上代码定义FileProvider，并且请求文件default_image.jpg的内容URI，FileProvider将返回以下URI：</p>
+<pre><code>content://com.example.myapp.fileprovider/myimages/default_image.jpg
+</code></pre><h3 id="共享文件"><a href="#共享文件" class="headerlink" title="共享文件"></a>共享文件</h3><p>将应用设置为使用内容URI共享文件以后，你就可以响应其他应用对这些文件的请求。 响应这些请求的一种方式是服务应用程序向其他应用程序提供可以调用的文件选择接口。这种方式允许客户端应用程序让用户从服务应用程序中选择一个文件，然后接收所选文件的内容URI。</p>
+<h4 id="接收文件请求"><a href="#接收文件请求" class="headerlink" title="接收文件请求"></a>接收文件请求</h4><p>要从客户端应用程序接收文件请求并使用内容URI进行响应，你的应用程序应该提供一个文件选择的Activity。客户端应用程序通过调用方法 <strong>startActivityForResult()</strong> 并传递一个包含action为 <strong>ACTION_PICK</strong> 的 <strong>Intent</strong> 来启动此Activity。当客户端应用程序调用方法startActivityForResult()时，你的应用程序能够以用户选择的文件的内容URI的形式向客户端应用程序返回结果。</p>
+<h4 id="创建文件选择Activity"><a href="#创建文件选择Activity" class="headerlink" title="创建文件选择Activity"></a>创建文件选择Activity</h4><p>通过在清单文件中指定对应的Activity，并且给该Activity添加action为 <strong>ACTION_PICK</strong> 以及category为 <strong>CATEGORY_DEFAULT</strong> 和 <strong>CATEGORY_OPENABLE</strong> 的意图过滤器来设置文件选择Activity。还要添加你的应用程序共享给其他应用程序的文件的 <strong>MIME</strong> 类型过滤器。以下代码显示如何指定Activity和意图过滤器：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">manifest</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span>&gt;</span></span><br><span class="line">    ...</span><br><span class="line">    <span class="tag">&lt;<span class="name">application</span>&gt;</span></span><br><span class="line">        ...</span><br><span class="line">        <span class="tag">&lt;<span class="name">activity</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:name</span>=<span class="string">".FileSelectActivity"</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:label</span>=<span class="string">"@File Selector"</span> &gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">intent-filter</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">action</span></span></span><br><span class="line"><span class="tag">                    <span class="attr">android:name</span>=<span class="string">"android.intent.action.PICK"</span>/&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">category</span></span></span><br><span class="line"><span class="tag">                    <span class="attr">android:name</span>=<span class="string">"android.intent.category.DEFAULT"</span>/&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">category</span></span></span><br><span class="line"><span class="tag">                    <span class="attr">android:name</span>=<span class="string">"android.intent.category.OPENABLE"</span>/&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">data</span> <span class="attr">android:mimeType</span>=<span class="string">"text/plain"</span>/&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">data</span> <span class="attr">android:mimeType</span>=<span class="string">"image/*"</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">intent-filter</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">activity</span>&gt;</span></span><br><span class="line">        ...</span><br></pre></td></tr></table></figure>
+<h5 id="在代码中定义文件选择Activity"><a href="#在代码中定义文件选择Activity" class="headerlink" title="在代码中定义文件选择Activity"></a>在代码中定义文件选择Activity</h5><p>接下来，定义一个Activvity的子类，该Activity显示了应用程序在内部存储中的 <strong>files/images/</strong> 目录下可用的文件，并且能够允许用户选择所需的文件。 以下代码展示了如何定义此Activity并响应用户的选择：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">Activity</span> </span>&#123;</span><br><span class="line">    <span class="comment">// The path to the root of this app's internal storage</span></span><br><span class="line">    <span class="keyword">private</span> File mPrivateRootDir;</span><br><span class="line">    <span class="comment">// The path to the "images" subdirectory</span></span><br><span class="line">    <span class="keyword">private</span> File mImagesDir;</span><br><span class="line">    <span class="comment">// Array of files in the images subdirectory</span></span><br><span class="line">    File[] mImageFiles;</span><br><span class="line">    <span class="comment">// Array of filenames corresponding to mImageFiles</span></span><br><span class="line">    String[] mImageFilenames;</span><br><span class="line">    <span class="comment">// Initialize the Activity</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        ...</span><br><span class="line">        <span class="comment">// Set up an Intent to send back to apps that request a file</span></span><br><span class="line">        mResultIntent = <span class="keyword">new</span> Intent(<span class="string">"com.example.myapp.ACTION_RETURN_FILE"</span>);</span><br><span class="line">        <span class="comment">// Get the files/ subdirectory of internal storage</span></span><br><span class="line">        mPrivateRootDir = getFilesDir();</span><br><span class="line">        <span class="comment">// Get the files/images subdirectory;</span></span><br><span class="line">        mImagesDir = <span class="keyword">new</span> File(mPrivateRootDir, <span class="string">"images"</span>);</span><br><span class="line">        <span class="comment">// Get the files in the images subdirectory</span></span><br><span class="line">        mImageFiles = mImagesDir.listFiles();</span><br><span class="line">        <span class="comment">// Set the Activity's result to null to begin with</span></span><br><span class="line">        setResult(Activity.RESULT_CANCELED, <span class="keyword">null</span>);</span><br><span class="line">        <span class="comment">/*</span></span><br><span class="line"><span class="comment">         * Display the file names in the ListView mFileListView.</span></span><br><span class="line"><span class="comment">         * Back the ListView with the array mImageFilenames, which</span></span><br><span class="line"><span class="comment">         * you can create by iterating through mImageFiles and</span></span><br><span class="line"><span class="comment">         * calling File.getAbsolutePath() for each File</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">         ...</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="响应文件选择"><a href="#响应文件选择" class="headerlink" title="响应文件选择"></a>响应文件选择</h4><p>一旦用户选择了共享文件，你的应用程序必须确定选择了哪个文件，然后为该文件生成内容URI。由于Activity使用的是 <strong>ListView</strong> 来展示可用文件列表，因此当用户单击文件名时，你可以在 <strong>onItemClick()</strong> 方法中获取所选文件。</p>
+<p>在onItemClick()方法中获取所选文件的File对象，并将该对象以及在 <strong>FileProvider</strong> 的 <strong>&lt;provider&gt;</strong> 元素中指定的权限作为参数传递给 <strong>getUriForFile()</strong> 方法。 结果返回的内容URI包含权限，文件目录（如XML元数据中指定的）对应的路径段以及包含扩展名的文件的名称。 <strong>FileProvider</strong>。</p>
+<p>以下代码显示了如何检测所选文件并获取其内容URI：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="comment">// Define a listener that responds to clicks on a file in the ListView</span></span><br><span class="line">    mFileListView.setOnItemClickListener(<span class="keyword">new</span> AdapterView.OnItemClickListener() &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="comment">/*</span></span><br><span class="line"><span class="comment">         * When a filename in the ListView is clicked, get its</span></span><br><span class="line"><span class="comment">         * content URI and send it to the requesting app</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onItemClick</span><span class="params">(AdapterView&lt;?&gt; adapterView, View view, <span class="keyword">int</span> position, <span class="keyword">long</span> rowId)</span> </span>&#123;</span><br><span class="line">            <span class="comment">/*</span></span><br><span class="line"><span class="comment">             * Get a File for the selected file name.</span></span><br><span class="line"><span class="comment">             * Assume that the file names are in the</span></span><br><span class="line"><span class="comment">             * mImageFilename array.</span></span><br><span class="line"><span class="comment">             */</span></span><br><span class="line">            File requestFile = <span class="keyword">new</span> File(mImageFilename[position]);</span><br><span class="line">            <span class="comment">/*</span></span><br><span class="line"><span class="comment">             * Most file-related method calls need to be in</span></span><br><span class="line"><span class="comment">             * try-catch blocks.</span></span><br><span class="line"><span class="comment">             */</span></span><br><span class="line">            <span class="comment">// Use the FileProvider to get a content URI</span></span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                fileUri = FileProvider.getUriForFile(MainActivity.<span class="keyword">this</span>, <span class="string">"com.example.myapp.fileprovider"</span>, requestFile);</span><br><span class="line">            &#125; <span class="keyword">catch</span> (IllegalArgumentException e) &#123;</span><br><span class="line">                Log.e(<span class="string">"File Selector"</span>, <span class="string">"The selected file can't be shared: "</span> + clickedFilename);</span><br><span class="line">            &#125;</span><br><span class="line">            ...</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>请记住，只能为指定在元数据文件的 <strong>&lt;paths&gt;</strong> 元素中的目录下的文件生成内容URI。如果对未指定的路径中的文件调用 <strong>getUriForFile()</strong> 方法，就会抛出IllegalArgumentException异常。</p>
+</blockquote>
+<h4 id="为文件授权"><a href="#为文件授权" class="headerlink" title="为文件授权"></a>为文件授权</h4><p>得到了共享文件的内容URI，现在你必须允许客户端应用程序访问。 要允许访问，请通过将内容URI添加到Intent，然后在Intent上设置权限标志来向客户端应用程序授予权限。 你授予的权限是临时的，并在接收应用程序的任务栈结束时自动过期。</p>
+<p>以下代码说明如何为文件设置读取权限：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="comment">// Define a listener that responds to clicks in the ListView</span></span><br><span class="line">    mFileListView.setOnItemClickListener(<span class="keyword">new</span> AdapterView.OnItemClickListener() &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onItemClick</span><span class="params">(AdapterView&lt;?&gt; adapterView, View view, <span class="keyword">int</span> position, <span class="keyword">long</span> rowId)</span> </span>&#123;</span><br><span class="line">            ...</span><br><span class="line">            <span class="keyword">if</span> (fileUri != <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="comment">// Grant temporary read permission to the content URI</span></span><br><span class="line">                mResultIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);</span><br><span class="line">            &#125;</span><br><span class="line">            ...</span><br><span class="line">         &#125;</span><br><span class="line">         ...</span><br><span class="line">    &#125;);</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>警告：调用 <strong>setFlags()</strong> 是使用临时访问权限安全授予对文件的访问权限的唯一方法。 避免调用 <strong>Context.grantUriPermission()</strong> 方法为文件的内容URI授予访问权限，因为调用此方法后只能通过调用 <strong>Context.revokeUriPermission()</strong> 撤销。</p>
+</blockquote>
+<h4 id="与请求应用程序共享文件"><a href="#与请求应用程序共享文件" class="headerlink" title="与请求应用程序共享文件"></a>与请求应用程序共享文件</h4><p>要与请求应用程序共享文件，请将包含内容URI和权限的 <strong>Intent</strong> 传递给 <strong>setResult()</strong> 方法。 当定义的文件选择Activity结束后，系统将包含内容URI的 <strong>Intent</strong> 发送到客户端应用程序。 以下代码显示了如何执行此操作：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="comment">// Define a listener that responds to clicks on a file in the ListView</span></span><br><span class="line">    mFileListView.setOnItemClickListener(<span class="keyword">new</span> AdapterView.OnItemClickListener() &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onItemClick</span><span class="params">(AdapterView&lt;?&gt; adapterView, View view, <span class="keyword">int</span> position, <span class="keyword">long</span> rowId)</span> </span>&#123;</span><br><span class="line">            ...</span><br><span class="line">            <span class="keyword">if</span> (fileUri != <span class="keyword">null</span>) &#123;</span><br><span class="line">                ...</span><br><span class="line">                <span class="comment">// Put the Uri and MIME type in the result Intent</span></span><br><span class="line">                mResultIntent.setDataAndType(fileUri, getContentResolver().getType(fileUri));</span><br><span class="line">                <span class="comment">// Set the result</span></span><br><span class="line">                MainActivity.<span class="keyword">this</span>.setResult(Activity.RESULT_OK, mResultIntent);</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    mResultIntent.setDataAndType(<span class="keyword">null</span>, <span class="string">""</span>);</span><br><span class="line">                    MainActivity.<span class="keyword">this</span>.setResult(RESULT_CANCELED, mResultIntent);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>为用户提供一种在选择文件后立即返回到客户端应用程序的方法。一种方法是提供复选标记或完成按钮。使用按钮的 <strong>android:onClick</strong> 属性将方法与按钮相关联。在方法中调用 <strong>finish()</strong> 方法。 例如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onDoneClick</span><span class="params">(View v)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// Associate a method with the Done button</span></span><br><span class="line">    finish();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="请求共享文件"><a href="#请求共享文件" class="headerlink" title="请求共享文件"></a>请求共享文件</h3><p>当应用程序想要访问由另一个应用程序共享的文件时，请求应用程序（客户端）通常会向共享文件的应用程序（服务器）发送请求。 大多数情况下，请求在服务应用程序中启动一个Activity，该Activity显示了可以共享的文件。 用户选择一个文件，之后服务应用程序将文件的内容URI返回给客户端应用程序。</p>
+<h4 id="发送文件请求"><a href="#发送文件请求" class="headerlink" title="发送文件请求"></a>发送文件请求</h4><p>要从服务应用程序请求文件，客户端应用程序必须使用包含action（如ACTION_PICK）和客户端应用程序可以处理的MIME类型的 <strong>Intent</strong> 来调用 <strong>startActivityForResult</strong>。</p>
+<p>例如，以下代码展示了如何向服务应用程序发送Intent以启动共享文件的Activity：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">Activity</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Intent mRequestFileIntent;</span><br><span class="line">    <span class="keyword">private</span> ParcelFileDescriptor mInputPFD;</span><br><span class="line">    ...</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_main);</span><br><span class="line">        mRequestFileIntent = <span class="keyword">new</span> Intent(Intent.ACTION_PICK);</span><br><span class="line">        mRequestFileIntent.setType(<span class="string">"image/jpg"</span>);</span><br><span class="line">        ...</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">requestFile</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * When the user requests a file, send an Intent to the</span></span><br><span class="line"><span class="comment">         * server app.</span></span><br><span class="line"><span class="comment">         * files.</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        startActivityForResult(mRequestFileIntent, <span class="number">0</span>);</span><br><span class="line">        ...</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="访问请求文件"><a href="#访问请求文件" class="headerlink" title="访问请求文件"></a>访问请求文件</h4><p>服务应用程序在Intent中将文件的内容URI回传到客户端应用程序。 这个Intent传递给了客户端应用程序的重写方法 <strong>onActivityResult()</strong> 中。 一旦客户端应用程序具有文件的内容URI，就可以通过获取其 <strong>FileDescriptor</strong> 来访问文件。</p>
+<p>此过程保证了文件的安全性，因为内容URI是客户端应用程序接收的唯一数据。 由于此URI不包含目录路径，因此客户端应用程序无法发现和打开服务应用程序中的任何其他文件。 只有客户端应用程序可以访问该文件，并且只有服务应用程序授予的权限。 权限是临时的，因此一旦客户端应用程序的任务栈结束，该文件就不能在服务应用程序之外访问了。</p>
+<p>接下来的代码展示了客户端应用程序如何处理从服务应用程序发送的Intent，以及客户端应用程序如何使用内容URI获取FileDescriptor：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * When the Activity of the app that hosts files sets a result and calls</span></span><br><span class="line"><span class="comment"> * finish(), this method is invoked. The returned Intent contains the</span></span><br><span class="line"><span class="comment"> * content URI of a selected file. The result code indicates if the</span></span><br><span class="line"><span class="comment"> * selection worked or not.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onActivityResult</span><span class="params">(<span class="keyword">int</span> requestCode, <span class="keyword">int</span> resultCode, Intent returnIntent)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// If the selection didn't work</span></span><br><span class="line">    <span class="keyword">if</span> (resultCode != RESULT_OK) &#123;</span><br><span class="line">        <span class="comment">// Exit without doing anything else</span></span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// Get the file's content URI from the incoming Intent</span></span><br><span class="line">        Uri returnUri = returnIntent.getData();</span><br><span class="line">        <span class="comment">/*</span></span><br><span class="line"><span class="comment">         * Try to open the file for "read" access using the</span></span><br><span class="line"><span class="comment">         * returned URI. If the file isn't found, write to the</span></span><br><span class="line"><span class="comment">         * error log and return.</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">/*</span></span><br><span class="line"><span class="comment">             * Get the content resolver instance for this context, and use it</span></span><br><span class="line"><span class="comment">             * to get a ParcelFileDescriptor for the file.</span></span><br><span class="line"><span class="comment">             */</span></span><br><span class="line">            mInputPFD = getContentResolver().openFileDescriptor(returnUri, <span class="string">"r"</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (FileNotFoundException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">            Log.e(<span class="string">"MainActivity"</span>, <span class="string">"File not found."</span>);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// Get a regular file descriptor for the file</span></span><br><span class="line">        FileDescriptor fd = mInputPFD.getFileDescriptor();</span><br><span class="line">        ...</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>方法 <strong>openFileDescriptor()</strong> 返回文件的 <strong>ParcelFileDescriptor</strong>。客户端应用程序能够从 <strong>ParcelFileDescriptor</strong> 对象中获取一个 <strong>FileDescriptor</strong> 对象，然后可以使用它来读取文件。</p>
+<h3 id="检索文件信息"><a href="#检索文件信息" class="headerlink" title="检索文件信息"></a>检索文件信息</h3><p>在客户端应用程序尝试使用具有内容URI的文件之前，应用程序可以从服务应用程序请求文件的相关信息，包括文件的数据类型和文件大小。 数据类型帮助客户端应用程序确定它是否可以处理文件，文件大小有助于客户端应用程序为文件设置缓冲和缓存。</p>
+<h4 id="检索文件的MIME类型"><a href="#检索文件的MIME类型" class="headerlink" title="检索文件的MIME类型"></a>检索文件的MIME类型</h4><p>文件的数据类型告诉了客户端应用程序应如何处理文件的内容。 客户端应用程序调用 <strong>ContentResolver.getType()</strong> 来获取给定了内容URI的共享文件的数据类型。 此方法返回文件的MIME类型。 默认情况下， <strong>FileProvider</strong> 根据文件扩展名确定文件的MIME类型。</p>
+<p>以下代码展示了在服务应用程序将内容URI返回给客户端后，客户端应用程序如何检索文件的MIME类型：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * Get the file's content URI from the incoming Intent, then</span></span><br><span class="line"><span class="comment"> * get the file's MIME type</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">Uri returnUri = returnIntent.getData();</span><br><span class="line">String mimeType = getContentResolver().getType(returnUri);</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<h4 id="检索文件的名称和大小"><a href="#检索文件的名称和大小" class="headerlink" title="检索文件的名称和大小"></a>检索文件的名称和大小</h4><p><strong>FileProvider</strong> 类具有 <strong>query()</strong> 方法的默认实现，该方法返回的 <strong>Cursor</strong> 中包含与内容URI相关联的文件的名称和大小。 默认实现返回两列：</p>
+<ul>
+<li><p><strong>DISPLAY_NAME</strong></p>
+<p>文件的名称，String类型的。 此值与File.getName()返回的值相同。</p>
+</li>
+<li><p><strong>SIZE</strong></p>
+<p>文件的大小（以字节为单位），long类型的。此值与File.length()返回的值相同。</p>
+</li>
+</ul>
+<p>客户端应用程序可以通过将 <strong>query()</strong> 方法的所有参数设置为null（除了内容URI）来获取文件的 <strong>DISPLAY_NAME</strong> 和 <strong>SIZE</strong>。 例如，下面的代码段检索文件的DISPLAY_NAME和SIZE，并在单独的TextView中显示每个文件：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * Get the file's content URI from the incoming Intent,</span></span><br><span class="line"><span class="comment"> * then query the server app to get the file's display name</span></span><br><span class="line"><span class="comment"> * and size.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">Uri returnUri = returnIntent.getData();</span><br><span class="line">Cursor returnCursor = getContentResolver().query(returnUri, <span class="keyword">null</span>, <span class="keyword">null</span>, <span class="keyword">null</span>, <span class="keyword">null</span>);</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * Get the column indexes of the data in the Cursor,</span></span><br><span class="line"><span class="comment"> * move to the first row in the Cursor, get the data,</span></span><br><span class="line"><span class="comment"> * and display it.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">int</span> nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);</span><br><span class="line"><span class="keyword">int</span> sizeIndex = returnCursor.getColumnIndex(OpenableColumns.SIZE);</span><br><span class="line">returnCursor.moveToFirst();</span><br><span class="line">TextView nameView = (TextView) findViewById(R.id.filename_text);</span><br><span class="line">TextView sizeView = (TextView) findViewById(R.id.filesize_text);</span><br><span class="line">nameView.setText(returnCursor.getString(nameIndex));</span><br><span class="line">sizeView.setText(Long.toString(returnCursor.getLong(sizeIndex)));</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>完结!</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/FileProvider/" rel="tag"># FileProvider</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/09/30/nfc/" rel="next" title="NFC开发">
+                <i class="fa fa-chevron-left"></i> NFC开发
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/10/14/nfc-sharing-files/" rel="prev" title="Android使用NFC共享文件">
+                Android使用NFC共享文件 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  
+    <div class="comments" id="comments">
+      <div class="ds-thread" data-thread-key="2016/10/12/sharing-files/"
+           data-title="Android应用程序间文件共享" data-url="http://zhupeng.space/2016/10/12/sharing-files/">
+      </div>
+    </div>
+  
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="http://ob0r3vf26.bkt.clouddn.com/blog_logo.jpg"
+                alt="朱鹏" />
+            
+              <p class="site-author-name" itemprop="name">朱鹏</p>
+              <p class="site-description motion-element" itemprop="description">享受技术带来的快乐</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">59</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#FileProvider继承关系"><span class="nav-number">1.</span> <span class="nav-text">FileProvider继承关系</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#设置文件共享"><span class="nav-number">2.</span> <span class="nav-text">设置文件共享</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#指定FileProvider"><span class="nav-number">3.</span> <span class="nav-text">指定FileProvider</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#指定共享目录"><span class="nav-number">4.</span> <span class="nav-text">指定共享目录</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#共享文件"><span class="nav-number"></span> <span class="nav-text">共享文件</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#接收文件请求"><span class="nav-number">1.</span> <span class="nav-text">接收文件请求</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#创建文件选择Activity"><span class="nav-number">2.</span> <span class="nav-text">创建文件选择Activity</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#在代码中定义文件选择Activity"><span class="nav-number">2.1.</span> <span class="nav-text">在代码中定义文件选择Activity</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#响应文件选择"><span class="nav-number">3.</span> <span class="nav-text">响应文件选择</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#为文件授权"><span class="nav-number">4.</span> <span class="nav-text">为文件授权</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#与请求应用程序共享文件"><span class="nav-number">5.</span> <span class="nav-text">与请求应用程序共享文件</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#请求共享文件"><span class="nav-number"></span> <span class="nav-text">请求共享文件</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#发送文件请求"><span class="nav-number">1.</span> <span class="nav-text">发送文件请求</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#访问请求文件"><span class="nav-number">2.</span> <span class="nav-text">访问请求文件</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#检索文件信息"><span class="nav-number"></span> <span class="nav-text">检索文件信息</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#检索文件的MIME类型"><span class="nav-number">1.</span> <span class="nav-text">检索文件的MIME类型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#检索文件的名称和大小"><span class="nav-number">2.</span> <span class="nav-text">检索文件的名称和大小</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">朱鹏</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> 您是第
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      个访客
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i> 本站总访问量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"zhupeng"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("niXM6CtlVEgvUHEvwNmi0F7S", "LbP8mNzXFXinVUqMloOIy3fW");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

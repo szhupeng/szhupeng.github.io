@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Android,Fragment," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Android应用程序运行在后台，系统资源紧张的时候会把应用程序的资源全部回收（杀死应用程序的进程），当再次从后台返回到前台时，应用程序会重启。 在系统要把应用程序回收之前，系统会把Activity的状态保存下来，Activity的FragmentManager负责把Activity中的Fragment保存起来。在重启">
+<meta name="keywords" content="Android,Fragment">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用fragment的姿势">
+<meta property="og:url" content="http://zhupeng.space/2016/11/06/fragment-bugs/index.html">
+<meta property="og:site_name" content="Coding Life">
+<meta property="og:description" content="Android应用程序运行在后台，系统资源紧张的时候会把应用程序的资源全部回收（杀死应用程序的进程），当再次从后台返回到前台时，应用程序会重启。 在系统要把应用程序回收之前，系统会把Activity的状态保存下来，Activity的FragmentManager负责把Activity中的Fragment保存起来。在重启之后，Activity的恢复是从栈顶逐步恢复，Fragment会在宿主Activ">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://ob0r3vf26.bkt.clouddn.com/images/fragment-stack-view.png">
+<meta property="og:updated_time" content="2016-12-27T15:14:50.313Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用fragment的姿势">
+<meta name="twitter:description" content="Android应用程序运行在后台，系统资源紧张的时候会把应用程序的资源全部回收（杀死应用程序的进程），当再次从后台返回到前台时，应用程序会重启。 在系统要把应用程序回收之前，系统会把Activity的状态保存下来，Activity的FragmentManager负责把Activity中的Fragment保存起来。在重启之后，Activity的恢复是从栈顶逐步恢复，Fragment会在宿主Activ">
+<meta name="twitter:image" content="http://ob0r3vf26.bkt.clouddn.com/images/fragment-stack-view.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://zhupeng.space/2016/11/06/fragment-bugs/"/>
+
+
+
+
+
+  <title>使用fragment的姿势 | Coding Life</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Coding Life</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">思路决定出路</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://zhupeng.space/2016/11/06/fragment-bugs/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="朱鹏">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://ob0r3vf26.bkt.clouddn.com/blog_logo.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Coding Life">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">使用fragment的姿势</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-11-06T19:36:18+08:00">
+                2016-11-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/11/06/fragment-bugs/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/11/06/fragment-bugs/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2016/11/06/fragment-bugs/" class="leancloud_visitors" data-flag-title="使用fragment的姿势">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Android应用程序运行在后台，系统资源紧张的时候会把应用程序的资源全部回收（杀死应用程序的进程），当再次从后台返回到前台时，应用程序会重启。</p>
+<p>在系统要把应用程序回收之前，系统会把Activity的状态保存下来，Activity的FragmentManager负责把Activity中的Fragment保存起来。在重启之后，Activity的恢复是从栈顶逐步恢复，Fragment会在宿主Activity的onCreate方法调用后紧接着恢复（从onAttach生命周期开始）。</p>
+<a id="more"></a>
+<p>因此，使用Fragment会产生一些问题:</p>
+<h3 id="getActivity-产生空指针"><a href="#getActivity-产生空指针" class="headerlink" title="getActivity()产生空指针"></a>getActivity()产生空指针</h3><p>很多时候，调用getActivity()时，当前Fragment已经回调了生命周期方法onDetach()脱离了宿主Activity。比如异步任务中。</p>
+<p>解决办法：在Fragment基类中存储一个Activity的实例mActivity，在onAttach(Activity activity)里赋值，使用mActivity代替getActivity()，保证Fragment即使在onDetach后，仍持有Activity的引用（可能引起内存泄露）。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> Activity mActivity;</span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onAttach</span><span class="params">(Activity activity)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>.onAttach(activity);</span><br><span class="line">    <span class="keyword">this</span>.mActivity = activity;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Exception-Can-not-perform-this-action-after-onSaveInstanceState"><a href="#Exception-Can-not-perform-this-action-after-onSaveInstanceState" class="headerlink" title="Exception:Can not perform this action after onSaveInstanceState"></a>Exception:Can not perform this action after onSaveInstanceState</h3><p>离开当前Activity等情况下，系统会调用onSaveInstanceState()保存当前Activity的状态、数据等，直到再回到该Activity之前（onResume()之前），使用commit()提交了Fragment事务，就会抛出该异常！</p>
+<p>解决办法：使用commitAllowingStateLoss()方法提交事务可以解决，但是不推荐使用这种方法。因为这种方法在此次离开时如果刚好Activity被强杀时，会导致提交无效。推荐在重新回到该Activity的时候（onResumeFragments()或onPostResume()），再执行事务。</p>
+<h3 id="Fragment重叠"><a href="#Fragment重叠" class="headerlink" title="Fragment重叠"></a>Fragment重叠</h3><p>每当离开Activity切换到别的APP的时候，如果内存不够用，Fragment所在Activity被销毁，会调用onSaveInstanceState()方法，Fragment都会被保存起来，当再次回到这个app的时候，通过onCreate中的参数savedInstanceState恢复了之前的fragment，就导致了界面重叠。</p>
+<p>解决办法：<br>1.在进入onCreate函数时，先去判断savedInstanceState是否为null，如果不为null,则表示里面有保存这个fragment。则不再重新去add这个fragment，而是通过Tag从前保存的数据中直接去读取。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">    setContentView(R.layout.xxx);</span><br><span class="line"></span><br><span class="line">    ShowFragment showFragment;</span><br><span class="line">    HideFragment hideFragment;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (savedInstanceState != <span class="keyword">null</span>) &#123;  <span class="comment">//发生重启时</span></span><br><span class="line">        showFragment = getSupportFragmentManager().findFragmentByTag(ShowFragment.class.getName);</span><br><span class="line">        hideFragment = getSupportFragmentManager().findFragmentByTag(HideFragment.class.getName);</span><br><span class="line">        <span class="comment">// 解决重叠问题</span></span><br><span class="line">        getFragmentManager().beginTransaction()</span><br><span class="line">                .show(showFragment)</span><br><span class="line">                .hide(hideFragment)</span><br><span class="line">                .commit();</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;  <span class="comment">// 正常时</span></span><br><span class="line">        showFragment = ShowFragment.newInstance();</span><br><span class="line">        hideFragment = HideFragment.newInstance();</span><br><span class="line"></span><br><span class="line">        getFragmentManager().beginTransaction()</span><br><span class="line">                .add(R.id.container, showFragment,</span><br><span class="line">                    showFragment.getClass().getName())</span><br><span class="line">                .add(R.id,container,hideFragment,</span><br><span class="line">                    hideFragment.getClass().getName())</span><br><span class="line">                .hide(hideFragment)</span><br><span class="line">                .commit();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>2.通过getFragments()可以获取到当前FragmentManager管理的栈内所有Fragment</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">    setContentView(R.layout.xxx);</span><br><span class="line"></span><br><span class="line">    ShowFragment showFragment;</span><br><span class="line">    HideFragment hideFragment;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (savedInstanceState != <span class="keyword">null</span>) &#123;  <span class="comment">//发生重启时</span></span><br><span class="line">        List&lt;Fragment&gt; fragmentList = getSupportFragmentManager().getFragments();</span><br><span class="line">        <span class="keyword">for</span> (Fragment fragment : fragmentList) &#123;</span><br><span class="line">            <span class="keyword">if</span>(fragment <span class="keyword">instanceof</span> ShowFragment)&#123;</span><br><span class="line">               showFragment = (ShowFragment)fragment; </span><br><span class="line">            &#125;<span class="keyword">else</span> <span class="keyword">if</span>(fragment <span class="keyword">instanceof</span> HideFragment)&#123;</span><br><span class="line">               hideFragment = (HideFragment)fragment;</span><br><span class="line">            &#125;</span><br><span class="line">        ｝</span><br><span class="line">        <span class="comment">// 解决重叠问题</span></span><br><span class="line">        getFragmentManager().beginTransaction()</span><br><span class="line">                .show(showFragment)</span><br><span class="line">                .hide(hideFragment)</span><br><span class="line">                .commit();</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;  <span class="comment">// 正常时</span></span><br><span class="line">        showFragment = ShowFragment.newInstance();</span><br><span class="line">        hideFragment = HideFragment.newInstance();</span><br><span class="line"></span><br><span class="line">        getFragmentManager().beginTransaction()</span><br><span class="line">                .add(R.id.container, showFragment,</span><br><span class="line">                    showFragment.getClass().getName())</span><br><span class="line">                .add(R.id,container,hideFragment,</span><br><span class="line">                    hideFragment.getClass().getName())</span><br><span class="line">                .hide(hideFragment)</span><br><span class="line">                .commit();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Fragment嵌套"><a href="#Fragment嵌套" class="headerlink" title="Fragment嵌套"></a>Fragment嵌套</h3><p>FragmentManager栈视图:<br>（1）每个Fragment以及宿主Activity都会在创建时，初始化一个FragmentManager对象，理清这些不同阶级的栈视图就能处理好Fragment嵌套问题。<br>下面给出一个简要的关系图：</p>
+<p><img src="http://ob0r3vf26.bkt.clouddn.com/images/fragment-stack-view.png" alt="暂无图片" title="Fragment Stack View"></p>
+<p>（2）对于宿主Activity，getSupportFragmentManager()获取的是FragmentActivity的FragmentManager对象;对于Fragment，getFragmentManager()获取的是父Fragment(如果没有，则是FragmentActivity)的FragmentManager对象，而getChildFragmentManager()是获取自己的FragmentManager对象。</p>
+<h3 id="使用remove-出栈"><a href="#使用remove-出栈" class="headerlink" title="使用remove()出栈"></a>使用remove()出栈</h3><p>在add的同时调用了addToBackStack(name)将Fragment加入回退栈的情况下，remove()并不能真正将Fragment从栈内移除，如果在2秒后（确保Fragment事务已经完成）打印getSupportFragmentManager().getFragments()，会发现该Fragment依然存在，并且依然可以返回到被remove的Fragment，而且是空白页面。如果没有将Fragment加入回退栈，remove()方法可以正常出栈。如果加入了回退栈，popBackStack()系列方法才能真正出栈。</p>
+<h3 id="多个Fragment同时出栈"><a href="#多个Fragment同时出栈" class="headerlink" title="多个Fragment同时出栈"></a>多个Fragment同时出栈</h3><p>在Fragment中有如下4个方法：</p>
+<p>1、popBackStack(String tag,int flags)<br>2、popBackStack(int id,int flags)<br>3、popBackStackImmediate(String tag,int flags)<br>4、popBackStackImmediate(int id,int flags)</p>
+<p>上面4个方法作用是，出栈到tag/id的fragment，即一次多个Fragment被出栈。</p>
+<p>如果想出栈多个Fragment，尽量使用popBackStackImmediate(tag/id)，而不是popBackStack(tag/id)，如果想在出栈后，立刻beginTransaction()开始一项事务，应该把事务的代码post/postDelay到主线程的消息队列里。</p>
+<h3 id="传递数据"><a href="#传递数据" class="headerlink" title="传递数据"></a>传递数据</h3><p>对Fragment传递数据，建议使用setArguments(Bundle args)，而后在onCreate中使用getArguments()取出，在Activity因为内存不足而发生重启前，系统会保存数据，不会造成数据的丢失。和Activity的Intent恢复机制类似。</p>
+<h3 id="创建Fragment对象"><a href="#创建Fragment对象" class="headerlink" title="创建Fragment对象"></a>创建Fragment对象</h3><p>使用newInstance(参数) 创建Fragment对象，优点是调用者只需要关系传递的哪些数据，而无需关心传递数据的Key是什么。</p>
+<h3 id="show-hide和replace"><a href="#show-hide和replace" class="headerlink" title="show/hide和replace"></a>show/hide和replace</h3><p>show()/hide()最终是让Fragment的View调用setVisibility(true/false)，不会调用生命周期。<br>replace()会销毁视图，即调用onDestoryView、onCreateView等一系列生命周期。<br>如果很有可能会再次回到当前的Fragment，建议使用show()，hide()，可以提高性能。<br>如果app有大量图片，这时更好的方式可能是replace，配合图片框架在Fragment视图销毁时，回收其图片所占的内存。</p>
+<h3 id="onHiddenChanged"><a href="#onHiddenChanged" class="headerlink" title="onHiddenChanged"></a>onHiddenChanged</h3><p>当使用add()搭配show()/hide()跳转新的Fragment时，旧的Fragment回调onHiddenChanged()，不会回调onStop()等生命周期方法，而新的Fragment在创建时是不会回调onHiddenChanged()。</p>
+<h3 id="FragmentPagerAdapter-ViewPager"><a href="#FragmentPagerAdapter-ViewPager" class="headerlink" title="FragmentPagerAdapter+ViewPager"></a>FragmentPagerAdapter+ViewPager</h3><ul>
+<li><p>使用FragmentPagerAdapter+ViewPager时，切换回上一个Fragment页面时（已经初始化完毕），不会回调任何生命周期方法以及onHiddenChanged()，只有setUserVisibleHint(boolean isVisibleToUser)会被回调，所以如果你想进行一些懒加载，需要在这里处理。</p>
+</li>
+<li><p>在给ViewPager绑定FragmentPagerAdapter时，<br>new FragmentPagerAdapter(fragmentManager)的FragmentManager，一定要保证正确，如果ViewPager是Activity内的控件，则传递getSupportFragmentManager()，如果是Fragment的控件中，则应该传递getChildFragmentManager()。只要记住ViewPager内的Fragments是当前组件的子Fragment这个原则即可。</p>
+</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/Fragment/" rel="tag"># Fragment</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/11/06/method-window-feature/" rel="next" title="requestWindowFeature()的应用">
+                <i class="fa fa-chevron-left"></i> requestWindowFeature()的应用
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/11/13/activity-transition/" rel="prev" title="Activity转场动画">
+                Activity转场动画 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  
+    <div class="comments" id="comments">
+      <div class="ds-thread" data-thread-key="2016/11/06/fragment-bugs/"
+           data-title="使用fragment的姿势" data-url="http://zhupeng.space/2016/11/06/fragment-bugs/">
+      </div>
+    </div>
+  
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="http://ob0r3vf26.bkt.clouddn.com/blog_logo.jpg"
+                alt="朱鹏" />
+            
+              <p class="site-author-name" itemprop="name">朱鹏</p>
+              <p class="site-description motion-element" itemprop="description">享受技术带来的快乐</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">59</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#getActivity-产生空指针"><span class="nav-number">1.</span> <span class="nav-text">getActivity()产生空指针</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Exception-Can-not-perform-this-action-after-onSaveInstanceState"><span class="nav-number">2.</span> <span class="nav-text">Exception:Can not perform this action after onSaveInstanceState</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Fragment重叠"><span class="nav-number">3.</span> <span class="nav-text">Fragment重叠</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Fragment嵌套"><span class="nav-number">4.</span> <span class="nav-text">Fragment嵌套</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用remove-出栈"><span class="nav-number">5.</span> <span class="nav-text">使用remove()出栈</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#多个Fragment同时出栈"><span class="nav-number">6.</span> <span class="nav-text">多个Fragment同时出栈</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#传递数据"><span class="nav-number">7.</span> <span class="nav-text">传递数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建Fragment对象"><span class="nav-number">8.</span> <span class="nav-text">创建Fragment对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#show-hide和replace"><span class="nav-number">9.</span> <span class="nav-text">show/hide和replace</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#onHiddenChanged"><span class="nav-number">10.</span> <span class="nav-text">onHiddenChanged</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FragmentPagerAdapter-ViewPager"><span class="nav-number">11.</span> <span class="nav-text">FragmentPagerAdapter+ViewPager</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">朱鹏</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> 您是第
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      个访客
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i> 本站总访问量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"zhupeng"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("niXM6CtlVEgvUHEvwNmi0F7S", "LbP8mNzXFXinVUqMloOIy3fW");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

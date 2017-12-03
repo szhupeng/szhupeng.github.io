@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Android,NFC," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Android允许你使用Android Beam文件传输功能在设备之间传输大文件。 此功能有一个简单的API，并且允许用户通过简单地触摸设备开始传输过程。 作为响应，Android Beam文件传输会自动将文件从一个设备复制到另一个设备，并在完成后通知用户。 虽然Android Beam文件传输API处理大量数据，但A">
+<meta name="keywords" content="Android,NFC">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android使用NFC共享文件">
+<meta property="og:url" content="http://zhupeng.space/2016/10/14/nfc-sharing-files/index.html">
+<meta property="og:site_name" content="Coding Life">
+<meta property="og:description" content="Android允许你使用Android Beam文件传输功能在设备之间传输大文件。 此功能有一个简单的API，并且允许用户通过简单地触摸设备开始传输过程。 作为响应，Android Beam文件传输会自动将文件从一个设备复制到另一个设备，并在完成后通知用户。 虽然Android Beam文件传输API处理大量数据，但Android 4.0（API级别14）中引入的Android Beam NDEF">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2016-10-17T02:41:10.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android使用NFC共享文件">
+<meta name="twitter:description" content="Android允许你使用Android Beam文件传输功能在设备之间传输大文件。 此功能有一个简单的API，并且允许用户通过简单地触摸设备开始传输过程。 作为响应，Android Beam文件传输会自动将文件从一个设备复制到另一个设备，并在完成后通知用户。 虽然Android Beam文件传输API处理大量数据，但Android 4.0（API级别14）中引入的Android Beam NDEF">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://zhupeng.space/2016/10/14/nfc-sharing-files/"/>
+
+
+
+
+
+  <title>Android使用NFC共享文件 | Coding Life</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Coding Life</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">思路决定出路</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://zhupeng.space/2016/10/14/nfc-sharing-files/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="朱鹏">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://ob0r3vf26.bkt.clouddn.com/blog_logo.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Coding Life">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android使用NFC共享文件</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-10-14T10:50:10+08:00">
+                2016-10-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/10/14/nfc-sharing-files/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/14/nfc-sharing-files/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2016/10/14/nfc-sharing-files/" class="leancloud_visitors" data-flag-title="Android使用NFC共享文件">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Android允许你使用Android Beam文件传输功能在设备之间传输大文件。 此功能有一个简单的API，并且允许用户通过简单地触摸设备开始传输过程。 作为响应，Android Beam文件传输会自动将文件从一个设备复制到另一个设备，并在完成后通知用户。</p>
+<p>虽然Android Beam文件传输API处理大量数据，但Android 4.0（API级别14）中引入的Android Beam NDEF传输API可处理少量数据（如URI或其他小消息）。 此外，Android Beam只是Android NFC框架中可用的功能之一，它允许你从NFC标签读取NDEF消息。</p>
+<a id="more"></a>
+<h4 id="将文件发送到其他设备"><a href="#将文件发送到其他设备" class="headerlink" title="将文件发送到其他设备"></a>将文件发送到其他设备</h4><p>要使用Android Beam文件传输将大文件发送到另一台设备，必须请求使用NFC和外部存储的权限。</p>
+<p>Android Beam文件传输功能有以下要求：</p>
+<ol>
+<li>必须在Android 4.1(API level 16)或更高的API版本上才可以使用Android Beam文件传输功能传输大文件。</li>
+<li>要传输的文件必须位于外部存储器中。</li>
+<li>要传输的每个文件必须是全局可读的。 可以通过调用 <strong>File.setReadable(true，false)</strong> 方法来设置此权限。</li>
+<li>必须为要传输的文件提供文件URI。Android Beam文件传输无法处理由 <strong>FileProvider.getUriForFile</strong> 生成的内容URI。</li>
+</ol>
+<h4 id="在清单文件中声明功能"><a href="#在清单文件中声明功能" class="headerlink" title="在清单文件中声明功能"></a>在清单文件中声明功能</h4><p>首先，修改应用程序的清单文件来声明应用需要的权限和功能。</p>
+<h5 id="请求权限"><a href="#请求权限" class="headerlink" title="请求权限"></a>请求权限</h5><p>要允许应用程序使用Android Beam文件传输功能通过NFC从外部存储设备发送文件，必须在应用程序清单文件中请求以下权限：</p>
+<ul>
+<li><p><strong>NFC</strong><br>允许应用程序通过NFC传输数据。 要指定此权限，请将以下元素作为<strong>&lt;manifest&gt;</strong>元素的子元素添加：  </p>
+<pre><code>&lt;uses-permission android:name=&quot;android.permission.NFC&quot; /&gt;
+</code></pre></li>
+<li><p><strong>READ_EXTERNAL_STORAGE</strong><br>允许应用程序从外部储存器中读取数据。 要指定此权限，请将以下元素作为<strong>&lt;manifest&gt;</strong>元素的子元素添加：</p>
+<pre><code>&lt;uses-permission android:name=&quot;android.permission.READ_EXTERNAL_STORAGE&quot; /&gt;
+</code></pre></li>
+</ul>
+<blockquote>
+<p>注意：从Android 4.2.2(API级别17)开始，不会强制必须请求此权限。以后版本中如果应用程序想要从外部存储中读取数据可能会需要此权限。为了确保向下兼容性，请在需要使用Android Beam文件传输功能之前请求权限。</p>
+</blockquote>
+<h5 id="指定NFC功能"><a href="#指定NFC功能" class="headerlink" title="指定NFC功能"></a>指定NFC功能</h5><p>通过添加 <strong>&lt;uses-feature&gt;</strong> 元素作为 <strong>&lt;manifest&gt;</strong> 元素的子元素，指定你的应用程序使用NFC。将 <strong>android:required</strong> 属性设置为 <strong>true</strong> 表示除非NFC存在，否则应用程序将无法运行。</p>
+<p>以下代码段显示如何指定 <strong>&lt;uses-feature&gt;</strong> 元素：</p>
+<pre><code>&lt;uses-feature android:name=&quot;android.hardware.nfc&quot; android:required=&quot;true&quot; /&gt;
+</code></pre><p>注意，如果想要应用程序只是使用NFC作为选项，即使NFC不存在应用程序仍然可以运行，你应该设置 <strong>android:required</strong> 为 <strong>false</strong>，并在代码中测试NFC。</p>
+<h5 id="指定Android-Beam文件传输"><a href="#指定Android-Beam文件传输" class="headerlink" title="指定Android Beam文件传输"></a>指定Android Beam文件传输</h5><p>由于Android Beam文件传输仅在Android 4.1(API级别16)及更高版本中可用，如果应用程序依赖于Android Beam文件传输的部分功能，必须指定 <strong>&lt;uses-sdk&gt;</strong> 元素的属性 <strong>android:minSdkVersion=”16”</strong>。 此外，还可以根据需要将 <strong>android:minSdkVersion</strong> 设置为另一个值。</p>
+<h4 id="测试Android-Beam文件传输"><a href="#测试Android-Beam文件传输" class="headerlink" title="测试Android Beam文件传输"></a>测试Android Beam文件传输</h4><p>要在你的应用程序清单文件中指定NFC是可选的，请使用以下元素：</p>
+<pre><code>&lt;uses-feature android:name=&quot;android.hardware.nfc&quot; android:required=&quot;false&quot; /&gt;
+</code></pre><p>如果你设置属性 <strong>android:required = “false”</strong>，你必须在代码中测试NFC支持和Android Beam文件传输支持。</p>
+<p>要在代码中测试Android Beam文件传输支持，首先通过调用带有参数 <strong>FEATURE_NFC</strong> 的 <strong>PackageManager.hasSystemFeature()</strong> 来测试设备是否支持NFC。 接下来，通过测试 <strong>SDK_INT</strong> 的值来检查Android版本是否支持Android Beam文件传输。 如果支持Android Beam文件传输，请获取NFC控制器的实例，该实例允许你与NFC硬件通信。 例如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">Activity</span> </span>&#123;</span><br><span class="line">    ...</span><br><span class="line">    NfcAdapter mNfcAdapter;</span><br><span class="line">    <span class="comment">// Flag to indicate that Android Beam is available</span></span><br><span class="line">    <span class="keyword">boolean</span> mAndroidBeamAvailable  = <span class="keyword">false</span>;</span><br><span class="line">    ...</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        ...</span><br><span class="line">        <span class="comment">// NFC isn't available on the device</span></span><br><span class="line">        <span class="keyword">if</span> (!PackageManager.hasSystemFeature(PackageManager.FEATURE_NFC)) &#123;</span><br><span class="line">            <span class="comment">/*</span></span><br><span class="line"><span class="comment">             * Disable NFC features here.</span></span><br><span class="line"><span class="comment">             * For example, disable menu items or buttons that activate</span></span><br><span class="line"><span class="comment">             * NFC-related features</span></span><br><span class="line"><span class="comment">             */</span></span><br><span class="line">            ...</span><br><span class="line">        <span class="comment">// Android Beam file transfer isn't supported</span></span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (Build.VERSION.SDK_INT &lt;</span><br><span class="line">                Build.VERSION_CODES.JELLY_BEAN_MR1) &#123;</span><br><span class="line">            <span class="comment">// If Android Beam isn't available, don't continue.</span></span><br><span class="line">            mAndroidBeamAvailable = <span class="keyword">false</span>;</span><br><span class="line">            <span class="comment">/*</span></span><br><span class="line"><span class="comment">             * Disable Android Beam file transfer features here.</span></span><br><span class="line"><span class="comment">             */</span></span><br><span class="line">            ...</span><br><span class="line">        <span class="comment">// Android Beam file transfer is available, continue</span></span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        mNfcAdapter = NfcAdapter.getDefaultAdapter(<span class="keyword">this</span>);</span><br><span class="line">        ...</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="创建提供文件的回调方法"><a href="#创建提供文件的回调方法" class="headerlink" title="创建提供文件的回调方法"></a>创建提供文件的回调方法</h4><p>一旦验证了设备支持Android Beam文件传输，就可以添加回调方法，系统在Android Beam文件传输检测到用户想要将文件发送到另一个启用NFC的设备时回调。 这个回调方法返回一个Uri对象数组。 Android Beam文件传输将由这些URI表示的文件复制到接收设备。</p>
+<p>通过实现 <strong>NfcAdapter.CreateBeamUrisCallback</strong> 接口及其方法 <strong>createBeamUris()</strong> 来添加回调方法。 以下代码显示了如何执行此操作：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">Activity</span> </span>&#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="comment">// List of URIs to provide to Android Beam</span></span><br><span class="line">    <span class="keyword">private</span> Uri[] mFileUris = <span class="keyword">new</span> Uri[<span class="number">10</span>];</span><br><span class="line">    ...</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Callback that Android Beam file transfer calls to get</span></span><br><span class="line"><span class="comment">     * files to share</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">FileUriCallback</span> <span class="keyword">implements</span></span></span><br><span class="line"><span class="class">            <span class="title">NfcAdapter</span>.<span class="title">CreateBeamUrisCallback</span> </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">FileUriCallback</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * Create content URIs as needed to share with another device</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="keyword">public</span> Uri[] createBeamUris(NfcEvent event) &#123;</span><br><span class="line">            <span class="keyword">return</span> mFileUris;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>一旦你实现了接口，通过调用 <strong>setBeamPushUrisCallback()</strong> 提供回调到Android Beam文件传输。 以下代码显示了如何执行此操作：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">Activity</span> </span>&#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="comment">// Instance that returns available files from this app</span></span><br><span class="line">    <span class="keyword">private</span> FileUriCallback mFileUriCallback;</span><br><span class="line">    ...</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        ...</span><br><span class="line">        <span class="comment">// Android Beam file transfer is available, continue</span></span><br><span class="line">        ...</span><br><span class="line">        mNfcAdapter = NfcAdapter.getDefaultAdapter(<span class="keyword">this</span>);</span><br><span class="line">        <span class="comment">/*</span></span><br><span class="line"><span class="comment">         * Instantiate a new FileUriCallback to handle requests for</span></span><br><span class="line"><span class="comment">         * URIs</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        mFileUriCallback = <span class="keyword">new</span> FileUriCallback();</span><br><span class="line">        <span class="comment">// Set the dynamic callback for URI requests.</span></span><br><span class="line">        mNfcAdapter.setBeamPushUrisCallback(mFileUriCallback,<span class="keyword">this</span>);</span><br><span class="line">        ...</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>注意：还可以通过应用程序的 <strong>NfcAdapter</strong> 实例将 <strong>Uri</strong> 对象数组直接提供给NFC框架。如果可以在NFC触摸事件发生之前定义要传输的URI，请选择此方法。</p>
+</blockquote>
+<h4 id="指定要发送的文件"><a href="#指定要发送的文件" class="headerlink" title="指定要发送的文件"></a>指定要发送的文件</h4><p>要将一个或多个文件传输到另一个启用NFC的设备，请为每个文件获取文件URI（具有文件格式的URI），然后将该URI添加到Uri对象数组。要传输文件，你还必须具有该文件的永久性读取访问权限。例如，以下代码显示如何从文件名获取文件URI，然后将URI添加到数组：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * Create a list of URIs, get a File,</span></span><br><span class="line"><span class="comment"> * and set its permissions</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> Uri[] mFileUris = <span class="keyword">new</span> Uri[<span class="number">10</span>];</span><br><span class="line">String transferFile = <span class="string">"transferimage.jpg"</span>;</span><br><span class="line">File extDir = getExternalFilesDir(<span class="keyword">null</span>);</span><br><span class="line">File requestFile = <span class="keyword">new</span> File(extDir, transferFile);</span><br><span class="line">requestFile.setReadable(<span class="keyword">true</span>, <span class="keyword">false</span>);</span><br><span class="line"><span class="comment">// Get a URI for the File and add it to the list of URIs</span></span><br><span class="line">fileUri = Uri.fromFile(requestFile);</span><br><span class="line"><span class="keyword">if</span> (fileUri != <span class="keyword">null</span>) &#123;</span><br><span class="line">    mFileUris[<span class="number">0</span>] = fileUri;</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    Log.e(<span class="string">"My Activity"</span>, <span class="string">"No File URI available for file."</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="从其他设备接收文件"><a href="#从其他设备接收文件" class="headerlink" title="从其他设备接收文件"></a>从其他设备接收文件</h4><p>Android Beam文件传输将文件复制到接收设备上的特定目录。它还使用Android Media Scanner扫描复制的文件，并将媒体文件的实体添加到 <strong>MediaStore</strong> 提供者。</p>
+<h5 id="响应显示数据的请求"><a href="#响应显示数据的请求" class="headerlink" title="响应显示数据的请求"></a>响应显示数据的请求</h5><p>当Android Beam文件传输将文件复制完成时，它会发一个通知，其中包含具有操作 <strong>ACTION_VIEW</strong> 的 <strong>Intent</strong>，传输的第一个文件的MIME类型和指向第一个文件的URI。 当用户单击通知时，此意图将发送到系统。 要让你的应用程序响应此意图，请为应该作出响应的 <strong>Activity</strong> 的 <strong>&lt;activity&gt;</strong> 元素添加一个 <strong>&lt;intent-filter&gt;</strong> 元素。 在&lt;intent-filter&gt;元素中，添加以下子元素：</p>
+<ul>
+<li><p><span style="color:#51baed"><strong>&lt;action android:name=”android.intent.action.VIEW” /&gt;</strong></span><br>匹配通知发送的ACTION_VIEW意图。</p>
+</li>
+<li><p><span style="color:#51baed"><strong>&lt;category android:name=”android.intent.category.CATEGORY_DEFAULT” /&gt;</strong></span><br>匹配没有明确的category的Intent。</p>
+</li>
+<li><p><span style="color:#51baed"><strong>&lt;data android:mimeType=”mime-type” /&gt;</strong></span><br>匹配MIME类型。应用程序只能处理这个指定的MIME类型。</p>
+</li>
+</ul>
+<p>例如，以下代码显示如何添加触发com.example.android.nfc transfer.ViewActivity的意图过滤器：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">activity</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:name</span>=<span class="string">"com.example.android.nfctransfer.ViewActivity"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:label</span>=<span class="string">"Android Beam Viewer"</span> &gt;</span></span><br><span class="line">    ...</span><br><span class="line">    <span class="tag">&lt;<span class="name">intent-filter</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">action</span> <span class="attr">android:name</span>=<span class="string">"android.intent.action.VIEW"</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">category</span> <span class="attr">android:name</span>=<span class="string">"android.intent.category.DEFAULT"</span>/&gt;</span></span><br><span class="line">        ...</span><br><span class="line">    <span class="tag">&lt;/<span class="name">intent-filter</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">activity</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>注意：Android Beam文件传输不是 <strong>ACTION_VIEW</strong> 意图的唯一来源。接收设备上的其他应用程序也可以发送具有这个action的Intent。</p>
+</blockquote>
+<h4 id="请求文件权限"><a href="#请求文件权限" class="headerlink" title="请求文件权限"></a>请求文件权限</h4><p>要读取Android Beam文件传输复制到其他设备的文件，需要请求 <strong>READ_EXTERNAL_STORAGE</strong> 权限。例如：</p>
+<pre><code>&lt;uses-permission android:name=&quot;android.permission.READ_EXTERNAL_STORAGE&quot; /&gt;
+</code></pre><p>如果要将传输的文件复制到应用程序本身的存储区域，请改为请求 <strong>WRITE_EXTERNAL_STORAGE</strong> 权限。<strong>WRITE_EXTERNAL_STORAGE</strong> 包含了 <strong>READ_EXTERNAL_STORAGE</strong>。</p>
+<blockquote>
+<p>注意：从Android 4.2.2(API级别17)开始, 只有在用户读取文件的时候才会强制需要权限READ_EXTERNAL_STORAGE。以后的版本中可能在所有情况下都需要此权限。为了确保向下兼容，请现在就在需要读取权限的地方请求权限。</p>
+</blockquote>
+<p>由于你的应用程序可以控制其内部存储区域，因此不必请求写入权限即可将传输的文件复制到内部存储区域。</p>
+<h4 id="获取已复制文件的目录"><a href="#获取已复制文件的目录" class="headerlink" title="获取已复制文件的目录"></a>获取已复制文件的目录</h4><p>Android Beam文件传输将单个传输中的所有文件复制到接收设备上的一个目录。 Android Beam文件传输通知发送的内容 <strong>Intent</strong> 中的URI指向第一个传输的文件。但是，你的应用程序也可能从Android Beam文件传输之外的来源接收 <strong>ACTION_VIEW</strong> 意图。要确定如何处理传入的Intent，你需要检查其scheme和authority。</p>
+<p>调用 <strong>Uri.getScheme()</strong> 可以获取要获取URI的scheme。以下代码显示了如何确定scheme并相应地处理URI：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">Activity</span> </span>&#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="comment">// A File object containing the path to the transferred files</span></span><br><span class="line">    <span class="keyword">private</span> File mParentPath;</span><br><span class="line">    <span class="comment">// Incoming Intent</span></span><br><span class="line">    <span class="keyword">private</span> Intent mIntent;</span><br><span class="line">    ...</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * Called from onNewIntent() for a SINGLE_TOP Activity</span></span><br><span class="line"><span class="comment">     * or onCreate() for a new Activity. For onNewIntent(),</span></span><br><span class="line"><span class="comment">     * remember to call setIntent() to store the most</span></span><br><span class="line"><span class="comment">     * current Intent</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">handleViewIntent</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        ...</span><br><span class="line">        <span class="comment">// Get the Intent action</span></span><br><span class="line">        mIntent = getIntent();</span><br><span class="line">        String action = mIntent.getAction();</span><br><span class="line">        <span class="comment">/*</span></span><br><span class="line"><span class="comment">         * For ACTION_VIEW, the Activity is being asked to display data.</span></span><br><span class="line"><span class="comment">         * Get the URI.</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">if</span> (TextUtils.equals(action, Intent.ACTION_VIEW)) &#123;</span><br><span class="line">            <span class="comment">// Get the URI from the Intent</span></span><br><span class="line">            Uri beamUri = mIntent.getData();</span><br><span class="line">            <span class="comment">/*</span></span><br><span class="line"><span class="comment">             * Test for the type of URI, by getting its scheme value</span></span><br><span class="line"><span class="comment">             */</span></span><br><span class="line">            <span class="keyword">if</span> (TextUtils.equals(beamUri.getScheme(), <span class="string">"file"</span>)) &#123;</span><br><span class="line">                mParentPath = handleFileUri(beamUri);</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (TextUtils.equals(</span><br><span class="line">                    beamUri.getScheme(), <span class="string">"content"</span>)) &#123;</span><br><span class="line">                mParentPath = handleContentUri(beamUri);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        ...</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="从文件URI中获取目录"><a href="#从文件URI中获取目录" class="headerlink" title="从文件URI中获取目录"></a>从文件URI中获取目录</h5><p>如果传入的Intent包含文件URI，则URI包含文件的全名，包括完整的目录路径和文件名。对于Android Beam文件传输，目录路径指向其他传输文件的位置（如果有）。可以获取URI的路径部分来得到目录路径，该目录路径包含了除去 <strong>file:</strong> 前缀之外的所有URI。 从路径部分创建一个文件，然后获取该文件的父级路径：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">handleFileUri</span><span class="params">(Uri beamUri)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// Get the path part of the URI</span></span><br><span class="line">    String fileName = beamUri.getPath();</span><br><span class="line">    <span class="comment">// Create a File object for this filename</span></span><br><span class="line">    File copiedFile = <span class="keyword">new</span> File(fileName);</span><br><span class="line">    <span class="comment">// Get a string containing the file's parent directory</span></span><br><span class="line">    <span class="keyword">return</span> copiedFile.getParent();</span><br><span class="line">&#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<h5 id="从内容URI获取目录"><a href="#从内容URI获取目录" class="headerlink" title="从内容URI获取目录"></a>从内容URI获取目录</h5><p>如果传入的Intent包含内容URI，则URI可能指向了存储在<strong>MediaStore</strong>内容提供者中的目录和文件名。你可以通过测试URI的权限值来检测MediaStore的内容URI。 MediaStore的内容URI可能来自Android Beam文件传输或来自其他应用程序，但在这两种情况下，你都可以取得内容URI的目录和文件名。</p>
+<p>你还可以接收传入的<strong>ACTION_VIEW</strong>意图(Intent)，其中包含除MediaStore之外的内容提供者的内容URI。 在这种情况下，内容URI不包含MediaStore权限值，并且内容URI通常不指向目录。</p>
+<blockquote>
+<p>注意：对于Android Beam文件传输，如果第一个传入文件的MIME类型为“audio/*”，“image/*”或“video/*”，则会在<strong>ACTION_VIEW</strong>意图(Intent)中接收到一个内容URI， 指示该文件是媒体相关的。 Android Beam文件传输通过在存储传输文件的目录上运行Media Scanner来对其传输的媒体文件进行索引。Media Scanner将其结果写入<strong>MediaStore</strong>内容提供者中，然后将第一个文件的内容URI回传到Android Beam文件传输。此内容URI是你在通知的<strong>Intent</strong>中收到的内容URI。你可以使用内容URI从MediaStore中获取到第一个文件的目录。</p>
+</blockquote>
+<h4 id="判定内容提供者"><a href="#判定内容提供者" class="headerlink" title="判定内容提供者"></a>判定内容提供者</h4><p>要判定是否可以从内容URI获取文件目录，可以通过调用 <strong>Uri.getAuthority()</strong> 获取URI的权限来判定与URI关联的内容提供者。 结果有两个可能的值：</p>
+<ul>
+<li><p><span style="color:#51baed"><strong>MediaStore.AUTHORITY</strong></span><br>URI用于由MediaStore跟踪的一个或多个文件。从MediaStore获取完整的文件名，并根据文件名获取目录。</p>
+</li>
+<li><p>任何其他权限值<br>来自另一内容提供者的内容URI。显示与内容URI相关联的数据，但不获取文件目录。</p>
+</li>
+</ul>
+<p>通过传入内容URI作为<em>Uri参数</em>和 <strong>MediaColumns.DATA</strong> 作为<em>projection参数</em>执行一个查询来获取MediaStore内容URI的目录。返回的 <strong>Cursor</strong> 包含了由URI表示的文件的完整路径和名称。此路径还包含了Android Beam文件传输复制到设备的所有其他文件。</p>
+<p>以下代码显示如何测试内容URI的权限，并获取传输文件的路径和文件名：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">handleContentUri</span><span class="params">(Uri beamUri)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// Position of the filename in the query Cursor</span></span><br><span class="line">    <span class="keyword">int</span> filenameIndex;</span><br><span class="line">    <span class="comment">// File object for the filename</span></span><br><span class="line">    File copiedFile;</span><br><span class="line">    <span class="comment">// The filename stored in MediaStore</span></span><br><span class="line">    String fileName;</span><br><span class="line">    <span class="comment">// Test the authority of the URI</span></span><br><span class="line">    <span class="keyword">if</span> (!TextUtils.equals(beamUri.getAuthority(), MediaStore.AUTHORITY)) &#123;</span><br><span class="line">        <span class="comment">/*</span></span><br><span class="line"><span class="comment">         * Handle content URIs for other content providers</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="comment">// For a MediaStore content URI</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// Get the column that contains the file name</span></span><br><span class="line">        String[] projection = &#123; MediaStore.MediaColumns.DATA &#125;;</span><br><span class="line">        Cursor pathCursor =</span><br><span class="line">            getContentResolver().query(beamUri, projection,</span><br><span class="line">            <span class="keyword">null</span>, <span class="keyword">null</span>, <span class="keyword">null</span>);</span><br><span class="line">        <span class="comment">// Check for a valid cursor</span></span><br><span class="line">        <span class="keyword">if</span> (pathCursor != <span class="keyword">null</span> &amp;&amp; pathCursor.moveToFirst()) &#123;</span><br><span class="line">            <span class="comment">// Get the column index in the Cursor</span></span><br><span class="line">            filenameIndex = pathCursor.getColumnIndex(</span><br><span class="line">                    MediaStore.MediaColumns.DATA);</span><br><span class="line">            <span class="comment">// Get the full file name including path</span></span><br><span class="line">            fileName = pathCursor.getString(filenameIndex);</span><br><span class="line">            <span class="comment">// Create a File object for the filename</span></span><br><span class="line">            copiedFile = <span class="keyword">new</span> File(fileName);</span><br><span class="line">            <span class="comment">// Return the parent directory of the file</span></span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> File(copiedFile.getParent());</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// The query didn't work; return null</span></span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>完结!</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/NFC/" rel="tag"># NFC</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/10/12/sharing-files/" rel="next" title="Android应用程序间文件共享">
+                <i class="fa fa-chevron-left"></i> Android应用程序间文件共享
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/10/16/android-code-style/" rel="prev" title="Android编程风格以及命名规范">
+                Android编程风格以及命名规范 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  
+    <div class="comments" id="comments">
+      <div class="ds-thread" data-thread-key="2016/10/14/nfc-sharing-files/"
+           data-title="Android使用NFC共享文件" data-url="http://zhupeng.space/2016/10/14/nfc-sharing-files/">
+      </div>
+    </div>
+  
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="http://ob0r3vf26.bkt.clouddn.com/blog_logo.jpg"
+                alt="朱鹏" />
+            
+              <p class="site-author-name" itemprop="name">朱鹏</p>
+              <p class="site-description motion-element" itemprop="description">享受技术带来的快乐</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">59</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#将文件发送到其他设备"><span class="nav-number">1.</span> <span class="nav-text">将文件发送到其他设备</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#在清单文件中声明功能"><span class="nav-number">2.</span> <span class="nav-text">在清单文件中声明功能</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#请求权限"><span class="nav-number">2.1.</span> <span class="nav-text">请求权限</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#指定NFC功能"><span class="nav-number">2.2.</span> <span class="nav-text">指定NFC功能</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#指定Android-Beam文件传输"><span class="nav-number">2.3.</span> <span class="nav-text">指定Android Beam文件传输</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#测试Android-Beam文件传输"><span class="nav-number">3.</span> <span class="nav-text">测试Android Beam文件传输</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#创建提供文件的回调方法"><span class="nav-number">4.</span> <span class="nav-text">创建提供文件的回调方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#指定要发送的文件"><span class="nav-number">5.</span> <span class="nav-text">指定要发送的文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#从其他设备接收文件"><span class="nav-number">6.</span> <span class="nav-text">从其他设备接收文件</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#响应显示数据的请求"><span class="nav-number">6.1.</span> <span class="nav-text">响应显示数据的请求</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#请求文件权限"><span class="nav-number">7.</span> <span class="nav-text">请求文件权限</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#获取已复制文件的目录"><span class="nav-number">8.</span> <span class="nav-text">获取已复制文件的目录</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#从文件URI中获取目录"><span class="nav-number">8.1.</span> <span class="nav-text">从文件URI中获取目录</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#从内容URI获取目录"><span class="nav-number">8.2.</span> <span class="nav-text">从内容URI获取目录</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#判定内容提供者"><span class="nav-number">9.</span> <span class="nav-text">判定内容提供者</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">朱鹏</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> 您是第
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      个访客
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i> 本站总访问量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"zhupeng"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("niXM6CtlVEgvUHEvwNmi0F7S", "LbP8mNzXFXinVUqMloOIy3fW");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
