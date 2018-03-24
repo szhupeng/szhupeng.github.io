@@ -79,17 +79,17 @@
 
 
 
-<meta name="description" content="实现方式： 方式一： 1234567891011121314151617181920212223242526272829303132333435363738394041424344/**   * Determines whether two possibly-null objects are equal. Return">
+<meta name="description" content="equals()方法equals()方法是Object中定义的方法，任何类都可以重写，但是需要遵循一定的规则：  对称性x.equals(y)和y.equals(x)返回值必须相等，要么都为true,要么都为false 自反性x.equals(x)必须返回true 传递性如果x.equals(y)返回是true，而且y">
 <meta property="og:type" content="article">
 <meta property="og:title" content="equals()和hashCode()">
 <meta property="og:url" content="http://zhupeng.space/2017/12/07/hashcode/index.html">
 <meta property="og:site_name" content="Coding Life">
-<meta property="og:description" content="实现方式： 方式一： 1234567891011121314151617181920212223242526272829303132333435363738394041424344/**   * Determines whether two possibly-null objects are equal. Returns:   *   * &amp;lt;ul&amp;gt;   *   &amp;lt;li&amp;gt;&amp;#">
+<meta property="og:description" content="equals()方法equals()方法是Object中定义的方法，任何类都可以重写，但是需要遵循一定的规则：  对称性x.equals(y)和y.equals(x)返回值必须相等，要么都为true,要么都为false 自反性x.equals(x)必须返回true 传递性如果x.equals(y)返回是true，而且y.equals(z)返回是true，那么z.equals(x)也应该返回是tru">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-12-07T13:38:53.994Z">
+<meta property="og:updated_time" content="2018-03-24T04:15:07.425Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="equals()和hashCode()">
-<meta name="twitter:description" content="实现方式： 方式一： 1234567891011121314151617181920212223242526272829303132333435363738394041424344/**   * Determines whether two possibly-null objects are equal. Returns:   *   * &amp;lt;ul&amp;gt;   *   &amp;lt;li&amp;gt;&amp;#">
+<meta name="twitter:description" content="equals()方法equals()方法是Object中定义的方法，任何类都可以重写，但是需要遵循一定的规则：  对称性x.equals(y)和y.equals(x)返回值必须相等，要么都为true,要么都为false 自反性x.equals(x)必须返回true 传递性如果x.equals(y)返回是true，而且y.equals(z)返回是true，那么z.equals(x)也应该返回是tru">
 
 
 
@@ -340,11 +340,36 @@
       
 
       
-        <p>实现方式：</p>
-<p>方式一：</p>
+        <h2 id="equals-方法"><a href="#equals-方法" class="headerlink" title="equals()方法"></a>equals()方法</h2><p>equals()方法是Object中定义的方法，任何类都可以重写，但是需要遵循一定的规则：</p>
+<ul>
+<li>对称性<br>x.equals(y)和y.equals(x)返回值必须相等，要么都为true,要么都为false</li>
+<li>自反性<br>x.equals(x)必须返回true</li>
+<li>传递性<br>如果x.equals(y)返回是true，而且y.equals(z)返回是true，那么z.equals(x)也应该返回是true。</li>
+<li>一致性<br>如果x.equals(y)中x和y内容一直不变，不管重复x.equals(y)多少次，返回值应该始终不变</li>
+<li>非null<br>如果x不是null，y是null，那么x.equals(y)必须为false</li>
+</ul>
+<a id="more"></a>
+<h2 id="hashCode-方法"><a href="#hashCode-方法" class="headerlink" title="hashCode()方法"></a>hashCode()方法</h2><p>hashCode实现方式：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">   * Determines whether two possibly-null objects are equal. Returns:</span></span><br><span class="line"><span class="comment">   *</span></span><br><span class="line"><span class="comment">   * &lt;ul&gt;</span></span><br><span class="line"><span class="comment">   *   &lt;li&gt;&#123;<span class="doctag">@code</span> true&#125; if &#123;<span class="doctag">@code</span> a&#125; and &#123;<span class="doctag">@code</span> b&#125; are both null.</span></span><br><span class="line"><span class="comment">   *   &lt;li&gt;&#123;<span class="doctag">@code</span> true&#125; if &#123;<span class="doctag">@code</span> a&#125; and &#123;<span class="doctag">@code</span> b&#125; are both non-null and they are equal according to</span></span><br><span class="line"><span class="comment">   *       &#123;<span class="doctag">@link</span> Object#equals(Object)&#125;.</span></span><br><span class="line"><span class="comment">   *   &lt;li&gt;&#123;<span class="doctag">@code</span> false&#125; in all other situations.</span></span><br><span class="line"><span class="comment">   * &lt;/ul&gt;</span></span><br><span class="line"><span class="comment">   *</span></span><br><span class="line"><span class="comment">   * &lt;p&gt;This assumes that any non-null objects passed to this function conform to the &#123;<span class="doctag">@code</span></span></span><br><span class="line"><span class="comment">   * equals()&#125; contract.</span></span><br><span class="line"><span class="comment">   *</span></span><br><span class="line"><span class="comment">   * &lt;p&gt;&lt;b&gt;Note for Java 7 and later:&lt;/b&gt; This method should be treated as deprecated; use &#123;<span class="doctag">@link</span></span></span><br><span class="line"><span class="comment">   * java.util.Objects#equals&#125; instead.</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">equal</span><span class="params">(@Nullable Object a, @Nullable Object b)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> a == b || (a != <span class="keyword">null</span> &amp;&amp; a.equals(b));</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * Generates a hash code for multiple values. The hash code is generated by calling &#123;<span class="doctag">@link</span></span></span><br><span class="line"><span class="comment">   * Arrays#hashCode(Object[])&#125;. Note that array arguments to this method, with the exception of a</span></span><br><span class="line"><span class="comment">   * single Object array, do not get any special handling; their hash codes are based on identity</span></span><br><span class="line"><span class="comment">   * and not contents.</span></span><br><span class="line"><span class="comment">   *</span></span><br><span class="line"><span class="comment">   * &lt;p&gt;This is useful for implementing &#123;<span class="doctag">@link</span> Object#hashCode()&#125;. For example, in an object that</span></span><br><span class="line"><span class="comment">   * has three properties, &#123;<span class="doctag">@code</span> x&#125;, &#123;<span class="doctag">@code</span> y&#125;, and &#123;<span class="doctag">@code</span> z&#125;, one could write:</span></span><br><span class="line"><span class="comment">   *</span></span><br><span class="line"><span class="comment">   * &lt;pre&gt;&#123;<span class="doctag">@code</span></span></span><br><span class="line"><span class="comment">   * public int hashCode() &#123;</span></span><br><span class="line"><span class="comment">   *   return Objects.hashCode(getX(), getY(), getZ());</span></span><br><span class="line"><span class="comment">   * &#125;</span></span><br><span class="line"><span class="comment">   * &#125;&lt;/pre&gt;</span></span><br><span class="line"><span class="comment">   *</span></span><br><span class="line"><span class="comment">   * &lt;p&gt;&lt;b&gt;Warning:&lt;/b&gt; When a single object is supplied, the returned hash code does not equal the</span></span><br><span class="line"><span class="comment">   * hash code of that object.</span></span><br><span class="line"><span class="comment">   *</span></span><br><span class="line"><span class="comment">   * &lt;p&gt;&lt;b&gt;Note for Java 7 and later:&lt;/b&gt; This method should be treated as deprecated; use &#123;<span class="doctag">@link</span></span></span><br><span class="line"><span class="comment">   * java.util.Objects#hash&#125; instead.</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">hashCode</span><span class="params">(@Nullable Object... objects)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> Arrays.hashCode(objects);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
-<p>方式二：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
+<p>hashCode()这个方法主要是为了更好的支持哈希表（如HashMap、HashSet、HashTable等）。</p>
+<p>当向哈希表（如HashMap、HashSet、HashTable等）插入一个object时，首先调用hashcode()方法获得该对象的哈希码，通过该哈希码可以直接定位object在哈希表中的位置（一般是哈希码对哈希表大小取余），如果该位置没有对象，那么直接将object插入到该位置；如果该位置有对象（可能有多个，通过链表实现），则调用equals()方法将这些对象与object比较，如果相等，则不需要保存object，否则，将该对象插入到该链表中。<br>       这也就解释了，为什么equals()相等，那么hashCode()必须相等。因为，如果两个对象的equals()方法返回true，则它们在哈希表中只应该出现一次；如果hashCode()不相等，那么它们会被散列到表中不同的位置，哈希表中不止出现一次。</p>
+<blockquote>
+<p>如果重写了equals()方法，那么也要重写hashCode()方法，因为默认的hashCode()方法返回的是该对象内存中的地址</p>
+</blockquote>
+<p>对于hashCode，应该遵循如下规则：</p>
+<ol>
+<li>在一个应用程序执行期间，如果一个对象的equals方法做比较所用到的信息没有被修改的话，则对该对象调用hashCode方法多次，它必须始终如一地返回同一个整数</li>
+<li>如果两个对象根据equals(Object o)方法是相等的，则调用这两个对象中任一对象的hashCode方法必须产生相同的整数结果</li>
+<li>如果两个对象根据equals(Object o)方法是不相等的，则调用这两个对象中任一个对象的hashCode方法，不要求产生不同的整数结果。但如果能不同，则可能提高散列表的性能。</li>
+</ol>
+<p>hashCode()不能太简单，否则容易造成hash冲突，但hashCode()也不能太复杂，否则会影响性能。</p>
+<p>至于两者之间的关联关系，只需要记住如下即可：</p>
+<blockquote>
+<ul>
+<li>如果x.equals(y)返回true，那么x和y的hashCode()必须相等</li>
+<li>如果x.equals(y)返回false，那么x和y的hashCode()有可能相等，也有可能不等</li>
+</ul>
+</blockquote>
 
       
     </div>
@@ -378,6 +403,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/03/24/constraintlayout/" rel="prev" title="ConstraintLayout用法详解">
+                ConstraintLayout用法详解 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -427,8 +456,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -469,7 +507,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">47</span>
+                  <span class="site-state-item-count">46</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -494,6 +532,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#equals-方法"><span class="nav-number">1.</span> <span class="nav-text">equals()方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hashCode-方法"><span class="nav-number">2.</span> <span class="nav-text">hashCode()方法</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
