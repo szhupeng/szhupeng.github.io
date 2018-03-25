@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="https://developer.android.com/guide/topics/graphics/hardware-accel.html">
+<meta name="description" content="从Android 3.0（API11）开始，Android 2D渲染管道支持硬件加速，这意味着硬件加速执行的所有的绘图操作都是使用GPU在View对象的画布上来进行的。由于启用硬件加速所需的资源增加，应用程序将消耗更多的RAM。 如果目标API级别大于等于14，则默认情况下会启用硬件加速，但也可以显式启用。如果应用程序">
 <meta name="keywords" content="Android">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Hardware Acceleration">
 <meta property="og:url" content="http://zhupeng.space/2017/06/04/hardware-acceleration/index.html">
 <meta property="og:site_name" content="Coding Life">
-<meta property="og:description" content="https://developer.android.com/guide/topics/graphics/hardware-accel.html">
+<meta property="og:description" content="从Android 3.0（API11）开始，Android 2D渲染管道支持硬件加速，这意味着硬件加速执行的所有的绘图操作都是使用GPU在View对象的画布上来进行的。由于启用硬件加速所需的资源增加，应用程序将消耗更多的RAM。 如果目标API级别大于等于14，则默认情况下会启用硬件加速，但也可以显式启用。如果应用程序仅使用标准View和Drawable，那么打开全局硬件加速不会导致任何不良的绘制">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-08-26T14:20:28.798Z">
+<meta property="og:updated_time" content="2018-03-25T07:08:57.777Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Hardware Acceleration">
-<meta name="twitter:description" content="https://developer.android.com/guide/topics/graphics/hardware-accel.html">
+<meta name="twitter:description" content="从Android 3.0（API11）开始，Android 2D渲染管道支持硬件加速，这意味着硬件加速执行的所有的绘图操作都是使用GPU在View对象的画布上来进行的。由于启用硬件加速所需的资源增加，应用程序将消耗更多的RAM。 如果目标API级别大于等于14，则默认情况下会启用硬件加速，但也可以显式启用。如果应用程序仅使用标准View和Drawable，那么打开全局硬件加速不会导致任何不良的绘制">
 
 
 
@@ -363,7 +363,310 @@
       
 
       
-        <p><a href="https://developer.android.com/guide/topics/graphics/hardware-accel.html" target="_blank" rel="noopener">https://developer.android.com/guide/topics/graphics/hardware-accel.html</a></p>
+        <p>从Android 3.0（API11）开始，Android 2D渲染管道支持硬件加速，这意味着硬件加速执行的所有的绘图操作都是使用GPU在View对象的画布上来进行的。由于启用硬件加速所需的资源增加，应用程序将消耗更多的RAM。</p>
+<p>如果目标API级别大于等于14，则默认情况下会启用硬件加速，但也可以显式启用。如果应用程序仅使用标准View和Drawable，那么打开全局硬件加速不会导致任何不良的绘制影响。但是，由于硬件加速并不支持所有的2D图形绘制操作，因此将其打开可能会影响某些自定义View或绘图调用。对于这个问题，通常是对那些不可见的元素进行了异常或错误的像素渲染。为了解决这个问题，Android允许在多个级别启用或禁用硬件加速。</p>
+<p>如果应用程序执行自定义绘图，请在开启硬件加速功能的实际硬件设备上测试应用程序以发现问题。不受支持的绘图操作部分描述了硬件加速的已知问题以及如何解决这些问题。</p>
+<a id="more"></a>
+<h2 id="控制硬件加速"><a href="#控制硬件加速" class="headerlink" title="控制硬件加速"></a>控制硬件加速</h2><p>可以在以下级别控制硬件加速：</p>
+<ul>
+<li>Application</li>
+<li>Activity</li>
+<li>Window</li>
+<li>View</li>
+</ul>
+<h3 id="Application级别"><a href="#Application级别" class="headerlink" title="Application级别"></a>Application级别</h3><p>在Android清单文件中，将以下属性添加到<application>标记以为整个应用程序启用硬件加速：</application></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">application</span> <span class="attr">android:hardwareAccelerated</span>=<span class="string">"true"</span> <span class="attr">...</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="Activity级别"><a href="#Activity级别" class="headerlink" title="Activity级别"></a>Activity级别</h3><p>如果应用程序在全局范围内打开硬件加速时无法正常运行，也可以在单独的Activity级别上进行控制。要在Activity级别启用或禁用硬件加速，可以对<strong>&lt;activity&gt;</strong>元素使用<strong>android:hardwareAccelerated</strong>属性。以下示例为整个应用程序启用硬件加速，但为一个Activity禁用它：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">application</span> <span class="attr">android:hardwareAccelerated</span>=<span class="string">"true"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">activity</span> <span class="attr">...</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">activity</span> <span class="attr">android:hardwareAccelerated</span>=<span class="string">"false"</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">application</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="Window级别"><a href="#Window级别" class="headerlink" title="Window级别"></a>Window级别</h3><p>如果需要更精细的控制，则可以使用以下代码为给定窗口启用硬件加速：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">getWindow().setFlags(</span><br><span class="line">    WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,</span><br><span class="line">    WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>注意：当前情况，不能在Window级别禁止硬件加速</p>
+</blockquote>
+<h3 id="View级别"><a href="#View级别" class="headerlink" title="View级别"></a>View级别</h3><p>可以使用以下代码在运行时禁用单个视图的硬件加速：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">myView.setLayerType(View.LAYER_TYPE_SOFTWARE, <span class="keyword">null</span>);</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>注意：当前情况，不能在View级别开启硬件加速。视图层除了禁止硬件加速以外，还有其他的功能。</p>
+</blockquote>
+<h2 id="确定View是否硬件加速"><a href="#确定View是否硬件加速" class="headerlink" title="确定View是否硬件加速"></a>确定View是否硬件加速</h2><p>确定View（特别是自定义View）是否硬件加速有助于了解应用程序当前是否是硬件加速的。如果应用程序执行了大量的自定义绘制，并且并非所有操作都得到了新渲染管道的正确支持，那么这非常有用。</p>
+<p>有两种不同的方法来检查应用程序是否是硬件加速的：</p>
+<ul>
+<li><strong>View.isHardwareAccelerated()</strong> 如果View附在硬件加速的窗口上，则返回true</li>
+<li><strong>Canvas.isHardwareAccelerated()</strong> 如果Canvas是硬件加速的，则返回true</li>
+</ul>
+<p>如果在绘图代码中必须执行此检查操作，尽可能使用<strong>Canvas.isHardwareAccelerated()</strong>而不是<strong>View.isHardwareAccelerated()</strong>。当视图附在硬件加速的窗口时，仍然可以使用非硬件加速的Canvas绘制视图。例如，为了缓存目的，将View绘制到Bitmap时会发生这种情况。</p>
+<h2 id="Android绘图模型"><a href="#Android绘图模型" class="headerlink" title="Android绘图模型"></a>Android绘图模型</h2><p>当启用硬件加速时，Android框架将利用新的绘图模型，利用显示列表将应用程序呈现在屏幕上。充分理解显示列表，以及它们是如何影响应用程序的，对于理解Android是如何绘制没有硬件加速的View对象也是有益的。下面分别介绍基于软件和硬件加速的绘图模式。</p>
+<h3 id="基于软件的绘图模型"><a href="#基于软件的绘图模型" class="headerlink" title="基于软件的绘图模型"></a>基于软件的绘图模型</h3><p>在软件绘图模型中，视图通过以下两个步骤绘制：</p>
+<ol>
+<li>使层次结构失效（Invalidate the hierarchy）</li>
+<li>绘制层次结构（Draw the hierarchy）</li>
+</ol>
+<p>每当应用程序需要更新其部分UI时，它会在任何已更改内容的视图上调用<strong>invalidate()</strong>（或其变体）。失效的消息请求会在View层次结构上进行传递，以便计算出需要重绘的屏幕区域（脏区域）。然后，Android系统就会在View层次结构中绘制所有跟脏区域相交的区域。不幸的是，这种绘图模型有两个缺点：</p>
+<ul>
+<li>首先，这个模型需要在每个绘图传递中执行大量的代码。例如，如果应用程序调用按钮的invalidate()，并且该按钮位于另一个View的顶部，那么即使该View没有改变，那么Android系统也要重新绘制这个View</li>
+<li>第二个问题是这个绘图模型可以隐藏应用程序中的bug。由于Android系统会重新绘制跟脏区相交的View，因此即使未调用View的invalidate()，那么View内容的改变也可能会导致View被重绘。发生这种情况时，就要依赖另一个被失效的View来获取适当的行为。每次修改应用程序时，此行为都会更改。因此，无论何时修改影响View的绘图代码的数据或状态，都应该在自定义View上调用invalidate()。</li>
+</ul>
+<blockquote>
+<p>注意：Android视图在属性更改时，例如背景颜色或TextView中的文本，会自动调用invalidate()方法。</p>
+</blockquote>
+<h3 id="硬件加速绘图模型"><a href="#硬件加速绘图模型" class="headerlink" title="硬件加速绘图模型"></a>硬件加速绘图模型</h3><p>Android系统仍然使用invalidate()和draw()来请求屏幕更新和渲染视图，但是实际的绘图操作与基于软件的绘图模型是不同的。Android系统不是立即执行绘图命令，而是将它们记录在显示列表中，显示列表包含视图层次结构绘图代码的输出。另一个优化是Android系统只需要记录和更新由invalidate()调用标记为脏的视图的显示列表。没有失效的视图可以通过重新发布之前记录的显示列表重新绘制。新的绘图模型包含三个阶段：</p>
+<ol>
+<li>使层次结构失效（Invalidate the hierarchy）</li>
+<li>记录和更新显示列表（Record and update display lists）</li>
+<li>绘制显示列表（Draw the display lists）</li>
+</ol>
+<p>使用这个模型，不能依赖与脏区域相交的视图来执行其<strong>draw()</strong>方法。为确保Android系统记录视图的显示列表，必须调用invalidate()。如果忘记调用该方法，那么在变化发生后，视图看上去会跟变化之前相同。</p>
+<p>使用显示列表也有利于动画性能，因为设置特定的属性（如alpha或旋转）不需要使目标视图失效（系统会自动完成）。此优化还适用于带有显示列表的视图（应用程序硬件加速时的任何视图）。例如，假设有一个LinearLayout包含Button的ListView。LinearLayout的显示列表如下所示：</p>
+<ul>
+<li>DrawDisplayList(ListView)</li>
+<li>DrawDisplayList(Button)</li>
+</ul>
+<p>现在假设想改变ListView的透明度。在ListView上调用setAlpha(0.5f)后，显示列表现在包含以下内容：</p>
+<ul>
+<li>SaveLayerAlpha(0.5)</li>
+<li>DrawDisplayList(ListView)</li>
+<li>Restore</li>
+<li>DrawDisplayList(Button)</li>
+</ul>
+<p>没有执行ListView的复杂绘图代码。相反，系统只更新了更简单的LinearLayout的显示列表。在未启用硬件加速的应用程序中，列表及其父项的绘图代码将再次执行。</p>
+<h2 id="不支持的绘图操作"><a href="#不支持的绘图操作" class="headerlink" title="不支持的绘图操作"></a>不支持的绘图操作</h2><p>当硬件加速时，2D渲染管道支持最常用的Canvas绘图操作以及一些较少使用的操作。被用于渲染应用程序的所有的绘图操作都要发送给Android系统，默认控件和布局，以及一些常用的可视效果，如反射和平铺纹理效果都是被支持的。</p>
+<p>下表介绍了各个API级别的各种操作的支持级别：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:right">Canvas</th>
+<th style="text-align:center">First supported API level</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right">drawBitmapMesh()(colors array)</td>
+<td style="text-align:center">18</td>
+</tr>
+<tr>
+<td style="text-align:right">drawPicture()</td>
+<td style="text-align:center">23</td>
+</tr>
+<tr>
+<td style="text-align:right">drawPosText()</td>
+<td style="text-align:center">16</td>
+</tr>
+<tr>
+<td style="text-align:right">drawTextOnPath()</td>
+<td style="text-align:center">16</td>
+</tr>
+<tr>
+<td style="text-align:right">drawVertices()</td>
+<td style="text-align:center">✗</td>
+</tr>
+<tr>
+<td style="text-align:right">setDrawFilter()</td>
+<td style="text-align:center">16</td>
+</tr>
+<tr>
+<td style="text-align:right">clipPath()</td>
+<td style="text-align:center">18</td>
+</tr>
+<tr>
+<td style="text-align:right">clipRegion()</td>
+<td style="text-align:center">18</td>
+</tr>
+<tr>
+<td style="text-align:right">clipRect(Region.Op.XOR)</td>
+<td style="text-align:center">18</td>
+</tr>
+<tr>
+<td style="text-align:right">clipRect(Region.Op.Difference)</td>
+<td style="text-align:center">18</td>
+</tr>
+<tr>
+<td style="text-align:right">clipRect(Region.Op.ReverseDifference)</td>
+<td style="text-align:center">18</td>
+</tr>
+<tr>
+<td style="text-align:right">clipRect() with rotation/perspective</td>
+<td style="text-align:center">18</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th style="text-align:right">Paint</th>
+<th style="text-align:center">First supported API level</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right">setAntiAlias() (for text)</td>
+<td style="text-align:center">18</td>
+</tr>
+<tr>
+<td style="text-align:right">setAntiAlias() (for lines)</td>
+<td style="text-align:center">16</td>
+</tr>
+<tr>
+<td style="text-align:right">setFilterBitmap()</td>
+<td style="text-align:center">17</td>
+</tr>
+<tr>
+<td style="text-align:right">setLinearText()</td>
+<td style="text-align:center">✗</td>
+</tr>
+<tr>
+<td style="text-align:right">setMaskFilter()</td>
+<td style="text-align:center">✗</td>
+</tr>
+<tr>
+<td style="text-align:right">setPathEffect() (for lines)</td>
+<td style="text-align:center">✗</td>
+</tr>
+<tr>
+<td style="text-align:right">setRasterizer()</td>
+<td style="text-align:center">✗</td>
+</tr>
+<tr>
+<td style="text-align:right">setShadowLayer() (other than text)</td>
+<td style="text-align:center">✗</td>
+</tr>
+<tr>
+<td style="text-align:right">setStrokeCap() (for lines)</td>
+<td style="text-align:center">18</td>
+</tr>
+<tr>
+<td style="text-align:right">setStrokeCap() (for points)</td>
+<td style="text-align:center">19</td>
+</tr>
+<tr>
+<td style="text-align:right">setSubpixelText()</td>
+<td style="text-align:center">✗</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th style="text-align:right">Xfermode</th>
+<th style="text-align:center">First supported API level</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right">PorterDuff.Mode.DARKEN (framebuffer)</td>
+<td style="text-align:center">✗</td>
+</tr>
+<tr>
+<td style="text-align:right">PorterDuff.Mode.LIGHTEN (framebuffer)</td>
+<td style="text-align:center">✗</td>
+</tr>
+<tr>
+<td style="text-align:right">PorterDuff.Mode.OVERLAY (framebuffer)</td>
+<td style="text-align:center">✗</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th style="text-align:right">Shader</th>
+<th style="text-align:center">First supported API level</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right">ComposeShader inside ComposeShader</td>
+<td style="text-align:center">✗</td>
+</tr>
+<tr>
+<td style="text-align:right">Same type shaders inside ComposeShader</td>
+<td style="text-align:center">✗</td>
+</tr>
+<tr>
+<td style="text-align:right">Local matrix on ComposeShader</td>
+<td style="text-align:center">18</td>
+</tr>
+</tbody>
+</table>
+<h2 id="画布缩放（Canvas-Scaling）"><a href="#画布缩放（Canvas-Scaling）" class="headerlink" title="画布缩放（Canvas Scaling）"></a>画布缩放（Canvas Scaling）</h2><p>硬件加速的2D渲染管道首先被构建以支持未缩放的绘图，一些绘图操作在较高缩放值时会显著降低质量。这些操作被实现为以1.0缩放绘制的纹理，由GPU转换。在API级别小于17中，使用这些操作会导致缩放部件随着比例增加。</p>
+<p>下面的表显示了实现被更改为正确处理大尺度时的情况:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:right">Drawing operation to be scaled</th>
+<th style="text-align:center">First supported API level</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right">drawText()</td>
+<td style="text-align:center">18</td>
+</tr>
+<tr>
+<td style="text-align:right">drawPosText()</td>
+<td style="text-align:center">✗</td>
+</tr>
+<tr>
+<td style="text-align:right">drawTextOnPath()</td>
+<td style="text-align:center">✗</td>
+</tr>
+<tr>
+<td style="text-align:right">Simple Shapes*</td>
+<td style="text-align:center">17</td>
+</tr>
+<tr>
+<td style="text-align:right">Complex Shapes*</td>
+<td style="text-align:center">✗</td>
+</tr>
+<tr>
+<td style="text-align:right">drawPath()</td>
+<td style="text-align:center">✗</td>
+</tr>
+<tr>
+<td style="text-align:right">Shadow layer</td>
+<td style="text-align:center">✗</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>注意：“简单”形状是用Paint发出的drawRect()，drawCircle()，drawOval()，drawRoundRect()和drawArc()（使用useCenter = false）命令，该Paint没有PathEffect并且不包含非默认联接（通过setStrokeJoin()/setStrokeMiter()）。在上面的图表中，这些绘图命令的其他实例属于“复杂”形状。</p>
+</blockquote>
+<p>如果应用程序受到任何这些缺少的功能或限制的影响，可以通过调用<strong>setLayerType(View.LAYER_TYPE_SOFTWARE，null)</strong>为应用程序的受影响部分关闭硬件加速。这样，仍然可以在其他地方利用硬件加速。</p>
+<h2 id="View-Layers"><a href="#View-Layers" class="headerlink" title="View Layers"></a>View Layers</h2><p>在Android的所有版本中，通过使用View的绘图缓存，或使用<strong>Canvas.saveLayer()</strong>方法，View都具有渲染到离屏（off-screen）缓冲区的能力。离屏缓冲区或图层有多种用途。在呈现复杂的动画或使用组合效果时，能够获得更好的性能。例如，可以使用Canvas.saveLayer()来实现淡入淡出效果，先暂时把一个View渲染到一个层中，然后把它和不透明因子合成到屏幕上。</p>
+<p>从Android 3.0（API11）开始，可以更好地控制如何以及何时使用<strong>View.setLayerType()</strong>方法来使用图层。该API接受两个参数：要使用的图层类型和描述应该如何合成图层的可选Paint对象。可以使用这个Paint参数将颜色过滤器，特殊混合模式或透明度应用于图层。视图可以使用三种图层类型之一：</p>
+<ul>
+<li><strong>LAYER_TYPE_NONE</strong>：View用普通的方式来渲染，并且不是由屏幕外缓冲区来返回的。这种类型是默认的行为。</li>
+<li><strong>LAYER_TYPE_HARDWARE</strong>：如果应用程序是硬件加速的，则该View被渲染到硬件的一个硬件纹理中。如果应用程序不是硬件加速的，则此图层类型的行为与LAYER_TYPE_SOFTWARE相同。</li>
+<li><strong>LAYER_TYPE_SOFTWARE</strong>：View会被呈现在软件的一个位图中</li>
+</ul>
+<p>根据以下目的，选择图层类型：</p>
+<ul>
+<li><strong>性能（Performance）</strong>：使用硬件图层类型将视图渲染到硬件纹理中。一旦视图被渲染到一个图层中，它的绘图代码直到视图调用invalidate()时才会被执行。对于某些动画，如alpha动画，就能够直接使用该图层，这么做对于GPU来说是非常高效的。</li>
+<li><strong>视觉效果（Visual effects）</strong>：使用硬件或软件图层类型和Paint对视图应用特殊的视觉处理。例如，使用ColorMatrixColorFilter对象绘制一个黑白相间的视图。</li>
+<li><strong>兼容性（Compatibility）</strong>：使用软件层类型会强制把一个View对象渲染在软件中。如果硬件加速的视图（例如，如果整个应用程序硬件加速），发生渲染问题，那么使用软件层类型来解决硬件渲染管道的限制是一个简单的方法。</li>
+</ul>
+<h2 id="View-layers-and-animations"><a href="#View-layers-and-animations" class="headerlink" title="View layers and animations"></a>View layers and animations</h2><p>当应用程序硬件加速时，硬件层可以提供更快更流畅的动画。当执行具有复杂的绘图操作的动画时，以每秒60帧的速度运行动画并不总是可行。这可以通过使用硬件层将视图渲染为硬件纹理来缓解。硬件纹理能够被用于动画视图，这样在该视图呈现动画时，就可以消除视图所需要的重绘操作。除非更改视图的属性（invalidate()被调用），或者手动调用invalidate()，否则不会重新绘制视图。如果在应用程序运行动画，并且没有获得想要的平滑结果，就要考虑在动画视图上启用硬件层。</p>
+<p>当一个视图从硬件层被返回时，通过图层方法处理的某些属性会被合成到屏幕上。设置这些属性将非常高效，因为它们不要求视图失效并重绘。以下属性列表会影响图层合成的方式。调用这些属性设置器（setter），会导致失效处理的优化，并且不会对目标视图进行重绘：</p>
+<ul>
+<li>alpha：改变图层的不透明度</li>
+<li>x, y, translationX, translationY：改变图层的位置</li>
+<li>scaleX, scaleY：改变图层的大小</li>
+<li>rotation, rotationX, rotationY：在3D空间中更改图层的方向</li>
+<li>pivotX, pivotY：更改图层的变换原点</li>
+</ul>
+<p>这些属性是在用ObjectAnimator对象给视图设置动画时所使用的名称。如果想访问这些属性，请调用相应的setter或getter。例如，要修改alpha属性，请调用setAlpha()。以下代码片断展示了在3D空间中围绕Y轴旋转视图的最有效的方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">view.setLayerType(View.LAYER_TYPE_HARDWARE, <span class="keyword">null</span>);</span><br><span class="line">ObjectAnimator.ofFloat(view, <span class="string">"rotationY"</span>, <span class="number">180</span>).start();</span><br></pre></td></tr></table></figure>
+<p>由于硬件层会消耗显示内存，强烈建议仅在动画播放期间启用硬件层，然后在动画完成后禁用硬件层。可以使用动画监听器完成此操作：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">view.setLayerType(View.LAYER_TYPE_HARDWARE, <span class="keyword">null</span>);</span><br><span class="line">ObjectAnimator animator = ObjectAnimator.ofFloat(view, <span class="string">"rotationY"</span>, <span class="number">180</span>);</span><br><span class="line">animator.addListener(<span class="keyword">new</span> AnimatorListenerAdapter() &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onAnimationEnd</span><span class="params">(Animator animation)</span> </span>&#123;</span><br><span class="line">        view.setLayerType(View.LAYER_TYPE_NONE, <span class="keyword">null</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line">animator.start();</span><br></pre></td></tr></table></figure>
+<h2 id="Tips-and-Tricks"><a href="#Tips-and-Tricks" class="headerlink" title="Tips and Tricks"></a>Tips and Tricks</h2><p>切换到硬件加速的2D图形能够有效提高性能，但是为了有效的使用GPU，应该按照以下建议设计应用程序：</p>
+<h3 id="减少应用程序中的视图数量"><a href="#减少应用程序中的视图数量" class="headerlink" title="减少应用程序中的视图数量"></a>减少应用程序中的视图数量</h3><p>系统绘制的视图越多，速度就越慢。这也适用于软件渲染管道。减少视图是优化UI的最简单方法之一。</p>
+<h3 id="避免过度绘制"><a href="#避免过度绘制" class="headerlink" title="避免过度绘制"></a>避免过度绘制</h3><p>不要在彼此顶部绘制太多的图层。删除那些完全被其他不透明视图遮挡的视图。如果需要绘制混合在一起的多个图层，请考虑将它们合并到一个图层中。对于当前硬件的一个很好的原则是每帧画面的像素数不要大于屏幕上像素数的2.5倍（以位图的透明点阵数来计算）。</p>
+<h3 id="不要在绘图方法中创建渲染对象"><a href="#不要在绘图方法中创建渲染对象" class="headerlink" title="不要在绘图方法中创建渲染对象"></a>不要在绘图方法中创建渲染对象</h3><p>一个常见的错误是每次渲染方法被调用时创建一个新的Paint或一个新的Path。这样就会强制频繁的运行垃圾回收，导致绕过硬件管道中的缓存和优化。</p>
+<h3 id="不要经常的修改形状"><a href="#不要经常的修改形状" class="headerlink" title="不要经常的修改形状"></a>不要经常的修改形状</h3><p>对于复杂的形状，如路径和圆，是使用纹理掩码来呈现的。每次创建或修改路径，硬件通道都要创建一个新的纹理遮罩，这样会消耗大量的资源。</p>
+<h3 id="不要经常修改位图"><a href="#不要经常修改位图" class="headerlink" title="不要经常修改位图"></a>不要经常修改位图</h3><p>每次改变位图内容，它都会被再次上传到GPU的纹理，以供下次绘制。</p>
+<h3 id="小心使用alpha"><a href="#小心使用alpha" class="headerlink" title="小心使用alpha"></a>小心使用alpha</h3><p>当使用setAlpha()，AlphaAnimation或ObjectAnimator让一个视图半透明时，需要双倍填充率来渲染到离屏缓冲区。在非常大的视图上应用alpha时，请考虑将视图的图层类型设置为LAYER_TYPE_HARDWARE。</p>
+<blockquote>
+<p><a href="https://developer.android.com/guide/topics/graphics/hardware-accel.html" target="_blank" rel="noopener">https://developer.android.com/guide/topics/graphics/hardware-accel.html</a></p>
+</blockquote>
 
       
     </div>
@@ -456,8 +759,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -523,6 +835,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#控制硬件加速"><span class="nav-number">1.</span> <span class="nav-text">控制硬件加速</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Application级别"><span class="nav-number">1.1.</span> <span class="nav-text">Application级别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Activity级别"><span class="nav-number">1.2.</span> <span class="nav-text">Activity级别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Window级别"><span class="nav-number">1.3.</span> <span class="nav-text">Window级别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#View级别"><span class="nav-number">1.4.</span> <span class="nav-text">View级别</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#确定View是否硬件加速"><span class="nav-number">2.</span> <span class="nav-text">确定View是否硬件加速</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Android绘图模型"><span class="nav-number">3.</span> <span class="nav-text">Android绘图模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基于软件的绘图模型"><span class="nav-number">3.1.</span> <span class="nav-text">基于软件的绘图模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#硬件加速绘图模型"><span class="nav-number">3.2.</span> <span class="nav-text">硬件加速绘图模型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#不支持的绘图操作"><span class="nav-number">4.</span> <span class="nav-text">不支持的绘图操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#画布缩放（Canvas-Scaling）"><span class="nav-number">5.</span> <span class="nav-text">画布缩放（Canvas Scaling）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#View-Layers"><span class="nav-number">6.</span> <span class="nav-text">View Layers</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#View-layers-and-animations"><span class="nav-number">7.</span> <span class="nav-text">View layers and animations</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Tips-and-Tricks"><span class="nav-number">8.</span> <span class="nav-text">Tips and Tricks</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#减少应用程序中的视图数量"><span class="nav-number">8.1.</span> <span class="nav-text">减少应用程序中的视图数量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#避免过度绘制"><span class="nav-number">8.2.</span> <span class="nav-text">避免过度绘制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#不要在绘图方法中创建渲染对象"><span class="nav-number">8.3.</span> <span class="nav-text">不要在绘图方法中创建渲染对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#不要经常的修改形状"><span class="nav-number">8.4.</span> <span class="nav-text">不要经常的修改形状</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#不要经常修改位图"><span class="nav-number">8.5.</span> <span class="nav-text">不要经常修改位图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#小心使用alpha"><span class="nav-number">8.6.</span> <span class="nav-text">小心使用alpha</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
