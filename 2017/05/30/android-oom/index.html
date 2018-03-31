@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="基于Android开发多媒体和游戏应用时，可能会挺经常出现OOM异常，这个异常就是内存不过或者内存耗尽导致的。">
+<meta name="description" content="基于Android开发多媒体和游戏应用时，可能会挺经常出现OOM异常，这个异常就是内存不够或者内存耗尽导致的。">
 <meta name="keywords" content="Android,OOM">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Android Out Of Memory(OOM) 研究">
 <meta property="og:url" content="http://zhupeng.space/2017/05/30/android-oom/index.html">
 <meta property="og:site_name" content="Coding Life">
-<meta property="og:description" content="基于Android开发多媒体和游戏应用时，可能会挺经常出现OOM异常，这个异常就是内存不过或者内存耗尽导致的。">
+<meta property="og:description" content="基于Android开发多媒体和游戏应用时，可能会挺经常出现OOM异常，这个异常就是内存不够或者内存耗尽导致的。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-05-30T09:49:33.202Z">
+<meta property="og:updated_time" content="2018-03-31T04:04:10.281Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android Out Of Memory(OOM) 研究">
-<meta name="twitter:description" content="基于Android开发多媒体和游戏应用时，可能会挺经常出现OOM异常，这个异常就是内存不过或者内存耗尽导致的。">
+<meta name="twitter:description" content="基于Android开发多媒体和游戏应用时，可能会挺经常出现OOM异常，这个异常就是内存不够或者内存耗尽导致的。">
 
 
 
@@ -363,34 +363,46 @@
       
 
       
-        <p>基于Android开发多媒体和游戏应用时，可能会挺经常出现OOM异常，这个异常就是内存不过或者内存耗尽导致的。</p>
+        <p>基于Android开发多媒体和游戏应用时，可能会挺经常出现OOM异常，这个异常就是内存不够或者内存耗尽导致的。</p>
 <a id="more"></a>
-<p>在Android中，一个Process 只能使用16M内存，如果超过了这个限制就会跳出这个异常。这样就要求我们要时刻想着释放资源。Java的回收工作是交给GC的，如何让GC能及时的回收已经不是用的对象，这个里面有很多技巧，大家可以google一下。<br>因为总内存的使用超过16M而导致OOM的情况，非常简单，我就不继续展开说。值得注意的是Bitmap在不用时，一定要recycle，不然OOM是非常容易出现的。<br>本文想跟大家一起讨论的是另一种情况：明明还有很多内存，但是发生OOM了。<br>这种情况经常出现在生成Bitmap的时候。有兴趣的可以试一下，在一个函数里生成一个13m的int数组。<br>再该函数结束后，按理说这个int数组应该已经被释放了，或者说可以释放，这个13M的空间应该可以空出来，这个时候如果你继续生成一个10M的int数组是没有问题的，反而生成一个4M的Bitmap就会跳出OOM。这个就奇怪了，为什么10M的int够空间，反而4M的Bitmap不够呢？<br>这个问题困扰很久，在网上，国外各大论坛搜索了很久，一般关于OOM的解释和解决方法都是，如何让GC尽快回收的代码风格之类，并没有实际的支出上述情况的根源。<br>直到昨天在一个老外的blog上终于看到了这方面的解释，我理解后归纳如下：<br>在Android中：</p>
+<p>在Android中，每个应用程序都在Linux进程中运行。每个Linux进程都有一个运行在其中的虚拟机（Dalvik虚拟机）。一个进程可以要求的内存有一个限制，对于不同的设备内存限制有所不同，对于手机和平板电脑也不同。当某些进程需要的内存超出限制时，就会导致Out of Memory (OOM) Error。</p>
+<h2 id="可能的原因"><a href="#可能的原因" class="headerlink" title="可能的原因"></a>可能的原因</h2><p>有很多原因导致OOM。其中一些是：</p>
+<ul>
+<li>做一些持续需要大量内存的操作，并且在某些情况下它超出了一个进程的最大堆内存限制</li>
+<li>泄漏了一些内存，即先前分配的对象不符合垃圾收集（GC）的条件。这被称为内存泄漏</li>
+<li>处理大型位图并在运行时加载所有这些位图。必须仔细处理大型位图，方法是一次加载所需大小的位图而不是整个位图，然后进行缩放</li>
+</ul>
+<h2 id="解决的方法"><a href="#解决的方法" class="headerlink" title="解决的方法"></a>解决的方法</h2><ul>
+<li>在内存引用上做些处理，常用的有软引用、强引用、弱引用</li>
+<li>在内存中加载图片时直接在内存中做处理，如：边界压缩</li>
+<li>动态回收内存</li>
+<li>优化Dalvik虚拟机的堆内存分配</li>
+<li>自定义堆内存大小</li>
+</ul>
+<p>软引用(SoftReference)、虚引用(PhantomRefrence)、弱引用(WeakReference)，这三个类是对heap中java对象的应用，通过这个三个类可以和gc做简单的交互，除了这三个以外还有一个是最常用的强引用。只要存在对heap中对象的引用，gc就不会收集该对象。heap中对象有强可及对象、软可及对象、弱可及对象、虚可及对象和不可到达对象。应用的强弱顺序是强、软、弱、和虚。对于对象是属于哪种可及的对象，由最强的引用决定。建立虚引用之后通过get方法返回结果始终为null，虚引用通常会把引用的对象写进referent，只是get方法返回结果为null。与软引用和弱引用不同, 虚引用先把PhantomRefrence对象添加到它的ReferenceQueue中，然后再释放虚可及的对象。</p>
+<p>尽量不要使用setImageBitmap或setImageResource或BitmapFactory.decodeResource来设置一张大图，因为这些函数在完成decode后，最终都是通过java层的createBitmap来完成的，需要消耗更多内存。因此，改用先通过BitmapFactory.decodeStream方法，创建出一个bitmap，再将其设为ImageView的source，decodeStream最大的秘密在于其直接调用JNI层的nativeDecodeAsset()来完成decode，无需再使用java层的createBitmap，从而节省了java层的空间。如果在读取时加上图片的Config参数，可以很有效地减少加载的内存，从而更有效阻止OOM异常，另外，decodeStream直接拿图片来读取字节码了，不会根据机器的各种分辨率来自动适应，使用了decodeStream之后，需要在xxhdpi，xhdpi，hdpi和mdpi，ldpi中配置相应的图片资源，否则在不同分辨率机器上都是同样大小（像素点数量），显示出来的大小就不对。如以下方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">InputStream is = <span class="keyword">this</span>.getResources().openRawResource(resId);</span><br><span class="line">BitmapFactory.Options options = <span class="keyword">new</span> BitmapFactory.Options();</span><br><span class="line">options.inJustDecodeBounds = <span class="keyword">false</span>;</span><br><span class="line">options.inSampleSize = <span class="number">10</span>;</span><br><span class="line">Bitmap bitmap = BitmapFactory.decodeStream(is,<span class="keyword">null</span>,options);</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(!bitmap.isRecycled())&#123;</span><br><span class="line">    bitmap.recycle();</span><br><span class="line">    System.gc();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>最省内存的图片读取方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Bitmap <span class="title">readBitmap</span><span class="params">(Context context, <span class="keyword">int</span> resId)</span> </span>&#123;</span><br><span class="line">      BitmapFactory.Options options = <span class="keyword">new</span> BitmapFactory.Options();</span><br><span class="line">      options.inPreferredConfig = Bitmap.Config.RGB_565;</span><br><span class="line">      options.inPurgeable = <span class="keyword">true</span>;</span><br><span class="line">      options.inInputShareable = <span class="keyword">true</span>;</span><br><span class="line">      InputStream is = context.getResources().openRawResource(resId);</span><br><span class="line">      <span class="keyword">return</span> BitmapFactory.decodeStream(is, <span class="keyword">null</span>, options);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>对于Android平台来说，其托管层使用的Dalvik Java VM从目前的表现来看还有很多地方可以优化处理，比如在开发一些大型游戏或耗资源的应用中可能考虑手动干涉GC处理，使用dalvik.system.VMRuntime类提供的setTargetHeapUtilization方法可以增强程序堆内存的处理效率。当然具体原理可以参考开源工程，这里仅说下使用方法:</p>
+<pre><code>private final static floatTARGET_HEAP_UTILIZATION = 0.75f;
+</code></pre><p>在程序onCreate时就可以调用</p>
+<pre><code>VMRuntime.getRuntime().setTargetHeapUtilization(TARGET_HEAP_UTILIZATION);
+</code></pre><p>即可。</p>
+<p>对于一些Android项目，影响性能瓶颈的主要是Android自己内存管理机制问题，目前手机厂商对RAM都比较吝啬，对于软件的流畅性来说RAM对性能的影响十分敏感，除了优化Dalvik虚拟机的堆内存分配外，还可以强制定义软件的内存大小，使用Dalvik提供的dalvik.system.VMRuntime类来设置最小堆内存为例:</p>
+<pre><code>private final static int CWJ_HEAP_SIZE = 6* 1024* 1024;
+VMRuntime.getRuntime().setMinimumHeapSize(CWJ_HEAP_SIZE); //设置最小heap内存为6MB大小。当然对于内存吃紧来说还可以通过手动干涉GC去处理
+</code></pre><p>注意了，这个设置dalvik虚拟机的配置的方法对Android4.0设置无效。</p>
+<p>有时明明还有很多内存，却发生OOM。例如，在一个函数里生成一个13M的int数组。在该函数结束后，按理说这个int数组应该已经被释放了，或者说可以释放，这个13M的空间应该可以空出来，这个时候如果继续生成一个10M的int数组是没有问题的，反而生成一个4M的Bitmap就会跳出OOM。这个就奇怪了，为什么10M的int够空间，反而4M的Bitmap不够呢？</p>
+<p>在Android中：</p>
 <ol>
-<li>一个进程的内存可以由2个部分组成：java使用内存 ，C使用内存 ，这两个内存的和必须小于16M，不然就会出现大家熟悉的OOM，这个就是第一种OOM的情况。</li>
-<li>更加奇怪的是这个：一旦内存分配给Java后，以后这块内存即使释放后，也只能给Java的使用，这个估计跟java虚拟机里把内存分成好几块进行缓存的原因有关，反正C就别想用到这块的内存了，所以如果Java突然占用了一个大块内存，即使很快释放了：</li>
+<li>一个进程的内存可以由2个部分组成：java使用内存 ，C使用内存 ，这两个内存的和必须小于最大内存限制，不然就会出现OOM，这个就是第一种OOM的情况。</li>
+<li>更加奇怪的是这个：一旦内存分配给Java后，以后这块内存即使释放后，也只能给Java的使用，这个估计跟java虚拟机里把内存分成好几块进行缓存的原因有关，反正C就别想用到这块的内存了，所以如果Java突然占用了一个大块内存，即使很快释放了：C能使用的内存= 最大内存 - Java某一瞬间占用的最大内存。而Bitmap的生成是通过malloc进行内存分配的，占用的是C的内存，这个也就说明了，上述的4M Bitmap无法生成的原因，因为在13M被Java用过后，剩下C能用的只有3M了。</li>
 </ol>
-<p>C能使用的内存 = 16M - Java某一瞬间占用的最大内存。<br>而Bitmap的生成是通过malloc进行内存分配的，占用的是C的内存，这个也就说明了，上述的4MBitmap无法生成的原因，因为在13M被Java用过后，剩下C能用的只有3M了。</p>
-<p>下面是我参考的blog的所有内容：<br>[android-developers] Re: OOM error caught bei DefaultException handler … but there is plenty of memory<br>内如如下：</p>
+<p>JH = Java堆<br><br>JU = Java实际使用的内存<br><br>NH = 本地堆<br><br>TU = 使用的总内存= JU + NH<br><br>TA = 分配的总内存= JH + NH<br></p>
 <blockquote>
-<p>You might try to pre-allocate bitmap memory before launching the WebViews?It’s not the WebView that’s triggering the OOM, but some arbitrary otherpiece of code that needs memory that is not <em>there</em> anymore. Very often thisis happening when starting a new activity.</p>
+<p>Runtime.getMaxMemory()</p>
 </blockquote>
-<p>Ok, I see, I have to start dealing with automating my apology. </p>
-<p>There is one more, small thing that I can do. I also do some downloading andXML parsing in the background at times. This only takes Java Heap (&lt;3MB),but maybe I should move that stuff to a separate process. This may lower thechances of an OOM. I’ll think about it, but with all the added complexity ofinter process communication I am not sure I would want to go there.</p>
-<p>Anyway, thanks for sharing your insights. That was very helpful.</p>
-<p> On Wed, Oct 7, 2009 at 10:48 PM, Tom Gibara &lt;[EMAIL PROTECTED]&gt; wrote: </p>
-<blockquote>
-<p>I think it’s better to add a couple more columns to the table to see the<br>picture (as I see it) more clearly:&gt; JH = Java Heap<br>JU = Memory actually used by Java<br>NH = Native Heap<br>TU = Total memory Used = JU + NH<br>TA = Total memory Allocated = JH + NH </p>
-<p>(note I’m not distinguishing between native heap and native heap used<br>because it’s not relevant here)</p>
-<p>The system requires TA (the process size as you called it) to not exceed<br>16MB, the evolution is:</p>
-<p>JU JH NH TU TA<br>1) 2 2 0 2 2<br>2) 4 4 0 4 4<br>3) 4 4 2 6 6<br>4) 14 14 2 16 16<br>5) 4 14 2 6 16<br>6) 4 14 4 10 18 <strong><em> OH NO! </em></strong> </p>
-<p>The key is what happens between (4) and (5): GC reclaims 10MB (JU reduced&gt; by 10MB) but the java heap doesn’t shrink (JH stays at 14MB). This enlarged &gt; java heap basically squeezes the maximum native heap allocation.</p>
-<p>The simplest approach is to try and ensure that your application maintains<br>a ‘flatish’ memory profile - no big spikes. You should do this anyway, since<br>it means that your application is being well behaved and won’t force other<br>apps to be terminated just because your application needs a temporary shot&gt; of memory (which will then remain as a glut until the application restarts).</p>
-<p>As you point out, WebViews are heavy on memory usage, and these might be<br>what’s causing your memory usage to spike. I don’t have any good suggestions<br>for a fix. You might try to pre-allocate bitmap memory before launching the<br>WebViews? It might work, but it may be complicated to do and could cause<br>OOMs when WebViews are instantiated - no way around that, your application<br>is simply using too much memory at that point. </p>
-</blockquote>
-<p>2012年02月04日  更新：</p>
-<p>16M是怎么来的？算是实验来的吧，每个机型不一样，模拟器不同版本也不一样，可以通过：Runtime.getMaxMemory() 来查看。</p>
-<p>待整理!!!（参考链接：<a href="http://www.cnblogs.com/wanqieddy/archive/2012/07/18/2597471.html）" target="_blank" rel="noopener">http://www.cnblogs.com/wanqieddy/archive/2012/07/18/2597471.html）</a></p>
 
       
     </div>
@@ -485,8 +497,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -552,6 +573,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#可能的原因"><span class="nav-number">1.</span> <span class="nav-text">可能的原因</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解决的方法"><span class="nav-number">2.</span> <span class="nav-text">解决的方法</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
