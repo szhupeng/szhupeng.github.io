@@ -1,0 +1,1534 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Android," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="本文主要总结Android发布的各版本变更差异。">
+<meta name="keywords" content="Android">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android版本变更">
+<meta property="og:url" content="http://zhupeng.space/2018/05/21/android-releases/index.html">
+<meta property="og:site_name" content="Coding Life">
+<meta property="og:description" content="本文主要总结Android发布的各版本变更差异。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://ob0r3vf26.bkt.clouddn.com/images/doze-diagram-1.png">
+<meta property="og:image" content="http://ob0r3vf26.bkt.clouddn.com/images/doze-diagram-2.png">
+<meta property="og:updated_time" content="2018-06-19T12:15:28.162Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android版本变更">
+<meta name="twitter:description" content="本文主要总结Android发布的各版本变更差异。">
+<meta name="twitter:image" content="http://ob0r3vf26.bkt.clouddn.com/images/doze-diagram-1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://zhupeng.space/2018/05/21/android-releases/"/>
+
+
+
+
+
+  <title>Android版本变更 | Coding Life</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Coding Life</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">思路决定出路</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://zhupeng.space/2018/05/21/android-releases/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="朱鹏">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://ob0r3vf26.bkt.clouddn.com/blog_logo.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Coding Life">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android版本变更</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-21T21:15:01+08:00">
+                2018-05-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/05/21/android-releases/" class="leancloud_visitors" data-flag-title="Android版本变更">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文主要总结Android发布的各版本变更差异。</p>
+<a id="more"></a>
+<h1 id="Android-P"><a href="#Android-P" class="headerlink" title="Android P"></a>Android P</h1><p>Android P对Android系统进行了多项变更。其中大部分变更会影响所有应用，而不论应用针对的是何种版本的Android。</p>
+<h2 id="在Android-P上运行的所有应用"><a href="#在Android-P上运行的所有应用" class="headerlink" title="在Android P上运行的所有应用"></a>在Android P上运行的所有应用</h2><p>当应用运行在Android P平台上时，这些行为变更将影响所有应用，无论这些应用是针对哪个API级别构建。所有开发者都应查看这些变更，并修改其应用以正确支持这些变更（如果适用）。</p>
+<h3 id="后台应用中的输入和数据隐私"><a href="#后台应用中的输入和数据隐私" class="headerlink" title="后台应用中的输入和数据隐私"></a>后台应用中的输入和数据隐私</h3><p>Android P通过限制后台应用访问用户输入和传感器数据的能力增强了隐私性。如果应用在运行Android P的设备上在后台运行，系统将对应用施加以下限制：</p>
+<ul>
+<li>应用不能访问麦克风或摄像头。</li>
+<li>使用连续报告模式的传感器（例如加速度计和陀螺仪）不会接收事件。</li>
+<li>使用发送变化时或一次性报告模式的传感器不会接收事件。</li>
+</ul>
+<p>如果应用需要在运行Android P的设备上检测传感器事件，请使用<strong>前台服务</strong>。</p>
+<blockquote>
+<p>注：对SensorManager的某个实例调用flush()的应用不会受此变更影响。</p>
+</blockquote>
+<h3 id="设备安全性变更"><a href="#设备安全性变更" class="headerlink" title="设备安全性变更"></a>设备安全性变更</h3><p>Android P引入了若干可提升应用和运行应用的设备安全性的行为变更。</p>
+<h4 id="影响所有应用的行为变更"><a href="#影响所有应用的行为变更" class="headerlink" title="影响所有应用的行为变更"></a>影响所有应用的行为变更</h4><p>无论应用的目标平台版本如何，Android P添加的若干功能均可令应用的安全性得到改善。</p>
+<h5 id="新增的APK密钥轮转"><a href="#新增的APK密钥轮转" class="headerlink" title="新增的APK密钥轮转"></a>新增的APK密钥轮转</h5><p>Android P添加了对APK Signature Scheme v3的支持。该架构提供的选择可以在其签名块中为每个签名证书加入一条轮转证据记录 应用可以通过将APK文件过去的签名证书链接到现在签署应用时使用的证书，使用新签名证书来签署应用。</p>
+<p>除了可以使用新签名，仍可使用旧签名证书来签署应用。这样一来，用户就可以将应用安装在运行Android 8.1（API 27）的设备上，或者运行的Android版本较低，不支持更改签名证书的设备上。</p>
+<h5 id="传输层安全协议-TLS-实现变更"><a href="#传输层安全协议-TLS-实现变更" class="headerlink" title="传输层安全协议(TLS)实现变更"></a>传输层安全协议(TLS)实现变更</h5><p>系统的传输层安全协议(TLS)实现在Android P中经历了若干次变更：</p>
+<ul>
+<li>如果<strong>SSLSocket</strong>的实例在创建时连接失败，现在系统会引发<strong>IOException</strong>而非<strong>NullPointerException</strong>。</li>
+<li><strong>SSLEngine</strong>类现在可正常处理出现的任何<strong>close_notify</strong>提醒。</li>
+</ul>
+<h5 id="更严格的Seccomp过滤器"><a href="#更严格的Seccomp过滤器" class="headerlink" title="更严格的Seccomp过滤器"></a>更严格的Seccomp过滤器</h5><p>对可供应用使用的系统调用做了进一步限制。应用不受影响，但前提是应用使用Bionic内容库，并且不直接进行系统调用。</p>
+<h5 id="对ChaCha20流式传输加密的支持"><a href="#对ChaCha20流式传输加密的支持" class="headerlink" title="对ChaCha20流式传输加密的支持"></a>对ChaCha20流式传输加密的支持</h5><p>Android平台现在提供<strong>RFC 7539</strong>中所述的ChaCha20加密实现， {: .external-link}既有纯粹的流式传输加密形式 ChaCha20/None/NoPadding，也有 ChaCha20 + Poly1305 AEAD 形式 ChaCha20/Poly1305/NoPadding。</p>
+<h5 id="旧版加密支持"><a href="#旧版加密支持" class="headerlink" title="旧版加密支持"></a>旧版加密支持</h5><p>附带Keymaster 4的Android P设备支持三重数据加密算法（简称三重DES）。如果应用与需要三重DES的旧版系统进行互操作，请使用这种加密来加密敏感凭据。</p>
+<h4 id="影响以Android-P为目标平台的应用的行为变更"><a href="#影响以Android-P为目标平台的应用的行为变更" class="headerlink" title="影响以Android P为目标平台的应用的行为变更"></a>影响以Android P为目标平台的应用的行为变更</h4><p>Android P添加的若干功能可改善应用的安全性，但仅当应用以Android P为目标平台时，才能获得这些改善。</p>
+<h5 id="默认情况下启用网络传输层安全协议-TLS"><a href="#默认情况下启用网络传输层安全协议-TLS" class="headerlink" title="默认情况下启用网络传输层安全协议(TLS)"></a>默认情况下启用网络传输层安全协议(TLS)</h5><p>如果应用以Android P为目标平台，则默认情况下<strong>isCleartextTrafficPermitted()</strong>函数返回false。因此，如果应用需要为特定域名启用明文，需要在应用的网络安全性配置中将<strong>cleartextTrafficPermitted</strong>显式地设置为true。</p>
+<h5 id="按进程分设基于网络的数据目录"><a href="#按进程分设基于网络的数据目录" class="headerlink" title="按进程分设基于网络的数据目录"></a>按进程分设基于网络的数据目录</h5><p>在Android P中，为改善应用稳定性和数据完整性，应用无法再让<strong>多个进程</strong>共用同一WebView数据目录。此类数据目录一般存储Cookie、HTTP缓存以及其他与网络浏览有关的持久性和临时性存储。</p>
+<p>在大多数情况下，应用只应在一个进程中使用<strong>android.webkit</strong>软件包中的类，例如<strong>WebView</strong>和<strong>CookieManager</strong>。例如，应该将所有使用WebView的Activity对象移入同一进程。可以通过在应用的其他进程中调用<strong>disableWebView()</strong>，更严格地执行“仅限一个进程”规则。 该调用可防止WebView在这些其他进程中被错误地初始化，即使是从依赖内容库进行的调用也能防止。</p>
+<p>如果应用必须在多个进程中使用WebView的实例，则必须先利用<strong>WebView.setDataDirectorySuffix()</strong>函数为每个进程指定不同的数据目录后缀，然后再在该进程中使用WebView的给定实例。该函数会将每个进程的网络数据放入其在应用数据目录内自己的目录中。</p>
+<p>注：即使使用setDataDirectorySuffix()，系统也不会跨应用的进程界限共享Cookie以及其他网络数据。如果应用中的多个进程需要访问同一网络数据，需要自行在这些进程之间复制数据。例如，可以调用getCookie()和setCookie()，在不同进程之间手动传送Cookie数据。</p>
+<h5 id="以应用为单位的SELinux域名"><a href="#以应用为单位的SELinux域名" class="headerlink" title="以应用为单位的SELinux域名"></a>以应用为单位的SELinux域名</h5><p>以Android P为目标平台的应用无法再利用可全球访问的Unix权限与其他应用共享数据。此变更可改善Android应用沙盒的完整性，{: .external-link}具体地讲，就是要求应用的私有数据只能由该应用访问。</p>
+<p>要与其他应用共享文件，请使用content provider或外部存储空间内的共享空间。</p>
+<h3 id="加密变更"><a href="#加密变更" class="headerlink" title="加密变更"></a>加密变更</h3><p>Android P针对加密算法的实现和处理引入了几项变更。</p>
+<h4 id="参数和算法的Conscrypt实现"><a href="#参数和算法的Conscrypt实现" class="headerlink" title="参数和算法的Conscrypt实现"></a>参数和算法的Conscrypt实现</h4><p>Android P在<strong>Conscrypt</strong>中实现了更多的算法参数{: .external-link}。 这些参数包括：AES、DESEDE、OAEP 和 EC。这些参数和许多算法的<strong>Bouncy Castle</strong>版本{: .external-link}在Android P中已被弃用。</p>
+<p>注：EC参数的Conscrypt实现仅支持已命名的曲线。</p>
+<p>如果应用以Android 8.1（API 27）或更低版本为目标，则在请求上述已弃用算法的Bouncy Castle实现时，将收到一条警告消息。然而，如果以Android P为目标，则这些请求会各自引发<strong>NoSuchAlgorithmException</strong>。</p>
+<h4 id="其他变更"><a href="#其他变更" class="headerlink" title="其他变更"></a>其他变更</h4><p>Android P引入了其他几项加密变更：</p>
+<ul>
+<li>使用PBE密钥时，如果Bouncy Castle需要初始化矢量(IV)，而应用未提供IV，则会收到一条警告消息。</li>
+<li>ARC4 加密的Conscrypt实现允许您指定ARC4/ECB/NoPadding或ARC4/NONE/NoPadding。</li>
+<li>Crypto Java加密架构(JCA)提供程序现已被移除。因此，如果应用调用SecureRandom.getInstance(“SHA1PRNG”, “Crypto”)，将会发生NoSuchProviderException。</li>
+<li>如果应用从大于密钥结构的缓冲区中解析RSA密钥，将不会再发生异常。</li>
+</ul>
+<h3 id="应用兼容性变更"><a href="#应用兼容性变更" class="headerlink" title="应用兼容性变更"></a>应用兼容性变更</h3><p>为帮助确保应用稳定性和兼容性，此平台对某些非SDK函数和字段的使用进行了限制；无论是直接访问这些函数和字段，还是通过反射或JNI访问，这些限制均适用。在Developer Preview 1中，应用可以继续访问这些受限的接口；该平台通过toast和日志条目提醒您注意这些接口。如果应用显示这样的toast，则必须寻求受限接口之外的其他实现策略。如果没有可行的替代策略，可以提交错误以请求重新考虑此限制。</p>
+<h3 id="ICU库更新"><a href="#ICU库更新" class="headerlink" title="ICU库更新"></a>ICU库更新</h3><p>平台中使用的ICU库版本已从Android 8.0（API 26）和8.1（API 27）中的ICU 58更新至ICU 60。</p>
+<p>ICU用于提供android.icu package下的公开API，供Android平台内部用来提供国际化支持。例如，它用于实现java.util、java.text和android.text格式的Android类。此版本包含许多细微但很有用的变更，例如Emoji 5.0数据支持，改进了日期/时间格式。</p>
+<p>应特别注意以下几点：</p>
+<ul>
+<li>平台处理时区的方式已发生更改。<ul>
+<li>平台能够更好地处理GTM和UTC，不再将UTC与GMT混为一谈。<br>ICU现在提供GMT和UTC的翻译版时区名称。此变更会影响“GMT”、“Etc/GMT”、“Etc/UTC”、“UTC”和“Zulu”之类时区的android.icu格式和解析行为。</li>
+<li>java.text.SimpleDateFormat现在使用ICU提供UTC/GMT的显示名称，这意味着：<ul>
+<li>对于许多语言区域而言，设置zzzz的格式将会生成很长的本地化字符串。之前，对于UTC时区，它会生成“UTC”，而对于GMT，则会生成“GMT+00:00”之类的字符串。</li>
+<li>解析zzzz可识别“Universal Coordinated Time”和“Greenwich Mean Time”之类的字符串。</li>
+<li>在所有语言里，如果应用接受“UTC”或“GMT+00:00”作为zzzz的输出，则可能会遇到兼容性问题。</li>
+</ul>
+</li>
+<li>java.text.DateFormatSymbols.getZoneStrings()的行为已变更：<ul>
+<li>与SimpleDateFormat类似，现在，UTC和GMT也有长名称。对于UTC时区，DST类型的时区名称（例如“UTC”、“Etc/UTC”和“Zulu”）变为GMT+00:00（而不是硬编码字符串 UTC），这是在没有其他名称可用时的标准回退。</li>
+<li>某些时区ID被正确地识别为其他地区的同义词，因此，Android能够查找过时时区ID（例如Eire）对应的字符串，而之前无法解决此问题。</li>
+</ul>
+</li>
+<li>亚洲/河内不再是可识别的时区。因此，java.util.TimeZones.getAvailableIds()不再返回此值，java.util.TimeZone.getTimeZone()也不再识别它。此行为与现有的android.icu行为相符。</li>
+</ul>
+</li>
+<li>android.icu.text.NumberFormat.getInstance(ULocale, PLURALCURRENCYSTYLE).parse(String)函数甚至在解析合法货币文本时也会引发ParseException。通过对PLURALCURRENCYSTYLE类型的货币文本使用自Android 7.0（API 24）以来所提供的NumberFormat.parseCurrency，可避免此问题。</li>
+</ul>
+<h3 id="不再支持Android安全加密文件"><a href="#不再支持Android安全加密文件" class="headerlink" title="不再支持Android安全加密文件"></a>不再支持Android安全加密文件</h3><ul>
+<li>Android安全加密文件(ASEC)最初是在Android 2.2（API 8）中引入，用于支持原始的SD卡加载应用功能。Android 6.0（API 23）替换并弃用了ASEC，引入了“可采用的SD卡”功能。</li>
+<li>Android 8.0（API 26）禁止在ASEC中安装新应用。此Developer Preview则完全移除了ASEC功能。</li>
+</ul>
+<h3 id="Java-UTF解码器"><a href="#Java-UTF解码器" class="headerlink" title="Java UTF解码器"></a>Java UTF解码器</h3><p>UTF-8是Android中的默认字符集。UTF-8字节序列可由String(byte[] bytes)之类的String构造函数解码。Android P中的UTF-8解码器更严格，其遵循Unicode标准，也即：</p>
+<ul>
+<li>非最短形式的UTF-8（例如<c0, af="">）现在被视为格式不正确。</c0,></li>
+<li>替代形式的UTF-8（例如U+D800..U+DFFF）现在被视为格式不正确。</li>
+<li>最大的子部分被单个U+FFFD取代。例如，在字节序列“41 C0 AF 41 F4 80 80 41”中，最大子部分为“C0”、“AF”和“F4 80 80”。其中“F4 80 80”可以是“F4 80 80 80”的初始子序列，但“C0”不能是任何形式正确的代码单位序列的初始子序列。因此，输出应为“A\ufffd\ufffdA\ufffdA”。</li>
+<li>要在Android P中解码修改后的UTF-8/CESU-8序列，请使用DataInputStream.readUTF()函数或NewStringUTF() JNI函数。</li>
+</ul>
+<h3 id="使用证书的主机名验证"><a href="#使用证书的主机名验证" class="headerlink" title="使用证书的主机名验证"></a>使用证书的主机名验证</h3><p>RFC 2818中介绍了两种对照证书匹配域名的方法—使用subjectAltName(SAN)扩展程序中的可用名称，或者在没有SAN扩展程序的情况下，回退到commonName(CN)。</p>
+<p>然而，在RFC 2818中，回退到CN已被弃用。因此，Android不再回退到使用CN。要验证主机名，服务器必须出示具有匹配SAN的证书。不包含与主机名匹配的SAN的证书不再被信任。</p>
+<h3 id="网络地址查询可能会导致网络违规"><a href="#网络地址查询可能会导致网络违规" class="headerlink" title="网络地址查询可能会导致网络违规"></a>网络地址查询可能会导致网络违规</h3><p>要求名称解析的网络地址查询可能会涉及网络I/O并被视为阻塞性操作。对于主线程的阻塞性操作可能会导致停顿或卡顿。</p>
+<p>StrictMode类是一个有助于开发者检测代码问题的开发工具。现在，StrictMode可以检测需要名称解析的网络地址查询所导致的网络违规。</p>
+<p>开发者在交付应用时不应启用StrictMode。否则，其应用可能会遭遇新的异常，例如，在使用detectNetwork()或detectAll()函数获取用于检测网络违规的政策时，会出现NetworkOnMainThreadException。</p>
+<p>解析数字IP地址不被视为阻塞性操作。数字IP地址解析的工作方式与Android P以前的平台版本中所采用的方式相同。</p>
+<h3 id="套接字标记"><a href="#套接字标记" class="headerlink" title="套接字标记"></a>套接字标记</h3><p>在Android P以前的平台版本上，如果使用setThreadStatsTag()函数标记某个套接字，则当使用带ParcelFileDescriptor容器的binder IPC将其发送给其他进程时，套接字会被取消标记。</p>
+<p>从Android P开始，利用binder IPC将套接字发送至其他进程时，其标记将得到保留。此变更可能影响网络流量统计，例如，使用queryDetailsForUidTag() 函数时。可以通过先调用untagSocket()然后再将套接字发送至其他进程，保留以前的行为。</p>
+<h3 id="报告的套接字中可用字节数"><a href="#报告的套接字中可用字节数" class="headerlink" title="报告的套接字中可用字节数"></a>报告的套接字中可用字节数</h3><p>在调用shutdownInput()函数后调用available()函数会返回0。</p>
+<h3 id="更详尽的VPN网络功能报告"><a href="#更详尽的VPN网络功能报告" class="headerlink" title="更详尽的VPN网络功能报告"></a>更详尽的VPN网络功能报告</h3><p>在Android P以前的平台版本中，NetworkCapabilities类仅报告VPN的有限信息，例如TRANSPORT_VPN，但会省略NET_CAPABILITY_NOT_VPN。这种情形导致应用开发者难以确定使用VPN是否会导致对用户收费。例如，检查NET_CAPABILITY_NOT_METERED并不能确定底层网络是否按流量计费。</p>
+<p>从Android P开始，当VPN调用setUnderlyingNetworks()函数时，Android系统将会合并任何底层网络的传输和能力并返回VPN网络的有效网络能力作为结果。</p>
+<p>自Android P开始，已经检查NET_CAPABILITY_NOT_METERED的应用开发者将收到关于VPN网络能力和底层网络的信息。</p>
+<h3 id="应用无法再访问xt-qtaguid文件夹中的文件"><a href="#应用无法再访问xt-qtaguid文件夹中的文件" class="headerlink" title="应用无法再访问xt_qtaguid文件夹中的文件"></a>应用无法再访问xt_qtaguid文件夹中的文件</h3><p>不再允许应用直接读取/proc/net/xt_qtaguid文件夹中的文件。这样做是为了确保与某些在发布时运行Android P、但未提供这些文件的设备保持一致。</p>
+<p>依赖这些文件的公开API TrafficStats和NetworkStatsManager继续按照预期方式运行。然而，不受支持的cutils功能（例如qtaguid_tagSocket()）在不同设备上可能不会按照预期方式运行 — 甚至根本不运行。</p>
+<h3 id="强制执行FLAG-ACTIVITY-NEW-TASK要求"><a href="#强制执行FLAG-ACTIVITY-NEW-TASK要求" class="headerlink" title="强制执行FLAG_ACTIVITY_NEW_TASK要求"></a>强制执行FLAG_ACTIVITY_NEW_TASK要求</h3><p>在Android P中，不能从非Activity环境中启动Activity，除非传递Intent标志FLAG_ACTIVITY_NEW_TASK。如果尝试在不传递此标志的情况下启动Activit，则该Activity不会启动，系统会在日志中输出一则消息。</p>
+<p>注：在Android N之前，标志要求一直是期望的行为并被强制执行。Android N中的一个错误会临时阻止实施标志要求。</p>
+<h3 id="屏幕旋转变更"><a href="#屏幕旋转变更" class="headerlink" title="屏幕旋转变更"></a>屏幕旋转变更</h3><p>Android O中的用户可以使用Quicksettings图块或Display设置在自动屏幕旋转和纵向旋转模式之间切换。Android P对纵向旋转模式做出了重大变更。纵向模式已重命名为旋转锁定，它会在自动屏幕旋转关闭时启用。自动屏幕旋转模式没有任何变更。</p>
+<p>当设备处于旋转锁定模式时，用户可将其屏幕锁定到顶层可见Activity所支持的任何旋转。Activity不应假定它将始终以纵向呈现。如果顶层Activity可在自动屏幕旋转模式下以多种旋转呈现，则应在旋转锁定模式下提供相同的选项，根据Activity的screenOrientation设置，允许存在一些例外情况（见下表）。</p>
+<p>请求特定屏幕方向（例如，screenOrientation=landscape）的Activity会忽略用户锁定首选项，并且行为与Android O中的行为相同。</p>
+<p>可在Android清单中，或以编程方式通过setRequestedOrientation()，在Activity一级设置屏幕方向首选项。</p>
+<p>旋转锁定模式通过设置WindowManager在处理Activity旋转时使用的用户旋转首选项来发挥作用。用户旋转首选项可能在下列情况下发生变更。请注意，恢复纵向模式存在偏差：</p>
+<ul>
+<li>当用户接受旋转建议时，旋转首选项变为建议方向。</li>
+<li>当用户切换到强制纵向应用（包括锁定屏幕或启动器）时，旋转首选项变为纵向。</li>
+</ul>
+<p>下表总结了常见屏幕方向的旋转行为：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">屏幕方向</th>
+<th style="text-align:left">行为</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">未指定、user</td>
+<td style="text-align:left">在自动屏幕旋转和旋转锁定下，Activity可以纵向或横向（以及颠倒纵向或横向）呈现。预期同时支持纵向和横向布局。</td>
+</tr>
+<tr>
+<td style="text-align:left">userLandscape</td>
+<td style="text-align:left">在自动屏幕旋转和旋转锁定下，Activity可以横向或颠倒横向呈现。 预期只支持横向布局。</td>
+</tr>
+<tr>
+<td style="text-align:left">userPortrait</td>
+<td style="text-align:left">在自动屏幕旋转和旋转锁定下，Activity可以纵向或颠倒纵向呈现。 预期只支持纵向布局。</td>
+</tr>
+<tr>
+<td style="text-align:left">fullUser</td>
+<td style="text-align:left">在自动屏幕旋转和旋转锁定下，Activity可以纵向或横向（以及颠倒纵向或横向）呈现。预期同时支持纵向和横向布局。旋转锁定用户将可选择锁定到颠倒纵向，通常为180º。</td>
+</tr>
+<tr>
+<td style="text-align:left">sensor、fullSensor、sensorPortrait、sensorLandscape</td>
+<td style="text-align:left">忽略旋转锁定模式首选项，视为自动屏幕旋转已启用。 请仅在例外情况下并经过仔细的用户体验考量后再使用此项。</td>
+</tr>
+</tbody>
+</table>
+<h2 id="针对Android-P的应用"><a href="#针对Android-P的应用" class="headerlink" title="针对Android P的应用"></a>针对Android P的应用</h2><p>这些行为变更仅应用于针对P平台或更高版本的应用。针对Android P或更高版本进行编译，或将targetSdkVersion设为Android P或更高版本的应用开发者必须修改其应用以正确支持这些行为（如果适用）。</p>
+<h3 id="前台服务"><a href="#前台服务" class="headerlink" title="前台服务"></a>前台服务</h3><p>针对Android P或更高版本并使用前台服务的应用必须请求<strong>FOREGROUND_SERVICE</strong>权限。这是普通权限，因此，系统会自动为请求权限的应用授予此权限。</p>
+<p>如果针对Android P的应用尝试创建一个前台服务且未请求FOREGROUND_SERVICE，则系统会引发SecurityException。</p>
+<h3 id="设备串行访问限制"><a href="#设备串行访问限制" class="headerlink" title="设备串行访问限制"></a>设备串行访问限制</h3><p><strong>Build.SERIAL</strong>字段在Android 8.0（API 26）中已被弃用。在Android P中，Build.SERIAL始终设置为”UNKNOWN”。此变更旨在保护用户的隐私。</p>
+<p>如果应用需要访问设备的硬件序列号，应请求<strong>READ_PHONE_STATE</strong>权限，然后调用<strong>getSerial()</strong>。</p>
+<h3 id="视图焦点"><a href="#视图焦点" class="headerlink" title="视图焦点"></a>视图焦点</h3><p>0面积的视图（即宽度或高度为0）再也不能被聚焦。</p>
+<p>此外，Activity不再隐式分配触摸模式下的初始焦点 而是由您显式请求初始焦点（如若需要的话）。</p>
+<p>Android P应用支持草案版CSS颜色模块级别 4的行为，用于处理4和8个十六进制数字CSS颜色。</p>
+<p>Chrome自版本52以来便一直支持CSS颜色模块级别4，但WebView目前停用此功能，因为现有Android应用被发现包含Android ordering(ARGB)中的32位十六进制颜色，这会导致渲染错误。</p>
+<p>例如，对于以Android P之前的SDK为目标的应用，颜色#80ff8080目前在WebView中被渲染为不透明浅红色(#ff8080)。先导部分（Android 会将其解读为 Alpha 部分）目前被忽略。如果某个应用以P或更高版本为目标，则它将被解读为50%透明浅绿 (#80ff80)。</p>
+<h3 id="文档滚动标签"><a href="#文档滚动标签" class="headerlink" title="文档滚动标签"></a>文档滚动标签</h3><p>在Android P之前的版本中，滚动位置在body元素上设置，根元素的滚动值为零。Android P支持符合标准的行为，在这种行为中，滚动元素是根元素。</p>
+<p>此外，直接访问document.body.scrollTop、document.body.scrollLeft、document.documentElement.scrollTop或document.documentElement.scrollLeft会因目标SDK的不同而具有不同的行为。要访问视口滚动值，请使用document.scrollingElement（若有）。</p>
+<h1 id="Android-Oreo"><a href="#Android-Oreo" class="headerlink" title="Android Oreo"></a>Android Oreo</h1><h2 id="针对所有API级别的应用"><a href="#针对所有API级别的应用" class="headerlink" title="针对所有API级别的应用"></a>针对所有API级别的应用</h2><p>这些行为变更适用于在Android 8.0平台上运行的所有应用，无论这些应用是针对哪个API级别构建。所有开发者都应查看这些变更，并修改其应用以正确支持这些变更（如果适用）。</p>
+<h3 id="后台执行限制"><a href="#后台执行限制" class="headerlink" title="后台执行限制"></a>后台执行限制</h3><p>Android 8.0为提高电池续航时间而引入的变更之一是，当应用进入已缓存状态时，如果没有活动的组件，系统将解除应用具有的所有唤醒锁。</p>
+<p>此外，为提高设备性能，系统会限制未在前台运行的应用的某些行为。具体而言：</p>
+<ul>
+<li>现在，在后台运行的应用对后台服务的访问受到限制。</li>
+<li>应用无法使用其清单注册大部分隐式广播（即，并非专门针对此应用的广播）。</li>
+</ul>
+<p>默认情况下，这些限制仅适用于针对O的应用。不过，用户可以从Settings屏幕为任意应用启用这些限制，即使应用并不是以O为目标平台。</p>
+<p>Android 8.0还对特定函数做出了以下变更：</p>
+<ul>
+<li>如果针对Android 8.0的应用尝试在不允许其创建后台服务的情况下使用<strong>startService()</strong>函数，则该函数将引发一个<strong>IllegalStateException</strong>。</li>
+<li>新的<strong>Context.startForegroundService()</strong>函数将启动一个前台服务。现在，即使应用在后台运行，系统也允许其调用<strong>Context.startForegroundService()</strong>。不过，应用必须在创建服务后的五秒内调用该服务的<strong>startForeground()</strong>函数。</li>
+</ul>
+<h3 id="Android后台位置限制"><a href="#Android后台位置限制" class="headerlink" title="Android后台位置限制"></a>Android后台位置限制</h3><p>为节约电池电量、保持良好的用户体验和确保系统健康运行，在运行Android 8.0的设备上使用后台应用时，降低了后台应用接收位置更新的频率。此行为变更会影响包括Google Play服务在内的所有接收位置更新的应用。</p>
+<p>此类变更会影响以下API：</p>
+<ul>
+<li>Fused Location Provider (FLP)</li>
+<li>Geofencing</li>
+<li>GNSS Measurements</li>
+<li>Location Manager</li>
+<li>Wi-Fi Manager</li>
+</ul>
+<p>为确保应用按预期方式运行，请完成以下步骤：</p>
+<ul>
+<li>查看应用的逻辑，并确保您使用的是最新的位置API。</li>
+<li>测试应用是否在每个用例中都表现出预期行为。</li>
+<li>考虑使用Fused Location Provider (FLP)或地理围栏来处理依赖于用户当前位置的用例。</li>
+</ul>
+<h3 id="应用快捷键"><a href="#应用快捷键" class="headerlink" title="应用快捷键"></a>应用快捷键</h3><p>Android 8.0对应用快捷方式做出了以下变更：</p>
+<ul>
+<li><strong>com.android.launcher.action.INSTALL_SHORTCUT</strong>广播不再会对应用有任何影响，因为它现在是私有的隐式广播。相反，应使用<strong>ShortcutManager</strong>类中的<strong>requestPinShortcut()</strong>函数创建应用快捷方式。</li>
+<li>现在，<strong>ACTION_CREATE_SHORTCUT</strong> Intent可以创建可使用<strong>ShortcutManager</strong>类进行管理的应用快捷方式。此Intent还可以创建不与ShortcutManager交互的旧版启动器快捷方式。在以前，此Intent只能创建旧版启动器快捷方式。</li>
+<li>现在，使用<strong>requestPinShortcut()</strong>创建的快捷方式和在处理<strong>ACTION_CREATE_SHORTCUT</strong> Intent的操作组件中创建的快捷方式均已转换为功能齐全的应用快捷方式。因此，应用现在可以使用ShortcutManager中的函数来更新这些快捷方式。</li>
+<li>旧版快捷方式仍然保留了它们在旧版Android中的功能，但必须在应用中手动将它们转换成应用快捷方式。</li>
+</ul>
+<h3 id="语言区域和国际化"><a href="#语言区域和国际化" class="headerlink" title="语言区域和国际化"></a>语言区域和国际化</h3><p>Android 7.0（API 24）引入能指定默认类别语言区域的概念，但是某些API在本应使用默认DISPLAY类别语言区域时，仍然使用不带参数的通用<strong>Locale.getDefault()</strong>函数。现在，在Android 8.0中，以下函数使用<strong>Locale.getDefault(Category.DISPLAY)</strong>来代替<strong>Locale.getDefault()</strong>：</p>
+<ul>
+<li>Currency.getDisplayName()</li>
+<li>Currency.getSymbol()</li>
+<li>Locale.getDisplayScript()</li>
+</ul>
+<p>当为<strong>Locale</strong>参数指定的<span style="color: #ec407a;-moz-osx-font-smoothing:auto;-webkit-font-smoothing:auto;font-weight: 700;font-style:italic;">displayScript</span>值不可用时，<strong>Locale.getDisplayScript(Locale)</strong>同样回退到<strong>Locale.getDefault()</strong>。</p>
+<p>与语言区域和国际化有关的其他变更如下：</p>
+<ul>
+<li>调用<strong>Currency.getDisplayName(null)</strong>会引发<strong>NullPointerException</strong>，以与文档规定的行为保持一致。</li>
+<li>时区名称的分析方法发生变化。之前，Android设备使用在启动时取样的系统时钟值，缓存用于分析日期时间的时区名称。因此，如果在启动时或其他较为罕见的情况下系统时钟出错，可能对分析产生负面影响。<br>现在，一般情况下，在分析时区名称时分析逻辑将使用ICU 和当前系统时钟值。此项变更可提供更加准确的结果，如果您应用使用<strong>SimpleDateFormat</strong>等类，此结果可能与之前的Android版本不同。</li>
+<li>Android 8.0将ICU的版本更新至版本58。</li>
+</ul>
+<h3 id="提醒窗口"><a href="#提醒窗口" class="headerlink" title="提醒窗口"></a>提醒窗口</h3><p>如果应用使用<strong>SYSTEM_ALERT_WINDOW</strong>权限并且尝试使用以下窗口类型之一来在其他应用和系统窗口上方显示提醒窗口：</p>
+<ul>
+<li>TYPE_PHONE</li>
+<li>TYPE_PRIORITY_PHONE</li>
+<li>TYPE_SYSTEM_ALERT</li>
+<li>TYPE_SYSTEM_OVERLAY</li>
+<li>TYPE_SYSTEM_ERROR</li>
+</ul>
+<p>…那么，这些窗口将始终显示在使用<strong>TYPE_APPLICATION_OVERLAY</strong>窗口类型的窗口下方。如果应用针对的是Android 8.0，则应用会使用<strong>TYPE_APPLICATION_OVERLAY</strong>窗口类型来显示提醒窗口。</p>
+<h3 id="输入和导航"><a href="#输入和导航" class="headerlink" title="输入和导航"></a>输入和导航</h3><p>随着Android应用出现在Chrome操作系统和平板电脑等其他大尺寸设备上，用户在Android应用中又重新开始使用键盘导航。在Android 8.0中，又再次使用键盘作为导航输入设备，从而为基于箭头键和Tab键的导航构建了一种更可靠并且可预测的模型。</p>
+<p>尤其要指出的是，对元素焦点行为做出以下变更：</p>
+<ul>
+<li>现在，如果没有为View对象（前景或背景图片）定义任何焦点状态颜色，框架会为View设置默认的焦点突出显示颜色。此焦点突出显示标志是基于操作组件主题背景的涟漪图片。<br>如果不希望View对象在接收焦点时使用此默认突出显示标志，请在包含View的布局XML文件中将<strong>android:defaultFocusHighlightEnabled</strong>属性设置为false，或者将false传递至应用界面逻辑中的<strong>setDefaultFocusHighlightEnabled()</strong>。</li>
+<li>要测试键盘输入对界面元素焦点有何影响，可以启用Drawing &gt; Show layout bounds开发者选项。在Android 8.0中，此选项在当前具有焦点的元素上显示一个“X”图标。</li>
+</ul>
+<p>另外，Android 8.0中的所有工具栏元素自动组成键盘导航键区，用户可以更加轻松地导航进入和离开每个作为一个整体的工具栏。</p>
+<h3 id="网页表单自动填充"><a href="#网页表单自动填充" class="headerlink" title="网页表单自动填充"></a>网页表单自动填充</h3><p>现在，Android自动填充框架提供对自动填充功能的内置支持，对于安装到运行Android 8.0的设备上的应用，与WebView对象相关的下列函数已经发生变化：</p>
+<ul>
+<li><strong>WebSettings</strong><ul>
+<li>getSaveFormData()函数现在返回false。之前，此函数返回true。</li>
+<li>调用setSaveFormData()不再有任何效果。</li>
+</ul>
+</li>
+<li>WebViewDatabase<ul>
+<li>调用clearFormData()不再有任何效果。</li>
+<li>hasFormData()函数现在返回false。之前，当表单包含数据时，此函数返回true。</li>
+</ul>
+</li>
+</ul>
+<h3 id="无障碍功能"><a href="#无障碍功能" class="headerlink" title="无障碍功能"></a>无障碍功能</h3><p>现在，无障碍服务可识别应用的TextView对象内部的所有ClickableSpan实例。</p>
+<h3 id="网络连接和HTTP-S-连接"><a href="#网络连接和HTTP-S-连接" class="headerlink" title="网络连接和HTTP(S)连接"></a>网络连接和HTTP(S)连接</h3><p>Android 8.0对网络连接和HTTP(S)连接行为做出了以下变更：</p>
+<ul>
+<li>无正文的OPTIONS请求具有Content-Length: 0标头。之前，这些请求没有Content-Length标头。</li>
+<li>HttpURLConnection在包含斜线的主机或颁发机构名称后面附加一条斜线，使包含空路径的网址规范化。例如，它将<a href="http://example.com转化为http://example.com/。" target="_blank" rel="noopener">http://example.com转化为http://example.com/。</a></li>
+<li>通过ProxySelector.setDefault()设置的自定义代理选择器仅针对所请求的网址（架构、主机和端口）。因此，仅可根据这些值选择代理。传递至自定义代理选择器的网址不包含所请求的网址的路径、查询参数或片段。</li>
+<li>URI不能包含空白标签。<br>之前，平台支持一种权宜方法，即允许主机名称中包含空白标签，但这是对URI的非法使用。此权宜方法只是为了确保与旧版libcore兼容。开发者如果对API使用不当，将会看到一条ADB消息：“URI example..com的主机名包含空白标签。此格式不正确，将不被未来的Android版本所接受。”Android 8.0废除了此权宜方法；系统对格式错误的URI会返回null。</li>
+<li>Android 8.0在实现HttpsURLConnection时不会执行不安全的TLS/SSL协议版本回退。</li>
+<li>对隧道HTTP(S)连接处理进行了如下变更：<ul>
+<li>在通过连接建立隧道HTTP(S)连接时，系统会在Host行中正确放置端口号(:443)并将此信息发送至中间服务器。之前，端口号仅出现在CONNECT行中。</li>
+<li>系统不再将隧道连接请求中的user-agent和proxy-authorization标头发送至代理服务器。<br>在建立隧道时，系统不再将隧道Http(s)URLConnection中的proxy-authorization标头发送至代理。相反，由系统生成proxy-authorization标头，在代理响应初始请求发送HTTP 407后将其发送至此代理。<br>同样地，系统不再将user-agent标头由隧道连接请求复制到建立隧道的代理请求。相反，库为此请求生成user-agent标头。</li>
+</ul>
+</li>
+<li>如果之前执行的connect()函数失败，send(java.net.DatagramPacket)函数将会引发SocketException。<ul>
+<li>如果存在内部错误，DatagramSocket.connect()会引发pendingSocketException。对于Android 8.0之前的版本，即使send()调用成功，后续的recv()调用也会引发SocketException。为确保一致性，现在这两个调用均会引发SocketException。</li>
+</ul>
+</li>
+<li>在回退到TCP Echo协议之前，InetAddress.isReachable()会尝试执行ICMP。<ul>
+<li>对于某些屏蔽端口7(TCP Echo)的主机（例如google.com），如果它们接受ICMP Echo协议，现在也许能够访问它们。</li>
+<li>对于确实无法访问的主机，此项变更意味着调用需要两倍的时间才能返回结果。</li>
+</ul>
+</li>
+</ul>
+<h3 id="蓝牙"><a href="#蓝牙" class="headerlink" title="蓝牙"></a>蓝牙</h3><p>Android 8.0对<strong>ScanRecord.getBytes()</strong>函数检索的数据长度做出以下变更：</p>
+<ul>
+<li><strong>getBytes()</strong>函数对于所接收的字节数不作任何假定。因此，应用不应受所返回的任何最小或最大字节数的影响。相反，应用应当计算所返回数组的长度。</li>
+<li>兼容蓝牙5的设备返回的数据长度可能会超出之前最大约60个字节的限制。</li>
+<li>如果远程设备未提供扫描响应，则也可能返回少于60个字节的数据。</li>
+</ul>
+<h3 id="无缝连接"><a href="#无缝连接" class="headerlink" title="无缝连接"></a>无缝连接</h3><p>Android 8.0对WLAN设置进行了多项改进，这样可以更轻松地选择能够提供最佳用户体验的WLAN网络。具体变更包括：</p>
+<ul>
+<li>稳定性和可靠性改进。</li>
+<li>更加直观的界面。</li>
+<li>一个合并的WLAN首选项菜单。</li>
+<li>当附近存在优质的已保存网络时在兼容设备上自动激活WLAN。</li>
+</ul>
+<h3 id="安全性"><a href="#安全性" class="headerlink" title="安全性"></a>安全性</h3><p>Android 8.0包含以下与安全性有关的变更：</p>
+<ul>
+<li>此平台不再支持SSLv3。</li>
+<li>在与未正确实现TLS协议版本协商的服务器建立HTTPS连接时，HttpsURLConnection不再尝试回退到之前的TLS协议版本并重试的权宜方法。</li>
+<li>Android 8.0将使用安全计算(SECCOMP)过滤器来过滤所有应用。允许的系统调用列表仅限于通过bionic公开的系统调用。此外，还提供了其他几个后向兼容的系统调用，但不建议使用这些系统调用。</li>
+<li>现在，应用的WebView对象将在多进程模式下运行。网页内容在独立的进程中处理，此进程与包含应用的进程相隔离，以提高安全性。</li>
+<li>无法再假定APK驻留在名称以-1或-2结尾的目录中。应用应使用sourceDir获取此目录，而不能直接使用目录格式。</li>
+</ul>
+<h3 id="隐私性"><a href="#隐私性" class="headerlink" title="隐私性"></a>隐私性</h3><p>Android 8.0 对平台做出了以下与隐私性有关的变更。</p>
+<ul>
+<li>现在，平台改变了标识符的处理方式。<ul>
+<li>对于在OTA之前安装到某个版本Android 8.0（API 26）的应用，除非在OTA后卸载并重新安装，否则<strong>ANDROID_ID</strong>的值将保持不变。要在OTA后在卸载期间保留值，开发者可以使用<strong>密钥/值</strong>备份关联旧值和新值。</li>
+<li>对于安装在运行Android 8.0的设备上的应用，ANDROID_ID的值现在将根据应用签署密钥和用户确定作用域。应用签署密钥、用户和设备的每个组合都具有唯一的ANDROID_ID值。因此，在相同设备上运行但具有不同签署密钥的应用将不会再看到相同的Android ID（即使对于同一用户来说，也是如此）。</li>
+<li>只要签署密钥相同（并且应用未在OTA之前安装到某个版本的O），ANDROID_ID的值在软件包卸载或重新安装时就不会发生变化。</li>
+<li>即使系统更新导致软件包签署密钥发生变化，ANDROID_ID的值也不会变化。<br>要借助一个简单的标准系统实现应用获利，请使用广告ID。广告ID是Google Play服务针对广告服务提供的唯一ID，此ID可由用户重置。</li>
+</ul>
+</li>
+<li>查询net.hostname系统属性返回的结果为空。</li>
+</ul>
+<h3 id="记录未捕获的异常"><a href="#记录未捕获的异常" class="headerlink" title="记录未捕获的异常"></a>记录未捕获的异常</h3><p>如果某个应用安装的Thread.UncaughtExceptionHandler未移交给默认的Thread.UncaughtExceptionHandler，则当出现未捕获的异常时，系统不会终止应用。从Android 8.0开始，在此情况下系统将记录异常堆栈跟踪情况；在之前的平台版本中，系统不会记录异常堆栈跟踪情况。</p>
+<p>建议自定义Thread.UncaughtExceptionHandler实现始终移交给默认处理程序处理；遵循此建议的应用不受Android 8.0此项变更的影响。</p>
+<h3 id="联系人提供程序使用情况统计方法的变更"><a href="#联系人提供程序使用情况统计方法的变更" class="headerlink" title="联系人提供程序使用情况统计方法的变更"></a>联系人提供程序使用情况统计方法的变更</h3><p>在之前版本的Android中，联系人提供程序组件允许开发者获取每个联系人的使用情况数据。此使用情况数据揭示了与某个联系人相关联的每个电子邮件地址和每个电话号码的信息，包括与该联系人联系的次数以及上次联系该联系人的时间。请求READ_CONTACTS权限的应用可以读取此数据。</p>
+<p>如果应用请求READ_CONTACTS权限，它们仍可以读取此数据。从Android 8.0开始，使用情况数据查询会返回近似值，而不是精确值。不过，Android系统内部仍然会保留精确值，因此，此变更不会影响auto-complete API。</p>
+<p>此行为变更会影响以下查询参数：</p>
+<ul>
+<li>TIMES_CONTACTED</li>
+<li>TIMES_USED</li>
+<li>LAST_TIME_CONTACTED</li>
+<li>LAST_TIME_USED</li>
+</ul>
+<h3 id="集合的处理"><a href="#集合的处理" class="headerlink" title="集合的处理"></a>集合的处理</h3><p>现在，AbstractCollection.removeAll()和AbstractCollection.retainAll()始终引发NullPointerException；之前，当集合为空时不会引发NullPointerException。此项变更使行为符合文档要求。</p>
+<h3 id="Android企业版"><a href="#Android企业版" class="headerlink" title="Android企业版"></a>Android企业版</h3><p>Android 8.0更改了企业应用（包括设备规范控制器(DPC)）的某些API和功能的行为。这些变更包括：</p>
+<ul>
+<li>新增多种行为，帮助应用支持完全托管设备中的工作资料。</li>
+<li>变更系统更新处理、应用验证和身份验证方式，以提高设备和系统的完整性。</li>
+<li>改进用户在配置、通知、“最近使用的应用”屏幕和Always on VPN方面的体验。</li>
+</ul>
+<h2 id="针对Android-8-0的应用"><a href="#针对Android-8-0的应用" class="headerlink" title="针对Android 8.0的应用"></a>针对Android 8.0的应用</h2><p>这些行为变更专门应用于针对O平台或更高平台版本的应用。针对Android 8.0或更高平台版本进行编译，或将targetSdkVersion 设为Android 8.0或更高版本的应用开发者必须修改其应用以正确支持这些行为（如果适用）。</p>
+<h3 id="提醒窗口-1"><a href="#提醒窗口-1" class="headerlink" title="提醒窗口"></a>提醒窗口</h3><p>使用<strong>SYSTEM_ALERT_WINDOW</strong>权限的应用无法再使用以下窗口类型来在其他应用和系统窗口上方显示提醒窗口：</p>
+<ul>
+<li>TYPE_PHONE</li>
+<li>TYPE_PRIORITY_PHONE</li>
+<li>TYPE_SYSTEM_ALERT</li>
+<li>TYPE_SYSTEM_OVERLAY</li>
+<li>TYPE_SYSTEM_ERROR</li>
+</ul>
+<p>相反，应用必须使用名为<strong>TYPE_APPLICATION_OVERLAY</strong>的新窗口类型。</p>
+<p>使用<strong>TYPE_APPLICATION_OVERLAY</strong>窗口类型显示应用的提醒窗口时，请记住新窗口类型的以下特性：</p>
+<ul>
+<li>应用的提醒窗口始终显示在状态栏和输入法等关键系统窗口的下面。</li>
+<li>系统可以移动使用TYPE_APPLICATION_OVERLAY窗口类型的窗口或调整其大小，以改善屏幕显示效果。</li>
+<li>通过打开通知栏，用户可以访问设置来阻止应用显示使用TYPE_APPLICATION_OVERLAY窗口类型显示的提醒窗口。</li>
+</ul>
+<h3 id="内容变更通知"><a href="#内容变更通知" class="headerlink" title="内容变更通知"></a>内容变更通知</h3><p>Android 8.0更改了<strong>ContentResolver.notifyChange()</strong>和<strong>registerContentObserver(Uri, boolean, ContentObserver)</strong>在针对Android 8.0的应用中的行为方式。</p>
+<p>现在，这些API需要在所有URI 中为颁发机构定义一个有效的ContentProvider。使用相关权限定义一个有效的ContentProvider可帮助您的应用防范来自恶意应用的内容变更，并防止将可能的私密数据泄露给恶意应用。</p>
+<h3 id="视图焦点-1"><a href="#视图焦点-1" class="headerlink" title="视图焦点"></a>视图焦点</h3><p>可点击的View对象现在默认也可以成为焦点。如果希望View对象可点击但不可成为焦点，请在包含View的布局XML文件中将<strong>android:focusable</strong>属性设置为false，或者将false传递至应用界面逻辑中的setFocusable()。</p>
+<h3 id="安全性-1"><a href="#安全性-1" class="headerlink" title="安全性"></a>安全性</h3><p>如果应用的网络安全性配置选择退出对明文流量的支持，那么应用的WebView 对象无法通过HTTP访问网站。每个WebView对象必须转而使用HTTPS。</p>
+<h3 id="帐号访问和可检测性"><a href="#帐号访问和可检测性" class="headerlink" title="帐号访问和可检测性"></a>帐号访问和可检测性</h3><p>除非身份验证器拥有用户帐号或用户授予访问权限，否则，应用将无法再访问用户帐号。仅拥有GET_ACCOUNTS权限尚不足以访问用户帐号。要获得帐号访问权限，应用应使用AccountManager.newChooseAccountIntent()或特定于身份验证器的函数。获得帐号访问权限后，应用可以调用AccountManager.getAccounts()来访问帐号。</p>
+<p>Android 8.0已弃用<strong>LOGIN_ACCOUNTS_CHANGED_ACTION</strong>。相反，应用在运行时应使用addOnAccountsUpdatedListener()获取帐号更新信息。</p>
+<h3 id="隐私性-1"><a href="#隐私性-1" class="headerlink" title="隐私性"></a>隐私性</h3><p>以下变更影响Android 8.0的隐私性。</p>
+<ul>
+<li>系统属性net.dns1、net.dns2、net.dns3和net.dns4不再可用，此项变更可加强平台的隐私性。</li>
+<li>要获取DNS服务器之类的网络连接信息，具有<strong>ACCESS_NETWORK_STATE</strong>权限的应用可以注册<strong>NetworkRequest</strong>或<strong>NetworkCallback</strong>对象。这些类在Android 5.0（API 21）及更高版本中提供。</li>
+<li>Build.SERIAL已弃用。需要知道硬件序列号的应用应改为使用新的<strong>Build.getSerial()</strong>函数，该函数要求具有<strong>READ_PHONE_STATE</strong>权限。</li>
+<li><strong>LauncherApps</strong> API不再允许工作资料应用获取有关主个人资料的信息。当某个用户在托管配置文件中时，<strong>LauncherApps</strong> API的行为就像同一配置文件组的其他配置文件中未安装任何应用一样。和之前一样，尝试访问无关联的个人资料会引发<strong>SecurityExceptions</strong>。</li>
+</ul>
+<h3 id="权限"><a href="#权限" class="headerlink" title="权限"></a>权限</h3><p>在Android 8.0之前，如果应用在运行时请求权限并且被授予该权限，系统会错误地将属于同一权限组并且在清单中注册的其他权限也一起授予应用。</p>
+<p>对于针对Android 8.0的应用，此行为已被纠正。系统只会授予应用明确请求的权限。然而，一旦用户为应用授予某个权限，则所有后续对该权限组中权限的请求都将被自动批准。</p>
+<p>例如，假设某个应用在其清单中列出READ_EXTERNAL_STORAGE和WRITE_EXTERNAL_STORAGE。应用请求READ_EXTERNAL_STORAGE，并且用户授予了该权限。如果该应用针对的是API 24或更低级别，系统还会同时授予WRITE_EXTERNAL_STORAGE，因为该权限也属于同一STORAGE权限组并且也在清单中注册过。如果该应用针对的是Android 8.0，则系统此时仅会授予READ_EXTERNAL_STORAGE；不过，如果该应用后来又请求WRITE_EXTERNAL_STORAGE，则系统会立即授予该权限，而不会提示用户。</p>
+<h3 id="媒体"><a href="#媒体" class="headerlink" title="媒体"></a>媒体</h3><ul>
+<li>框架会执行音频闪避。进行<strong>AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK</strong>时，应用不会失去焦点。新的API适用于需要暂停而不是闪避的应用。请注意，此行为无法在Android 8.0 1版本中实现。</li>
+<li>当用户打电话时，活动的媒体流将在通话期间静音。</li>
+<li>所有与音频相关的API都应使用<strong>AudioAttributes</strong>而不是音频流类型来说明音频播放用例。仅为音量控制继续使用音频流类型。流类型（例如，已弃用的 AudioTrack constructor）的其他用途仍然有效，但是系统会将其记录为错误。</li>
+<li>使用<strong>AudioTrack</strong>时，如果应用请求了足够大的音频缓冲区，则框架将尝试使用深度缓冲区输出（如果可用）。</li>
+<li>在Android 8.0中，<strong>媒体按钮事件</strong>的处理有所不同：<ul>
+<li>在界面操作组件中处理媒体按钮未发生变化：前台操作组件在处理媒体按钮时仍然优先</li>
+<li>如果前台操作组件不处理媒体按钮，系统会将媒体按钮路由到最近在本地播放音频的应用。在确定哪些应用接收媒体按钮事件时，不再考虑活动状态、标志和媒体会话的播放状态。即使在应用调用<strong>setActive(false)</strong>后，媒体会话仍然可以接收媒体按钮事件。</li>
+<li>如果应用的媒体会话已经释放，系统会将媒体按钮事件发送到应用的<strong>MediaButtonReceiver</strong>（如果有）。</li>
+<li>对于任何其他情况，系统都会舍弃媒体按钮事件。与其开始播放错误的应用，不如不播放任何东西。</li>
+</ul>
+</li>
+</ul>
+<h3 id="原生库"><a href="#原生库" class="headerlink" title="原生库"></a>原生库</h3><p>在针对Android 8.0的应用中，如果原生库包含任何可写且可执行的加载代码段，则不会再加载原生库。倘若某些应用的原生库包含不正确的加载代码段，则此变更可能会导致这些应用停止工作。这是一种安全加强措施。</p>
+<p>与早期的开发者预览版相同，Android 8.0还有助于更轻松地发现所有与链接器有关的问题。链接器的变更绑定到应用的目标API级别。如果应用的目标API级别发生链接器变更，则该应用无法加载该库。如果目标API级别低于发生链接器变更的API级别，则logcat会显示一条警告消息。在预览版期间，与链接器有关的问题不仅会显示在logcat中，也会以toast的形式显示。对于特定的API级别，警告可能会变成错误，此变更有助于提前发现此类问题。</p>
+<h3 id="集合的处理-1"><a href="#集合的处理-1" class="headerlink" title="集合的处理"></a>集合的处理</h3><p>在Android 8.0中，Collections.sort()是在List.sort()的基础上实现的。在Android 7.x（API 24和 25）中，则恰恰相反。在过去，List.sort()的默认实现会调用Collections.sort()。</p>
+<p>此项变更使Collections.sort()可以利用优化的List.sort()实现，但具有以下限制：</p>
+<ul>
+<li>List.sort()的实现不能调用Collections.sort()，因为这会导致堆栈因无限递归而溢出。相反，如果需要List实现的默认行为，应避免重写sort()。<br>如果父类以不适当的方法实现sort()，通常最好使用在List.toArray()、Arrays.sort()和ListIterator.set()的基础上构建的实现重写List.sort()。例如：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sort</span><span class="params">(Comparator&lt;? <span class="keyword">super</span> E&gt; c)</span> </span>&#123;</span><br><span class="line">  Object[] elements = toArray();</span><br><span class="line">  Arrays.sort(elements, c);</span><br><span class="line">  ListIterator&lt;E&gt; iterator = (ListIterator&lt;Object&gt;) listIterator();</span><br><span class="line">  <span class="keyword">for</span> (Object element : elements) &#123;</span><br><span class="line">    iterator.next();</span><br><span class="line">    iterator.set((E) element);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+在大多数情况下，也可以使用根据API级别委托给其他默认实现的实现重写List.sort()。例如：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sort</span><span class="params">(Comparator&lt;? <span class="keyword">super</span> E&gt; comparator)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (Build.VERSION.SDK_INT &lt;= <span class="number">25</span>) &#123;</span><br><span class="line">    Collections.sort(<span class="keyword">this</span>);</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">super</span>.sort(comparator);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+如果选择后者只是因为希望开发一种适用于所有API级别的sort()函数，可以考虑赋予其一个唯一的名称，例如sortCompat()，而不是重写sort()。</li>
+<li>现在，Collections.sort()只是对调用sort()的List实现进行的一项结构性修改。例如，在Android 8.0之前的平台版本中，如果通过调用List.sort()进行排序，则当迭代处理ArrayList以及在迭代过程中调用sort()时，会引发ConcurrentModificationException。而Collections.sort()则不会引发异常。<br>此项变更使平台行为更加一致：现在，两种方法都会引发ConcurrentModificationException。</li>
+</ul>
+<h3 id="类加载行为"><a href="#类加载行为" class="headerlink" title="类加载行为"></a>类加载行为</h3><p>Android 8.0检查确保类加载器在加载新类时不会违反运行时假设条件。不论类引用自Java（来自forName()）、Dalvik字节码还是JNI，都会执行这些检查。平台不会拦截Java对loadClass()函数的直接调用，也不会检查此类调用的结果。此行为不应影响运行良好的类加载器的正常运行。</p>
+<p>平台将检查类加载器返回的类描述符是否与预期的描述符一致。如果返回的描述符与预期不符，平台会引发NoClassDefFoundError错误，并在异常日志中存储一条注明不一致之处的详细错误消息。</p>
+<p>平台还检查请求的类描述符是否有效。此检查捕获间接加载诸如GetFieldID()等类的JNI调用，向这些类传递无效的描述符。例如，找不到包含java/lang/String签名的字段，是因为此签名无效；它应为Ljava/lang/String;。</p>
+<p>这与JNI对FindClass()的调用不同，其中java/lang/String是一个有效的完全限定名称。</p>
+<p>Android 8.0不支持多个类加载器同时尝试使用相同的DexFile对象来定义类。尝试进行此操作，会导致Android运行时引发InternalError错误，同时显示消息“Attempt to register dex file <filename> with multiple class loaders”。</filename></p>
+<p>DexFile API现已弃用，强烈建议您改为使用此平台的类加载器之一，包括PathClassLoader或BaseDexClassLoader。</p>
+<p style="background: #e1f5fe;color: #0288d1; font-size: 14px;padding: 16px">注：可以创建多个引用文件系统中同一个APK或JAR文件容器的类加载器。这样做通常不会占用大量内存：如果存储而不压缩容器中的DEX文件，平台可以对此类文件执行mmap操作，而不直接提取它们。但是，如果平台必须从容器中提取DEX文件，以这种方式引用DEX文件可能占用大量内存。</p>
+
+<p>在Android中，所有类加载器都被视为支持并行运行。当多个线程争用同一个类加载器加载相同的类时，第一个完成此操作的线程胜出，而操作结果将用于其他线程。无论类加载器是返回同一个类、返回不同的类还是引发异常，都将发生此行为。该平台静默忽略此类异常。</p>
+<p style="background: #fff3e0;color: #dd2c00;font-size: 14px;padding: 16px;">注意：在低于Android 8.0的平台版本中，违反这些假设条件可能导致多次定义同一个类、由于类混淆造成堆损坏和其他不良影响。</p>
+
+<h1 id="Android-Nougat"><a href="#Android-Nougat" class="headerlink" title="Android Nougat"></a>Android Nougat</h1><h2 id="电池和内存"><a href="#电池和内存" class="headerlink" title="电池和内存"></a>电池和内存</h2><p>Android 7.0包括旨在延长设备电池寿命和减少RAM使用的系统行为变更。这些变更可能会影响您的应用访问系统资源，以及应用通过特定隐式intent与其他应用交互的方式。</p>
+<h3 id="低电耗模式"><a href="#低电耗模式" class="headerlink" title="低电耗模式"></a>低电耗模式</h3><p>Android 6.0（API 23）引入了低电耗模式，当用户设备未插接电源、处于静止状态且屏幕关闭时，该模式会推迟CPU和网络活动，从而延长电池寿命。而Android 7.0则通过在设备未插接电源且屏幕关闭状态下、但不一定要处于静止状态（例如用户外出时把手持式设备装在口袋里）时应用部分CPU和网络限制，进一步增强了低电耗模式。</p>
+<p><img src="http://ob0r3vf26.bkt.clouddn.com/images/doze-diagram-1.png" alt="暂无图片" title="低电耗模式如何应用第一级系统活动限制以延长电池寿命的图示"></p>
+<p>当设备处于充电状态且屏幕已关闭一定时间后，设备会进入低电耗模式并应用第一部分限制：关闭应用网络访问、推迟作业和同步。如果进入低电耗模式后设备处于静止状态达到一定时间，系统则会对PowerManager.WakeLock、AlarmManager闹铃、GPS和WLAN扫描应用余下的低电耗模式限制。无论是应用部分还是全部低电耗模式限制，系统都会唤醒设备以提供简短的维护时间窗口，在此窗口期间，应用程序可以访问网络并执行任何被推迟的作业/同步。</p>
+<p><img src="http://ob0r3vf26.bkt.clouddn.com/images/doze-diagram-2.png" alt="暂无图片" title="低电耗模式如何在设备处于静止状态达到一定时间后应用第二级系统活动限制的图示"></p>
+<p>请注意，激活屏幕或插接设备电源时，系统将退出低电耗模式并移除这些处理限制。此项新增的行为不会影响有关使您的应用适应Android 6.0（API 23）中所推出的旧版本低电耗模式的建议和最佳做法，如对低电耗模式和应用待机模式进行针对性优化中所讨论。应遵循这些建议（例如使用Google云消息传递 (GCM) 发送和接收消息）并开始安排更新计划以适应新增的低电耗模式行为。</p>
+<h3 id="Project-Svelte：后台优化"><a href="#Project-Svelte：后台优化" class="headerlink" title="Project Svelte：后台优化"></a>Project Svelte：后台优化</h3><p>Android 7.0移除了三项隐式广播，以帮助优化内存使用和电量消耗。此项变更很有必要，因为隐式广播会在后台频繁启动已注册侦听这些广播的应用。删除这些广播可以显著提升设备性能和用户体验。</p>
+<p>移动设备会经历频繁的连接变更，例如在WLAN和移动数据之间切换时。目前，可以通过在应用清单中注册一个接收器来侦听隐式<strong>CONNECTIVITY_ACTION</strong>广播，让应用能够监控这些变更。由于很多应用会注册接收此广播，因此单次网络切换即会导致所有应用被唤醒并同时处理此广播。</p>
+<p>同理，在之前版本的Android中，应用可以注册接收来自其他应用（例如相机）的隐式<strong>ACTION_NEW_PICTURE</strong>和<strong>ACTION_NEW_VIDEO</strong>广播。当用户使用相机应用拍摄照片时，这些应用即会被唤醒以处理广播。</p>
+<p>为缓解这些问题，Android 7.0应用了以下优化措施：</p>
+<ul>
+<li>面向Android 7.0开发的应用不会收到CONNECTIVITY_ACTION广播，即使它们已有清单条目来请求接受这些事件的通知。在前台运行的应用如果使用BroadcastReceiver请求接收通知，则仍可以在主线程中侦听CONNECTIVITY_CHANGE。</li>
+<li>应用无法发送或接收ACTION_NEW_PICTURE或ACTION_NEW_VIDEO广播。此项优化会影响所有应用，而不仅仅是面向Android 7.0的应用。</li>
+</ul>
+<p>如果应用使用任何intent，仍需要尽快移除它们的依赖关系，以正确适配Android 7.0设备。Android框架提供多个解决方案来缓解对这些隐式广播的需求。例如，JobScheduler API提供了一个稳健可靠的机制来安排满足指定条件（例如连入无限流量网络）时所执行的网络操作。甚至可以使用JobScheduler来适应内容提供程序变化。</p>
+<h2 id="权限更改"><a href="#权限更改" class="headerlink" title="权限更改"></a>权限更改</h2><p>Android 7.0做了一些权限更改，这些更改可能会影响应用。</p>
+<h3 id="系统权限更改"><a href="#系统权限更改" class="headerlink" title="系统权限更改"></a>系统权限更改</h3><p>为了提高私有文件的安全性，面向Android 7.0或更高版本的应用私有目录被限制访问(0700)。此设置可防止私有文件的元数据泄漏，如它们的大小或存在性。此权限更改有多重副作用：</p>
+<ul>
+<li>私有文件的文件权限不应再由所有者放宽，为使用<strong>MODE_WORLD_READABLE</strong>和/或<strong>MODE_WORLD_WRITEABLE</strong>而进行的此类尝试将触发<strong>SecurityException</strong>。<p style="background: #e1f5fe;color: #0288d1; font-size: 14px;padding: 16px">注：迄今为止，这种限制尚不能完全执行。应用仍可能使用原生API或File API来修改它们的私有目录权限。但是，强烈反对放宽私有目录的权限。</p></li>
+<li>传递软件包网域外的<strong>file://URI</strong>可能给接收器留下无法访问的路径。因此，尝试传递<strong>file://URI</strong>会触发<strong>FileUriExposedException</strong>。分享私有文件内容的推荐方法是使用<strong>FileProvider</strong>。</li>
+<li><strong>DownloadManager</strong>不再按文件名分享私人存储的文件。旧版应用在访问<strong>COLUMN_LOCAL_FILENAME</strong>时可能出现无法访问的路径。面向Android 7.0或更高版本的应用在尝试访问<strong>COLUMN_LOCAL_FILENAME</strong>时会触发<strong>SecurityException</strong>。通过使用<strong>DownloadManager.Request.setDestinationInExternalFilesDir()</strong>或<strong>DownloadManager.Request.setDestinationInExternalPublicDir()</strong>将下载位置设置为公共位置的旧版应用仍可以访问<strong>COLUMN_LOCAL_FILENAME</strong>中的路径，但是强烈反对使用这种方法。对于由<strong>DownloadManager</strong>公开的文件，首选的访问方式是使用<strong>ContentResolver.openFileDescriptor()</strong>。</li>
+</ul>
+<h2 id="在应用间共享文件"><a href="#在应用间共享文件" class="headerlink" title="在应用间共享文件"></a>在应用间共享文件</h2><p>对于面向Android 7.0的应用，Android框架执行的StrictMode API政策禁止在您的应用外部公开<strong>file://URI</strong>。如果一项包含文件URI的intent离开应用，则应用出现故障，并出现<strong>FileUriExposedException</strong>异常。</p>
+<p>要在应用间共享文件，应发送一项<strong>content://URI</strong>，并授予URI临时访问权限。进行此授权的最简单方式是使用FileProvider类。</p>
+<h2 id="屏幕缩放"><a href="#屏幕缩放" class="headerlink" title="屏幕缩放"></a>屏幕缩放</h2><p>Android 7.0支持用户设置显示尺寸，以放大或缩小屏幕上的所有元素，从而提升设备对视力不佳用户的可访问性。用户无法将屏幕缩放至低于最小屏幕宽度sw320dp，该宽度是Nexus 4的宽度，也是常规中等大小手机的宽度。</p>
+<p>当设备密度发生更改时，系统会以如下方式通知正在运行的应用：</p>
+<ul>
+<li>如果是面向API 23或更低版本系统的应用，系统会自动终止其所有后台进程。这意味着如果用户切换离开此类应用，转而打开Settings屏幕并更改<strong>Display size</strong>设置，则系统会像处理内存不足的情况一样终止该应用。如果应用具有任何前台进程，则系统会如处理运行时更改中所述将配置变更通知给这些进程，就像对待设备屏幕方向变更一样。</li>
+<li>如果是面向Android 7.0的应用，则其所有进程（前台和后台）都会收到有关配置变更的通知，如处理运行时更改中所述。</li>
+</ul>
+<p>大多数应用并不需要进行任何更改即可支持此功能，不过前提是这些应用遵循Android最佳做法。具体要检查的事项：</p>
+<ul>
+<li>在屏幕宽度为sw320dp的设备上测试您的应用，并确保其充分运行。</li>
+<li>当设备配置发生变更时，更新任何与密度相关的缓存信息，例如缓存位图或从网络加载的资源。当应用从暂停状态恢复运行时，检查配置变更。<p style="background: #e1f5fe;color: #0288d1; font-size: 14px;padding: 16px">注：如果要缓存与配置相关的数据，则最好也包括相关元数据，例如该数据对应的屏幕尺寸或像素密度。保存这些元数据便于您在配置变更后决定是否需要刷新缓存数据。</p></li>
+<li>避免用像素单位指定尺寸，因为像素不会随屏幕密度缩放。应改为使用与密度无关像素(dp)单位指定尺寸。</li>
+</ul>
+<h2 id="设置向导中的视觉设置"><a href="#设置向导中的视觉设置" class="headerlink" title="设置向导中的视觉设置"></a>设置向导中的视觉设置</h2><p>Android 7.0在“Welcome”屏幕中加入了“Vision Settings”，用户可以在新设备上设置以下无障碍功能设置：Magnification gesture、Font size、Display size和话语提示。此项变更可以更容易发现与不同屏幕设置有关的错误。要评估此功能的影响，应在启用这些设置的状态下测试应用。可以在Settings&gt;Accessibility中找到这些设置。</p>
+<h2 id="NDK应用链接至平台库"><a href="#NDK应用链接至平台库" class="headerlink" title="NDK应用链接至平台库"></a>NDK应用链接至平台库</h2><p>从Android 7.0开始，系统将阻止应用动态链接非公开NDK库，这种库可能会导致应用崩溃。此行为变更旨在为跨平台更新和不同设备提供统一的应用体验。即使代码可能不会链接私有库，但应用中的第三方静态库可能会这么做。因此，所有开发者都应进行相应检查，确保他们的应用不会在运行Android 7.0的设备上崩溃。如果应用使用原生代码，则只能使用公开NDK API。</p>
+<p>应用可通过以下三种方式尝试访问私有平台API：</p>
+<ul>
+<li>应用直接访问私有平台库。应更新应用以添加该应用的库副本，或使用公开NDK API。</li>
+<li>应用使用一个可访问私有平台库的第三方库。即使确定应用不会直接访问私有库，仍应针对此情景测试应用。</li>
+<li>应用引用一个其APK中未包含的库。例如，如果尝试使用自己的OpenSSL副本，但忘记将它与应用的APK进行捆绑，则可能会出现此情况。正常情况下，此应用可在包含libcrypto.so的Android平台版本上运行。不过，此应用在不包含此库的新版Android（例如，Android 6.0和更高的版本）上会崩溃。为修复此问题，请确保APK捆绑所有非NDK库。</li>
+</ul>
+<p>应用不应使用NDK中未包含的原生库，因为这些库可能会发生更改或在不同Android版本之间的可用性不同。例如，从OpenSSL切换至BoringSSL即属于此类更改。此外，由于不属于NDK中的平台库没有兼容性要求，因此不同的设备可能提供不同级别的兼容性。</p>
+<p>为降低此限制可能对当前发布的应用的影响，面向API 23或更低级别的应用在Android N上可暂时访问颇为常用的一组库，例如libandroid_runtime.so、libcutils.so、libcrypto.so 和 libssl.so。如果应用加载其中某个库，logcat会生成一个警告，并在目标设备上显示一个Toast。如果看到这些警告，应更新应用以添加该应用自己的库副本，或仅使用公开NDK API。将来发布的Android平台可能会完全限制对私有库的使用，并导致应用崩溃。</p>
+<p>所有应用在调用既非公开又不可暂时访问的API时都会生成一个运行时错误。结果就是System.loadLibrary和dlopen(3)同时返回NULL，并可能导致应用崩溃。应检查应用代码以移除对私有平台API的使用，并使用预览版设备或模拟器全面测试应用。如果不确定应用是否使用私有库，可以检查logcat以识别运行时错误。</p>
+<h3 id="检查应用是否使用私有库"><a href="#检查应用是否使用私有库" class="headerlink" title="检查应用是否使用私有库"></a>检查应用是否使用私有库</h3><p>为帮助识别加载私有库的问题，logcat可能会生成一个警告或运行时错误。例如，如果应用面向API 23或更低级别，并在运行Android 7.0的设备上尝试访问私有库，可能会看到一个类似于下面所示的警告：</p>
+<pre><code>03-21 17:07:51.502 31234 31234 W linker  : library &quot;libandroid_runtime.so&quot;
+(&quot;/system/lib/libandroid_runtime.so&quot;) needed or dlopened by
+&quot;/data/app/com.popular-app.android-2/lib/arm/libapplib.so&quot; is not accessible
+for the namespace &quot;classloader-namespace&quot; - the access is temporarily granted
+as a workaround for http://b/26394120
+</code></pre><p>这些logcat警告告知哪个库正在尝试访问私有平台API，但不会导致应用崩溃。但是，如果应用面向API 24或更高级别，logcat会生成以下运行时错误，应用可能会崩溃：</p>
+<pre><code>java.lang.UnsatisfiedLinkError: dlopen failed: library &quot;libcutils.so&quot;
+(&quot;/system/lib/libcutils.so&quot;) needed or dlopened by
+&quot;/system/lib/libnativeloader.so&quot; is not accessible for the namespace
+&quot;classloader-namespace&quot;
+  at java.lang.Runtime.loadLibrary0(Runtime.java:977)
+  at java.lang.System.loadLibrary(System.java:1602)
+</code></pre><p>如果应用使用动态链接到私有平台API的第三方库，可能也会看到上述logcat输出。利用Android 7.0 DK中的readelf工具，可以通过运行以下命令生成给定 .so文件的所有动态链接的共享库列表：</p>
+<pre><code>aarch64-linux-android-readelf -dW libMyLibrary.so
+</code></pre><h3 id="更新应用"><a href="#更新应用" class="headerlink" title="更新应用"></a>更新应用</h3><p>通过下面的一些步骤，可以修复上述类型的错误并确保您的应用不会在将来的更新版平台上崩溃：</p>
+<ul>
+<li>如果应用使用私有平台库，应更新它，以添加该应用自己的库副本或使用公开NDK API。</li>
+<li>如果应用使用访问私有符号的第三方库，则联系库作者以更新库。</li>
+<li>请确保将所有非NDK库与APK打包在一起。</li>
+<li>使用标准JNI函数而非来自libandroid_runtime.so的getJavaVM和getJNIEnv：<pre><code>AndroidRuntime::getJavaVM -&gt; GetJavaVM from &lt;jni.h&gt;
+AndroidRuntime::getJNIEnv -&gt; JavaVM::GetEnv or
+JavaVM::AttachCurrentThread from &lt;jni.h&gt;.
+</code></pre></li>
+<li>使用__system_property_get而非来自libcutils.so的私有property_get 符号。为此，请使用__system_property_get及以下include函数：<pre><code>#include &lt;sys/system_properties.h&gt;
+</code></pre><p style="background: #e1f5fe;color: #0288d1; font-size: 14px;padding: 16px">注：系统属性的可用性和内容未通过CTS进行测试。应执行进一步修复以避免同时使用这些属性。</p></li>
+<li>使用来自libcrypto.so的SSL_ctrl符号的本地版本。例如，应在.so文件中静态链接libcyrpto.a，或从BoringSSL/OpenSSL添加一个动态链接的libcrypto.so版本，并将其打包到APK中。</li>
+</ul>
+<h2 id="Android-for-Work"><a href="#Android-for-Work" class="headerlink" title="Android for Work"></a>Android for Work</h2><p>Android 7.0包含一些针对面向Android for Work的应用的变更，包括对证书安装、密码重置、二级用户管理、设备标识符访问权限的变更。如果要针对Android for Work环境开发应用，则应仔细检查这些变更并相应地修改应用。</p>
+<ul>
+<li>必须先安装授权证书安装程序，然后DPC才能对其进行设置。对于面向N SDK的配置文件和设备所有者应用，应在设备规范控制器(DPC)调用DevicePolicyManager.setCertInstallerPackage()之前安装授权证书安装程序。如果尚未安装此安装程序，则系统会引发IllegalArgumentException。</li>
+<li>针对设备管理员的重置密码限制现在也适用于配置文件所有者。设备管理员无法再使用DevicePolicyManager.resetPassword()来清除或更改已经设置的密码。设备管理员仍可以设置密码，但只能在设备没有密码、PIN码或图案时这样做。</li>
+<li>即使设置了限制，设备所有者和配置文件所有者仍可以管理帐户。而且，即使具有DISALLOW_MODIFY_ACCOUNTS用户限制，设备所有者和配置文件所有者仍可调用Account Management API。</li>
+<li>设备所有者可以更轻松地管理二级用户。当设备在设备所有者模式下运行时，系统将自动设置DISALLOW_ADD_USER限制。这样可以防止用户创建非托管二级用户。此外，CreateUser()和createAndInitializeUser()方法已弃用，取而代之的是DevicePolicyManager.createAndManageUser()方法。</li>
+<li>设备所有者可以访问设备标识符。设备所有者可以使用DevicePolicyManagewr.getWifiMacAddress()访问设备的WLAN MAC地址。如果设备上从未启用WLAN，则此方法将返回一个null值。</li>
+<li>工作模式设置控制工作应用访问。当工作模式关闭时，系统启动器通过使工作应用显示为灰色来指示它们不可用。启用工作模式会再次恢复正常行为。</li>
+<li>从Settings UI安装包含客户端证书链和对应的私钥的PKCS #12文件时，系统不再将该证书链中的CA证书安装到受信任的凭据存储空间。当应用稍后尝试检索客户端证书链时，这不会影响KeyChain.getCertificateChain()的结果。如果需要，使用.crt或.cer文件扩展名的DER编码格式通过Settings UI单独将CA证书安装到受信任的凭据存储空间。</li>
+<li>从Android 7.0开始，可针对每个用户管理指纹登记和存储空间。如果配置文件所有者的设备规范客户端(DPC)面向Android N设备上的Android N之前的版本，则用户仍可以在该设备上设置指纹，但工作应用不能访问设备指纹。当DPC面向Android N和更高版本时，用户可以通过转到Settings &gt; Security &gt; Work profile security专门为托管配置文件设置指纹。</li>
+<li>DevicePolicyManager.getStorageEncryptionStatus()返回新的加密状态ENCRYPTION_STATUS_ACTIVE_PER_USER，以表明加密处于活动状态，且加密密钥与用户关联。仅当DPC面向API 24和更高级别时才会返回新的状态。对于面向更早的API级别的应用，即使加密密钥是用户或配置文件特有的，系统也会返回ENCRYPTION_STATUS_ACTIVE。</li>
+<li>在Android 7.0中，如果设备通过单独的工作挑战安装了托管配置文件，则原本通常会影响整个设备的多个方法将会改变其行为方式。这些方法将仅应用于托管配置文件，而不是影响整个设备。（此类方法的完整列表位于DevicePolicyManager.getParentProfileInstance()文档中。）例如，DevicePolicyManager.lockNow()只锁定托管配置文件，而不是锁定整个设备。对于上述每个方法，您可以通过对DevicePolicyManager的父实例调用该方法来获取以前的行为；可以通过调用DevicePolicyManager.getParentProfileInstance()获取此父项。例如，如果调用父实例的lockNow()方法，则整个设备将被锁定。</li>
+</ul>
+<h2 id="注解保留"><a href="#注解保留" class="headerlink" title="注解保留"></a>注解保留</h2><p>Android 7.0修复了一个注解可见性被忽略的错误。这种问题会导致应用可在运行时访问原本不允许访问的注解。这些注解包括：</p>
+<ul>
+<li>VISIBILITY_BUILD：仅应编译时可见。</li>
+<li>VISIBILITY_SYSTEM：运行时应可见，但仅限底层系统。</li>
+</ul>
+<p>如果应用依赖这种行为，请为运行时必须可用的注解添加保留政策。可通过使用@Retention(RetentionPolicy.RUNTIME)来执行此操作。</p>
+<h2 id="其他重要说明"><a href="#其他重要说明" class="headerlink" title="其他重要说明"></a>其他重要说明</h2><ul>
+<li>如果一个应用在Android 7.0上运行，但却是针对更低API级别开发的，那么在用户更改显示尺寸时，系统将终止此应用进程。应用必须能够妥善处理此情景。否则，当用户从最近使用记录中恢复运行应用时，应用将会出现崩溃现象。<br>应测试应用以确保不会发生此行为。要进行此测试，可以通过DDMS手动终止应用，以造成相同的崩溃现象。<br>在密度发生更改时，系统不会自动终止面向N及更高版本的应用；不过，这些应用仍可能对配置变更做出不良响应。</li>
+<li>Android 7.0上的应用应能够妥善处理配置变更，并且在后续启动时不会出现崩溃现象。可以通过更改字体大小(Setting &gt;Display &gt; Font size)并随后从最近使用记录中恢复运行应用，来验证应用行为。</li>
+<li>由于之前的Android版本中的一项错误，系统未能将对主线程上的一个TCP套接字的写入操作举报为违反严格模式。Android 7.0修复了此错误。呈现出这种行为的应用现在会引发android.os.NetworkOnMainThreadException。一般情况下，不建议在主线程上执行网络操作，因为这些操作通常会出现可能导致ANR和卡顿的高尾延迟。</li>
+<li>Debug.startMethodTracing()方法系列现在默认在您的共享存储空间上的软件包特定目录中存储输出，而非SD卡根目录。这意味着应用不再需要请求WRITE_EXTERNAL_STORAGE权限来使用这些API。</li>
+<li>许多平台API现在开始检查在Binder事务间发送的大负载，系统现在会将TransactionTooLargeExceptions作为RuntimeExceptions再次引发，而不再只是默默记录或抑制它们。一个常见例子是在Activity.onSaveInstanceState()上存储过多数据，导致ActivityThread.StopInfo在应用面向Android 7.0时引发RuntimeException。</li>
+<li>如果应用向View发布Runnable任务，并且View未附加到窗口，系统会用View为Runnable任务排队；在View附加到窗口之前，不会执行Runnable任务。此行为会修复以下错误：<ul>
+<li>如果一项应用是从并非预期窗口UI线程的其他线程发布到View，则Runnable可能会因此运行错误的线程。</li>
+<li>如果Runnable任务是从并非环路线程的其他线程发布，则应用可能会曝光Runnable任务。</li>
+</ul>
+</li>
+<li>如果Android 7.0上一项有DELETE_PACKAGES权限的应用尝试删除一个软件包，但另一项应用已经安装了这个软件包，则系统需要用户进行确认。在这种情况下，应用在调用PackageInstaller.uninstall()时预计的返回状态应为STATUS_PENDING_USER_ACTION。</li>
+<li>名为Crypto的JCA提供程序已弃用，因为它仅有的SHA1PRNG算法为弱加密。应用无法再使用SHA1PRNG（不安全地）派生密钥，因为不再提供此提供程序。</li>
+</ul>
+<h1 id="Android-Marshmallow"><a href="#Android-Marshmallow" class="headerlink" title="Android Marshmallow"></a>Android Marshmallow</h1><h2 id="运行时权限"><a href="#运行时权限" class="headerlink" title="运行时权限"></a>运行时权限</h2><p>此版本引入了一种新的权限模式，如今，用户可直接在运行时管理应用权限。这种模式让用户能够更好地了解和控制权限，同时为应用开发者精简了安装和自动更新过程。用户可为所安装的各个应用分别授予或撤销权限。</p>
+<p>对于以Android 6.0（API 23）或更高版本为目标平台的应用，请务必在运行时检查和请求权限。要确定应用是否已被授予权限，请调用新增的<strong>checkSelfPermission()</strong>方法。要请求权限，请调用新增的<strong>requestPermissions()</strong>方法。即使应用并不以Android 6.0（API 23）为目标平台，也应该在新权限模式下测试应用。</p>
+<h2 id="低电耗模式和应用待机模式"><a href="#低电耗模式和应用待机模式" class="headerlink" title="低电耗模式和应用待机模式"></a>低电耗模式和应用待机模式</h2><p>此版本引入了针对空闲设备和应用的最新节能优化技术。这些功能会影响所有应用，因此请务必在这些新模式下测试应用。</p>
+<ul>
+<li><strong>低电耗模式</strong>：如果用户拔下设备的电源插头，并在屏幕关闭后的一段时间内使其保持不活动状态，设备会进入低电耗模式，在该模式下设备会尝试让系统保持休眠状态。在该模式下，设备会定期短时间恢复正常工作，以便进行应用同步，还可让系统执行任何挂起的操作。</li>
+<li><strong>应用待机模式</strong>：应用待机模式允许系统判定应用在用户未主动使用它时处于空闲状态。当用户有一段时间未触摸应用时，系统便会作出此判定。如果拔下了设备电源插头，系统会为其视为空闲的应用停用网络访问以及暂停同步和作业。</li>
+</ul>
+<h2 id="取消支持Apache-HTTP客户端"><a href="#取消支持Apache-HTTP客户端" class="headerlink" title="取消支持Apache HTTP客户端"></a>取消支持Apache HTTP客户端</h2><p>Android 6.0版移除了对Apache HTTP客户端的支持。如果应用使用该客户端，并以Android 2.3（API 9）或更高版本为目标平台，请改用<strong>HttpURLConnection</strong>类。此API效率更高，因为它可以通过透明压缩和响应缓存减少网络使用，并可最大限度降低耗电量。要继续使用Apache HTTP API，必须先build.gradle文件中声明以下编译时依赖项：</p>
+<pre><code>android {
+  useLibrary &apos;org.apache.http.legacy&apos;
+}
+</code></pre><h2 id="BoringSSL"><a href="#BoringSSL" class="headerlink" title="BoringSSL"></a>BoringSSL</h2><p>Android正在从使用OpenSSL库转向使用BoringSSL库。如果要在应用中使用Android NDK，请勿链接到并非NDK API组成部分的加密库，如libcrypto.so和libssl.so。这些库并非公共API，可能会在不同版本和设备上毫无征兆地发生变化或出现故障。此外，还可能让自己暴露在安全漏洞的风险之下。请改为修改原生代码，以通过JNI调用Java加密 API，或静态链接到选择的加密库。</p>
+<h2 id="硬件标识符访问权"><a href="#硬件标识符访问权" class="headerlink" title="硬件标识符访问权"></a>硬件标识符访问权</h2><p>为给用户提供更严格的数据保护，从此版本开始，对于使用WLAN API和Bluetooth API的应用，Android移除了对设备本地硬件标识符的编程访问权。<strong>WifiInfo.getMacAddress()</strong>方法和<strong>BluetoothAdapter.getAddress()</strong>方法现在会返回常量值<strong>02:00:00:00:00:00</strong>。</p>
+<p>现在，要通过蓝牙和WLAN扫描访问附近外部设备的硬件标识符，应用必须拥有<strong>ACCESS_FINE_LOCATION</strong>或<strong>ACCESS_COARSE_LOCATION</strong>权限。</p>
+<ul>
+<li>WifiManager.getScanResults()</li>
+<li>BluetoothDevice.ACTION_FOUND</li>
+<li>BluetoothLeScanner.startScan()</li>
+</ul>
+<p style="background: #e1f5fe;color: #0288d1; font-size: 14px;padding: 16px">注：当运行Android 6.0（API 23）的设备发起后台WLAN或蓝牙扫描时，在外部设备看来，该操作的发起来源是一个随机化MAC地址。</p>
+
+<h2 id="通知"><a href="#通知" class="headerlink" title="通知"></a>通知</h2><p>此版本移除了Notification.setLatestEventInfo()方法。请改用Notification.Builder类来构建通知。要重复更新通知，请重复使用Notification.Builder实例。调用build()方法可获取更新后的Notification实例。</p>
+<p>adb shell dumpsys notification命令不再打印输出您的通知文本。请改用adb shell dumpsys notification –noredact命令打印输出notification对象中的文本。</p>
+<h2 id="音频管理器变更"><a href="#音频管理器变更" class="headerlink" title="音频管理器变更"></a>音频管理器变更</h2><p>不再支持通过AudioManager类直接设置音量或将特定音频流静音。setStreamSolo()方法已弃用，应该改为调用requestAudioFocus()方法。类似地，setStreamMute()方法也已弃用，请改为调用adjustStreamVolume()方法并传入方向值ADJUST_MUTE或ADJUST_UNMUTE。</p>
+<h2 id="文本选择"><a href="#文本选择" class="headerlink" title="文本选择"></a>文本选择</h2><p>现在，当用户在应用中选择文本时，可以在一个浮动工具栏中显示“剪切”、“复制”和“粘贴”等文本选择操作。其在用户交互实现上与为单个视图启用上下文操作模式中所述的上下文操作栏类似。</p>
+<p>要实现可用于文本选择的浮动工具栏，请在现有应用中做出以下更改：</p>
+<ul>
+<li>在View对象或Activity对象中，将ActionMode调用从startActionMode(Callback)更改为startActionMode(Callback, ActionMode.TYPE_FLOATING)。</li>
+<li>改为使用ActionMode.Callback的现有实现扩展ActionMode.Callback2。</li>
+<li>替代onGetContentRect()方法，用于提供Rect内容对象（如文本选择矩形）在视图中的坐标。</li>
+<li>如果矩形的定位不再有效，并且这是唯一需要声明为无效的元素，请调用invalidateContentRect()方法。</li>
+</ul>
+<p>请注意，如果使用Android支持库22.2修订版，浮动工具栏不向后兼容，默认情况下appcompat会获得对ActionMode对象的控制权。这会禁止显示浮动工具栏。要在ActionMode中启用AppCompatActivity支持，请调用getDelegate()，然后对返回的setHandleNativeActionModesEnabled()对象调用AppCompatDelegate，并将输入参数设置为false。此调用会将ActionMode对象的控制权交还给框架。在运行Android 6.0（API 23）的设备上，框架可以支持ActionBar模式或浮动工具栏模式；而在运行Android 5.1（API 22）或之前版本的设备上，框架仅支持ActionBar模式。</p>
+<h2 id="浏览器书签变更"><a href="#浏览器书签变更" class="headerlink" title="浏览器书签变更"></a>浏览器书签变更</h2><p>此版本移除了对全局书签的支持。android.provider.Browser.getAllBookmarks()和android.provider.Browser.saveBookmark()方法现已移除。同样，READ_HISTORY_BOOKMARKS权限和WRITE_HISTORY_BOOKMARKS权限也已移除。如果应用以 Android 6.0（API 23）或更高版本为目标平台，请勿从全局提供程序访问书签或使用书签权限。应用应改为在内部存储书签数据。</p>
+<h2 id="Android密钥库变更"><a href="#Android密钥库变更" class="headerlink" title="Android密钥库变更"></a>Android密钥库变更</h2><p>从此版本开始，Android密钥库提供程序不再支持DSA。但仍支持ECDSA。</p>
+<p>停用或重置安全锁定屏幕时（例如，由用户或设备管理员执行此类操作时），系统将不再删除需要闲时加密的密钥，但在上述事件期间会删除需要闲时加密的密钥。</p>
+<h2 id="WLAN和网络连接变更"><a href="#WLAN和网络连接变更" class="headerlink" title="WLAN和网络连接变更"></a>WLAN和网络连接变更</h2><p>此版本对WLAN API和Networking API引入了以下行为变更。</p>
+<ul>
+<li>现在，应用只能更改由创建的WifiConfiguration对象的状态。系统不允许您修改或删除由用户或其他应用创建的WifiConfiguration对象。</li>
+<li>在之前的版本中，如果应用利用带有disableAllOthers=true设置的enableNetwork()强制设备连接特定WLAN网络，设备将会断开与移动数据网络等其他网络的连接。在此版本中，设备不再断开与上述其他网络的连接。如果应用的targetSdkVersion为“20” 或更低，则会固定连接所选WLAN网络。如果应用的targetSdkVersion为“21”或更高，请使用多网络API（如openConnection()、bindSocket()和新增的bindProcessToNetwork()方法）来确保通过所选网络传送网络流量。</li>
+</ul>
+<h2 id="相机服务变更"><a href="#相机服务变更" class="headerlink" title="相机服务变更"></a>相机服务变更</h2><p>在此版本中，相机服务中共享资源的访问模式已从之前的“先到先得”访问模式更改为高优先级进程优先的访问模式。对服务行为的变更包括：</p>
+<ul>
+<li>根据客户端应用进程的“优先级”授予对相机子系统资源的访问权，包括打开和配置相机设备。带有对用户可见Activity或前台Activity的应用进程一般会被授予较高的优先级，从而使相机资源的获取和使用更加可靠；</li>
+<li>当高优先级的应用尝试使用相机时，系统可能会“驱逐”正在使用相机客户端的低优先级应用。在已弃用的Camera API中，这会导致系统为被驱逐的客户端调用onError()。在Camera2 API中，这会导致系统为被驱逐的客户端调用onDisconnected()；</li>
+<li>在配备相应相机硬件的设备上，不同的应用进程可同时独立打开和使用不同的相机设备。但现在，如果在多进程用例中同时访问相机会造成任何打开的相机设备的性能或能力严重下降，相机服务会检测到这种情况并禁止同时访问。即使并没有其他应用直接尝试访问同一相机设备，此变更也可能导致低优先级客户端被“驱逐”。</li>
+<li>更改当前用户会导致之前用户帐户拥有的应用内活动相机客户端被驱逐。对相机的访问仅限于访问当前设备用户拥有的用户个人资料。举例来说，这意味着，当用户切换到其他帐户后，“来宾”帐户实际上无法让使用相机子系统的进程保持运行状态。</li>
+</ul>
+<h2 id="运行时"><a href="#运行时" class="headerlink" title="运行时"></a>运行时</h2><p>ART运行时环境现在可正确实现newInstance()方法的访问规则。此变更修正了之前版本中Dalvik无法正确检查访问规则的问题。如果应用使用newInstance()方法，并且想重写访问检查，请调用setAccessible()方法（将输入参数设置为true）。如果应用使用v7 appcompat库或v7 recyclerview库，则必须更新应用以使用这些库的最新版本。否则，请务必更新从XML引用的任何自定义类，以便能够访问它们的类构造函数。</p>
+<p>此版本更新了动态链接程序的行为。动态链接程序现在可以识别库的soname与其路径之间的差异（公开错误6670），并且现在已实现了按soname搜索。之前包含错误的DT_NEEDED条目（通常是开发计算机文件系统上的绝对路径）却仍工作正常的应用，如今可能会出现加载失败。</p>
+<p>现已正确实现dlopen(3) RTLD_LOCAL标记。请注意，RTLD_LOCAL是默认值，因此不显式使用RTLD_LOCAL的dlopen(3)调用将受到影响（除非应用显式使用 RTLD_GLOBAL）。使用RTLD_LOCAL时，在随后通过调用dlopen(3) 加载的库中并不能使用这些符号（这与由 DT_NEEDED 条目引用的情况截然不同）。</p>
+<p>在之前版本的Android上，如果您的应用请求系统加载包含文本重定位信息的共享库，系统会显示警告，但仍允许加载共享库。从此版本开始，如果应用的目标SDK版本为23或更高，则系统会拒绝加载该库。为帮助检测库是否加载失败，应用应该记录dlopen(3)失败日志，并在日志中加入dlerror(3)调用返回的问题描述文本。</p>
+<h2 id="APK验证"><a href="#APK验证" class="headerlink" title="APK验证"></a>APK验证</h2><p>该平台现在执行的APK验证更为严格。如果在清单中声明的文件在APK中并不存在，该APK将被视为已损坏。移除任何内容后必须重新签署APK。</p>
+<h2 id="USB连接"><a href="#USB连接" class="headerlink" title="USB连接"></a>USB连接</h2><p>默认情况下，现在通过USB端口进行的设备连接设置为仅充电模式。要通过USB连接访问设备及其内容，用户必须明确地为此类交互授予权限。如果应用支持用户通过USB端口与设备进行交互，请将必须显式启用交互考虑在内。</p>
+<h2 id="Android-for-Work变更"><a href="#Android-for-Work变更" class="headerlink" title="Android for Work变更"></a>Android for Work变更</h2><p>此版本包含下列针对Android for Work的行为变更：</p>
+<ul>
+<li><strong>个人上下文中的工作联系人</strong>。Google拨号器通话记录现在会在用户查看通话记录时显示工作联系人。将setCrossProfileCallerIdDisabled()设置为true可在Google拨号器通话记录中隐藏托管配置文件联系人。只有将setBluetoothContactSharingDisabled()设置为false时，才可以通过蓝牙将工作联系人随个人联系人一起显示给设备。默认情况下，它设置为true。</li>
+<li><strong>WLAN 配置删除</strong>：现在，当删除某个托管配置文件时，将会移除由配置文件所有者添加的WLAN配置（例如，通过调用addNetwork()方法添加的配置）。</li>
+<li><strong>WLAN 配置锁定</strong>：如果WIFI_DEVICE_OWNER_CONFIGS_LOCKDOWN不为零，则用户无法再修改或删除任何由活动设备所有者创建的WLAN配置。用户仍可创建和修改其自己的WLAN配置。活动设备所有者拥有编辑或删除任何WLAN配置（包括并非由其创建的配置）的权限。</li>
+<li><strong>通过添加Google帐户下载设备规范控制器</strong>：向托管环境以外的设备添加需要通过设备规范控制器(DPC)应用管理的Google帐户时，帐户添加流程现在会提示用户安装相应的WPC。在设备初始设置向导中通过Settings &gt; Accounts添加帐户时，也会出现此行为。</li>
+<li><strong>对特定DevicePolicyManager API行为的变更</strong>：<ul>
+<li>调用setCameraDisabled()方法只会影响调用该方法的用户的相机；从托管配置文件调用它不会影响主用户运行的相机应用。</li>
+<li>此外，setKeyguardDisabledFeatures()方法现在除了可供设备所有者使用外，还可供配置文件所有者使用。</li>
+<li>配置文件所有者可设置以下键盘锁限制：<ul>
+<li>KEYGUARD_DISABLE_TRUST_AGENTS和KEYGUARD_DISABLE_FINGERPRINT，它们影响配置文件上级用户的键盘锁设置。</li>
+<li>KEYGUARD_DISABLE_UNREDACTED_NOTIFICATIONS，它只影响应用在托管配置文件中生成的通知。</li>
+</ul>
+</li>
+<li>DevicePolicyManager.createAndInitializeUser()方法和DevicePolicyManager.createUser()方法已弃用。</li>
+<li>当给定用户的应用在前台运行时，setScreenCaptureDisabled()方法现在也会屏蔽辅助结构。</li>
+<li>EXTRA_PROVISIONING_DEVICE_ADMIN_PACKAGE_CHECKSUM现在默认为SHA-256。出于向后兼容性考虑，仍然支持SHA-1，但未来将会取消该支持。<br>EXTRA_PROVISIONING_DEVICE_ADMIN_SIGNATURE_CHECKSUM现在只接受SHA-256。</li>
+<li>Android 6.0（API 23）中曾经存在的Device initializer API现已删除</li>
+<li>EXTRA_PROVISIONING_RESET_PROTECTION_PARAMETERS已删除，因此NFC占位配置无法通过编程解锁受恢复出厂设置保护的设备</li>
+<li>现在可以使用EXTRA_PROVISIONING_ADMIN_EXTRAS_BUNDLE extra在对托管设备进行NFC配置期间向设备所有者应用传递数据。</li>
+<li>Android for Work API针对M运行时权限（包括Work配置文件、辅助层及其他内容）进行了优化。新增的DevicePolicyManager权限API不会影响M之前版本的应用。</li>
+<li>当用户退出通过ACTION_PROVISION_MANAGED_PROFILE或ACTION_PROVISION_MANAGED_DEVICE intent发起的设置流程的同步部分时，系统现在会返回RESULT_CANCELED结果代码。</li>
+</ul>
+</li>
+<li><strong>对其他API的变更</strong>：<ul>
+<li>流量消耗：android.app.usage.NetworkUsageStats类已重命名为NetworkStats。</li>
+</ul>
+</li>
+<li><strong>对全局设置的变更</strong>：<ul>
+<li>这些设置不再通过setGlobalSettings()进行设置：<ul>
+<li>BLUETOOTH_ON</li>
+<li>DEVELOPMENT_SETTINGS_ENABLED</li>
+<li>MODE_RINGER</li>
+<li>NETWORK_PREFERENCE</li>
+<li>WIFI_ON</li>
+</ul>
+</li>
+<li>这些全局设置现在可通过setGlobalSettings()进行设置：<ul>
+<li>WIFI_DEVICE_OWNER_CONFIGS_LOCKDOWN</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="Android-Lollipop"><a href="#Android-Lollipop" class="headerlink" title="Android Lollipop"></a>Android Lollipop</h1><h2 id="Android-Runtime-ART"><a href="#Android-Runtime-ART" class="headerlink" title="Android Runtime (ART)"></a>Android Runtime (ART)</h2><p>在Android 5.0中，ART运行时取代Dalvik成为平台默认设置。Android 4.4中已引入处于实验阶段的ART运行时。</p>
+<p>部分主要的新功能包括：</p>
+<ul>
+<li>预先(AOT)编译</li>
+<li>改进的垃圾回收(GC)</li>
+<li>改进的调试支持</li>
+</ul>
+<p>大多数Android应用无需任何更改就可以在ART下工作。不过，部分适合Dalvik的技术并不适用于ART。如存在以下情况，应特别注意：</p>
+<ul>
+<li>应用使用Java原生接口(JNI)运行C/C++代码。</li>
+<li>使用生成非标准代码的开发工具（例如，一些代码混淆工具）。</li>
+<li>使用与压缩垃圾回收不兼容的技术。</li>
+</ul>
+<h2 id="通知-1"><a href="#通知-1" class="headerlink" title="通知"></a>通知</h2><h3 id="Material-Design样式"><a href="#Material-Design样式" class="headerlink" title="Material Design样式"></a>Material Design样式</h3><p>在白色（或非常浅）的背景上使用深色文本绘制通知，以便与新的Material Design小部件匹配。请确保所有通知都与新的配色方案协调一致。如果通知看上去不协调，请进行修正：</p>
+<ul>
+<li>使用<strong>setColor()</strong>在图标图像后面的圆形中设置重点色彩。</li>
+<li>更新或移除使用色彩的资源。系统在操作图标和主要通知图标中忽略所有非阿尔法通道。应假设这些图标仅支持阿尔法通道。系统用白色绘制通知图标，用深灰色绘制操作图标。</li>
+</ul>
+<h3 id="声音和振动"><a href="#声音和振动" class="headerlink" title="声音和振动"></a>声音和振动</h3><p>如果当前使用<strong>Ringtone</strong>、<strong>MediaPlayer</strong>或<strong>Vibrator</strong>类向通知中添加声音和振动，则移除此代码，以便系统可以在“优先”模式中正确显示通知。取而代之的是，使用<strong>Notification.Builder</strong>方法添加声音和振动。</p>
+<p>将设备设为<strong>RINGER_MODE_SILENT</strong>可使设备进入新的优先模式。如果将设备设为<strong>RINGER_MODE_NORMAL</strong>或<strong>RINGER_MODE_VIBRATE</strong>，则设备将退出优先模式。</p>
+<p>以前，Android使用<strong>STREAM_MUSIC</strong>作为主流式传输来控制平板电脑设备上的音量。在Android 5.0中，手机和平板电脑设备的主音量流式传输现已合并，由<strong>STREAM_RING</strong>或<strong>STREAM_NOTIFICATION</strong>进行控制。</p>
+<h3 id="锁定屏幕可见性"><a href="#锁定屏幕可见性" class="headerlink" title="锁定屏幕可见性"></a>锁定屏幕可见性</h3><p>默认情况下，在Android 5.0中，通知现在显示在用户的锁定屏幕上。用户可以选择保护敏感信息不被公开，在此情况下，系统会自动删减通知显示的文本。要自定义此删减的通知，请使用<strong>setPublicVersion()</strong>。</p>
+<p>如果通知不包含个人信息，或者您想允许媒体播放控件显示在通知上，则调用<strong>setVisibility()</strong>方法并将通知的可见性级别设为<strong>VISIBILITY_PUBLIC</strong>。</p>
+<h3 id="媒体播放"><a href="#媒体播放" class="headerlink" title="媒体播放"></a>媒体播放</h3><p>如果要实现显示媒体播放状态或传输控件的通知，请考虑使用新的<strong>Notification.MediaStyle</strong>模板，而不是自定义<strong>RemoteViews.RemoteView</strong>对象。无论选择使用哪个方法，请务必将通知的可见性设为<strong>VISIBILITY_PUBLIC</strong>，以便可通过锁定屏幕访问控件。请注意，从Android 5.0开始，系统不再将<strong>RemoteControlClient</strong>对象显示在锁定屏幕上。</p>
+<h3 id="浮动通知"><a href="#浮动通知" class="headerlink" title="浮动通知"></a>浮动通知</h3><p>现在，当设备处于活动状态时（即，设备未锁定且其屏幕已打开），通知可以显示在小型浮动窗口中（也称为“浮动通知”）。这些通知看上去类似于精简版的通知，只是浮动通知还显示操作按钮。用户可以在不离开当前应用的情况下处理或清除浮动通知。</p>
+<p>可能触发浮动通知的条件示例包括：</p>
+<ul>
+<li>用户的Activity处于全屏模式中（应用使用fullScreenIntent）</li>
+<li>通知具有较高的优先级并使用铃声或振动</li>
+</ul>
+<p>如果应用在以上任何情形下实现通知，请确保系统正确显示浮动通知。</p>
+<h2 id="媒体控件和RemoteControlClient"><a href="#媒体控件和RemoteControlClient" class="headerlink" title="媒体控件和RemoteControlClient"></a>媒体控件和RemoteControlClient</h2><p>RemoteControlClient类现已弃用。请尽快切换到新的MediaSession API。</p>
+<p>Android 5.0中的锁定屏幕不会为MediaSession或RemoteControlClient显示传输控件。不过，应用可以通过一个通知从锁定屏幕提供媒体播放控件。这让应用可以对媒体按钮的显示进行更多控制，同时为使用锁定设备和未锁定设备的用户提供一致的体验。</p>
+<p>为实现此目的，Android 5.0引入了一个新的Notification.MediaStyle模板。Notification.MediaStyle将Notification.Builder.addAction()添加的通知操作转换为精简按钮，嵌入到应用的媒体播放通知中。将会话令牌传递到setSession()方法以告知系统该通知控制进行中的媒体会话。</p>
+<p>请务必将通知的可见性设为VISIBILITY_PUBLIC，以将通知标记为安全，从而显示在任何锁定屏幕上（以安全方式或其他方式）。</p>
+<p>要让应用在Android TV或Wear平台上运行时显示媒体播放控件，则实现MediaSession类。如果应用需要在Android设备上接收媒体按钮事件，还应实现MediaSession。</p>
+<h2 id="getRecentTasks"><a href="#getRecentTasks" class="headerlink" title="getRecentTasks()"></a>getRecentTasks()</h2><p>Android 5.0中引入新的“并发文档和Activity任务”功能后，为提升用户隐私的安全性，现已弃用ActivityManager.getRecentTasks()方法。对于向后兼容性，此方法仍会返回它的一小部分数据，包括调用应用自己的任务和可能的一些其他非敏感任务（如首页）。如果应用使用此方法检索它自己的任务，则改用getAppTasks()检索该信息。</p>
+<h2 id="Android-NDK中的64位支持"><a href="#Android-NDK中的64位支持" class="headerlink" title="Android NDK中的64位支持"></a>Android NDK中的64位支持</h2><p>Android 5.0引入了对64位系统的支持。64位增强功能可增加地址空间和提升性能，同时仍完全支持现有的32位应用。64位支持也可改进用于加密的OpenSSL的性能。此外，该版本还引入了新的原生媒体NDK API，以及原生OpenGL ES (GLES) 3.1支持。</p>
+<h2 id="绑定到服务"><a href="#绑定到服务" class="headerlink" title="绑定到服务"></a>绑定到服务</h2><p>Context.bindService()方法现在需要显式Intent，如果提供隐式intent，将引发异常。为确保应用的安全性，请使用显式intent启动或绑定Service，且不要为服务声明intent过滤器。</p>
+<h2 id="WebView"><a href="#WebView" class="headerlink" title="WebView"></a>WebView</h2><p>Android 5.0更改了应用的默认行为。</p>
+<ul>
+<li><strong>如果应用是面向API 21或更高级别</strong>：<ul>
+<li>默认情况下，系统会阻止混合内容和第三方Cookie。要允许混合内容和第三方Cookie，请分别使用setMixedContentMode()和setAcceptThirdPartyCookies()方法。</li>
+<li>系统现在可以智能地选择要绘制的HTML文档部分。这个新的默认行为有助于减少内存占用和提升性能。如果要一次渲染整个文档，可通过调用enableSlowWholeDocumentDraw()停用此优化。</li>
+</ul>
+</li>
+<li><strong>如果应用是面向低于21的API级别</strong>：系统允许混合内容和第三方Cookie，并始终一次渲染整个文档。</li>
+</ul>
+<h2 id="自定义权限唯一性要求"><a href="#自定义权限唯一性要求" class="headerlink" title="自定义权限唯一性要求"></a>自定义权限唯一性要求</h2><p>根据权限概述中所述，Android应用可以定义以专有方式管理组件访问权限的自定义权限，无需使用平台预定义的系统权限。应用在其清单文件中声明的<permission>元素中定义自定义权限。</permission></p>
+<p>少数情况下定义自定义权限是合规且安全的方法。不过，创建自定义权限有时并无必要，甚至可能会给应用带来潜在风险，具体取决于分配给权限的保护级别。</p>
+<p>Android 5.0其中一项行为变更确保只有一个应用可以定义给定自定义权限，除非使用与定义权限的其他应用相同的密钥进行签名。</p>
+<h3 id="使用重复的自定义权限的应用"><a href="#使用重复的自定义权限的应用" class="headerlink" title="使用重复的自定义权限的应用"></a>使用重复的自定义权限的应用</h3><p>任何应用都可以定义它需要的任何自定义权限，因此，可能会出现多个应用定义相同的自定义权限的情况。例如，如果两个应用提供相似的功能，它们可能会为其自定义权限派生出相同的逻辑名称。应用可能还纳入了本身包含相同自定义权限定义的通用公共库或代码示例。</p>
+<p>在Android 4.4和更早的版本中，用户可以在给定设备上安装多个此类应用，不过系统会分配由第一个安装的应用指定的保护级别。</p>
+<p>从Android 5.0开始，对于使用不同密钥签名的应用，系统会强制执行新的自定义权限唯一性限制。现在，设备上只有一个应用可以定义给定的自定义权限（按其名称确定），除非定义此权限的其他应用使用相同密钥签名。如果用户尝试安装的应用具有重复自定义权限且签名密钥不同于定义此权限的驻留应用，则系统将阻止安装。</p>
+<h3 id="需要注意的事项"><a href="#需要注意的事项" class="headerlink" title="需要注意的事项"></a>需要注意的事项</h3><p>在Android 5.0和更新的版本中，应用可以和以前一样继续定义自己的自定义权限，并通过<uses-permission>机制请求其他应用的自定义权限。不过，对于Android 5.0中引入的新要求，应仔细评估可能给应用带来的影响。</uses-permission></p>
+<p>下面是一些需要考虑的因素：</p>
+<ul>
+<li>应用是否在其清单文件中声明任何<permission>元素？如果是，那么这些权限是否确实是您的应用或服务正常运行不可或缺的？或者，能否使用系统默认权限代替它们？</permission></li>
+<li>如果应用中具有<permission>元素，是否知道它们来自哪里？</permission></li>
+<li>实际上是否打算让其他应用通过<uses-permission>请求自定义权限？</uses-permission></li>
+<li>是否在包含<permission>元素的应用中使用样板文件或示例代码？那些权限元素确实是不可或缺的吗？</permission></li>
+<li>自定义权限使用的名称是简单名称还是基于其他应用可能共享的通用术语？</li>
+</ul>
+<h3 id="新安装和更新"><a href="#新安装和更新" class="headerlink" title="新安装和更新"></a>新安装和更新</h3><p>如上所述，在运行Android 4.4或更早版本的设备上新安装和更新您的应用不会受影响，且行为没有任何变化。在运行Android 5.0或更新版本的设备上进行新安装和更新时，如果应用定义一个已由现有驻留应用定义的自定义权限，则系统会阻止安装应用。</p>
+<h3 id="使用Android-5-0系统更新的现有安装"><a href="#使用Android-5-0系统更新的现有安装" class="headerlink" title="使用Android 5.0系统更新的现有安装"></a>使用Android 5.0系统更新的现有安装</h3><p>如果应用使用自定义更新且已广泛分发和安装，那么，当用户收到将设备升级到Android 5.0的更新时，应用可能会受影响。在安装系统更新后，系统重新验证已安装的应用，包括检查它们的自定义权限。如果应用定义一个已由另一个通过验证的应用定义的自定义权限，且应用没有使用与该应用相同的密钥签名，则系统不会重新安装应用。</p>
+<h3 id="建议"><a href="#建议" class="headerlink" title="建议"></a>建议</h3><p>在运行Android 5.0或更新版本的设备上，建议立即检查应用，进行任何所需的调整，并尽快向用户发布更新版本。</p>
+<ul>
+<li>如果应用中使用自定义权限，则考虑它们的来源以及是否确实需要它们。从应用中移除所有<permission>元素，除非确定它们是应用正常运行所必需的元素。</permission></li>
+<li>尽可能考虑使用系统默认权限替代您的自定义权限。</li>
+<li>如果应用需要自定义权限，则重命名自定义权限，使其成为应用独有的权限，例如，将它们追加到应用的完整软件包名称。</li>
+<li>如果有一组使用不同密钥签名的应用，且这些应用通过自定义权限访问共享组件，则确保此自定义权限在共享组件中仅定义一次。使用共享组件的应用不应自己定义自定义权限，而应通过<uses-permission>机制请求访问权限。</uses-permission></li>
+<li>如果有一组使用相同密钥签名的应用，则每个应用都可以根据需要定义相同的 自定义权限，系统允许以常规方式安装这些应用。</li>
+</ul>
+<h2 id="TLS-SSL默认配置变更"><a href="#TLS-SSL默认配置变更" class="headerlink" title="TLS/SSL默认配置变更"></a>TLS/SSL默认配置变更</h2><p>Android 5.0针对HTTPS和其他TLS/SSL 通信引入了对应用使用的默认TLS/SSL配置的变更：</p>
+<ul>
+<li>TLSv1.2和TLSv1.1协议现已启用，</li>
+<li>AES-GCM(AEAD)加密套件现已启用，</li>
+<li>MD5、3DES、导出和静态密钥ECDH加密套件现已停用，</li>
+<li>首选使用Forward Secrecy加密套件（ECDHE和DHE）。</li>
+</ul>
+<p>在下面列出的少数情况下，这些变更可能会导致HTTPS或TLS/SSL连接断开。</p>
+<p>请注意，来自Google Play服务的安全性ProviderInstaller自Android 2.3开始就已在Android平台版本上提供这些变更。</p>
+<h3 id="服务器不支持任何已启用的加密套件"><a href="#服务器不支持任何已启用的加密套件" class="headerlink" title="服务器不支持任何已启用的加密套件"></a>服务器不支持任何已启用的加密套件</h3><p>例如，服务器可能仅支持3DES或MD5加密套件。首选的修复方法是改进服务器的配置，以启用更强更现代的加密套件和协议。理想情况下，应启用TLSv1.2和AES-GCM以及Forward Secrecy加密套件（ECDHE、DHE），且最好使用后者。</p>
+<p>也可以修改应用以使用自定义SSLSocketFactory与服务器通信。出厂时应精心设计以创建SSLSocket实例，除默认加密套件外，此实例还应启用服务器所需的部分加密套件。</p>
+<h3 id="应用对用于连接服务器的加密套件做出错误的假设"><a href="#应用对用于连接服务器的加密套件做出错误的假设" class="headerlink" title="应用对用于连接服务器的加密套件做出错误的假设"></a>应用对用于连接服务器的加密套件做出错误的假设</h3><p>例如，某些应用包含中断的自定义X509TrustManager，因为它预计authType参数将成为RSA，但出现了ECDHE_RSA或DHE_RSA。</p>
+<h3 id="服务器不支持TLSv1-1、TLSv1-2或新的TLS扩展"><a href="#服务器不支持TLSv1-1、TLSv1-2或新的TLS扩展" class="headerlink" title="服务器不支持TLSv1.1、TLSv1.2或新的TLS扩展"></a>服务器不支持TLSv1.1、TLSv1.2或新的TLS扩展</h3><p>例如，与服务器握手的TLS/SSL被错误地拒绝或出现停顿。首选的修复方法是升级服务器以符合TLS/SSL协议。这使服务器可以成功地协商这些更新的协议或协商TLSv1或更早的协议，并忽略它不理解的传输层安全协议扩展程序。在某些情况下，在服务器上禁用TLSv1.1和TLSv1.2可以作为权宜之计，直到升级服务器软件。</p>
+<p>也可以修改应用以使用自定义SSLSocketFactory与服务器通信。出厂时应精心设计以创建SSLSocket实例，该实例仅包含已启用且服务器可以正确为其提供支持的协议。</p>
+<h2 id="支持托管配置文件"><a href="#支持托管配置文件" class="headerlink" title="支持托管配置文件"></a>支持托管配置文件</h2><p>设备管理员可以向设备添加托管配置文件。此配置文件由管理员所有，让管理员控制托管配置文件的同时，允许由用户控制其自己的个人配置文件及其存储空间。此变更会通过下列方式影响现有应用的行为。</p>
+<h3 id="处理Intent"><a href="#处理Intent" class="headerlink" title="处理Intent"></a>处理Intent</h3><p>设备管理员可以从托管配置文件限制对系统应用的访问权限。在此情况下，如果应用从托管文件触发一个通常由该应用处理的intent，且托管文件上没有适合此intent的处理程序，则此intent会引发异常。例如，设备管理员可以限制托管配置文件上的应用访问系统的相机应用。如果应用在托管配置文件上运行，并为MediaStore.ACTION_IMAGE_CAPTURE调用startActivityForResult()，且托管配置文件上没有可以处理此intent的应用，则会导致ActivityNotFoundException。</p>
+<p>为防止出现此情况，可以在触发任何intent之前检查是否至少有一个适合此intent的处理程序。要检查是否存在有效的处理程序，请调用Intent.resolveActivity()。可以在轻松拍照：使用相机应用拍摄照片中查看执行上述操作的示例。</p>
+<h3 id="在各个配置文件中共享文件"><a href="#在各个配置文件中共享文件" class="headerlink" title="在各个配置文件中共享文件"></a>在各个配置文件中共享文件</h3><p>每个配置文件都有自己的文件存储空间。文件URI指的是文件存储空间中的特定位置，这意味着在一个配置文件上有效的文件URI在另一个文件上是无效的。对于只访问自己创建的文件的应用而言，这通常不是什么问题。不过，如果应用向某个intent附加文件，则附加文件URI并不安全，因为在某些情况下，可能会在其他配置文件上处理该intent。例如，设备管理员可能会指定图像采集事件应由个人配置文件上的相机应用处理。如果此intent由托管配置文件上的应用触发，则相机需要能够将图像写入托管配置文件的应用可以读取的位置。</p>
+<p>为安全起见，如果需要将文件附加到某个可能会从一个配置文件移动到另一个配置文件的intent，应为该文件创建并使用内容URI。例如，设备管理员可能会制定将由个人配置文件中的相机处理的ACTION_IMAGE_CAPTURE白名单。触发的intent的EXTRA_OUTPUT应包含指定照片应存储在何处的内容URI。相机应用可以将图像写入该URI指定的位置，触发intent的应用将能够读取该文件，即使应用位于其他配置文件上。</p>
+<h3 id="已移除锁定屏幕小部件支持"><a href="#已移除锁定屏幕小部件支持" class="headerlink" title="已移除锁定屏幕小部件支持"></a>已移除锁定屏幕小部件支持</h3><p>Android 5.0移除了对锁定屏幕小部件的支持；它继续为主屏幕上的小组件提供支持。</p>
+<h1 id="Android-KitKat"><a href="#Android-KitKat" class="headerlink" title="Android KitKat"></a>Android KitKat</h1><h2 id="从外部存储空间读取"><a href="#从外部存储空间读取" class="headerlink" title="从外部存储空间读取"></a>从外部存储空间读取</h2><p>应用在Android 4.4上运行时无法读取外部存储空间上的共享文件，除非应用具有READ_EXTERNAL_STORAGE权限。也就是说，没有此权限，无法再访问getExternalStoragePublicDirectory() 返回的目录中的文件。但是，如果仅需要访问getExternalFilesDir()提供的应用特有目录，那么，不需要READ_EXTERNAL_STORAGE权限。</p>
+<h2 id="使用WebView"><a href="#使用WebView" class="headerlink" title="使用WebView"></a>使用WebView</h2><p>在Android 4.4上运行时，应用的行为会有所不同，将应用的targetSdkVersion更新为“19”或更高版本时尤其如此。</p>
+<p>WebView类的底层代码和相关API已升级为基于现代的Chromium源代码快照。这会带来各种性能提升，同时为新的HTML5功能和远程调试WebView内容提供支持。此次升级的范围意味着如果应用使用WebView，则在某些情况下其行为可能会受影响。尽管对已知的行为变更进行了记录，但仅在将应用的targetSdkVersion更新为“19”或更高版本时这些变更才会对应用产生很大的影响—新的WebView在“兼容模式”中运行以便在面向API 18和更低级别的应用中提供部分旧功能—应用有可能依赖来自以前的WebView版本的未知行为。</p>
+<p>因此，如果现有应用使用WebView，则务必尽快在Android 4.4上进行测试，并查阅迁移到Android 4.4中的WebView，以了解将targetSdkVersion更新为“19”或更高版本时对应用可能产生怎样的影响。</p>
+<h2 id="使用AlarmManager"><a href="#使用AlarmManager" class="headerlink" title="使用AlarmManager"></a>使用AlarmManager</h2><p>将应用的targetSdkVersion设置为“19”或更高版本时，使用set()或setRepeating()创建的闹铃将变得不准确。</p>
+<p>为提高电源效率，Android现在批处理在合理的相似时间发生的所有应用的闹铃，以便系统仅唤醒设备一次，而不是多次唤醒设备来处理每个闹铃。</p>
+<p>如果闹铃没有与精确的时钟时间关联，但闹铃仍必须在特定时间范围（例如，在下午2点至4点之间）触发，那么可以使用新的setWindow()方法，其接受闹铃的“最早”时间以及最早时间之后的一个时间“窗口”，在这个窗口内，系统应触发闹铃。</p>
+<p>如果闹铃必须固定到一个精确的时钟时间（例如，日历事件提醒），那么可以使用新的setExact()方法。</p>
+<p>这个精确的批处理行为仅适用于更新后的应用。如果已将targetSdkVersion设置为“18”或更低版本，那么在Android 4.4上运行时，闹铃的行为方式和在以前版本上一样。</p>
+<h2 id="使用ContentResolver同步数据"><a href="#使用ContentResolver同步数据" class="headerlink" title="使用ContentResolver同步数据"></a>使用ContentResolver同步数据</h2><p>将应用的targetSdkVersion设置为“19”或更高版本时，使用addPeriodicSync()创建同步将在默认的Flex间隔内（在指定期间的4%左右）执行同步操作。例如，如果轮询频率是24小时，则同步操作每天可能会在大约一小时的时间窗口内发生，而不是在确切地同一时间发生。</p>
+<p>要指定自己的Flex间隔进行同步操作，应开始使用新的requestSync()方法。（同步适配器）。</p>
+<p>这个Flex间隔行为仅适用于更新后的应用。如果已将targetSdkVersion设置为“18”或更低版本，那么在Android 4.4上运行时，现有同步请求的行为方式和在以前版本上一样。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/05/20/job-scheduler/" rel="next" title="Android 5.0 JobScheduler全方位解析">
+                <i class="fa fa-chevron-left"></i> Android 5.0 JobScheduler全方位解析
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/05/27/workmanager/" rel="prev" title="新架构组件：WorkManager详解">
+                新架构组件：WorkManager详解 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="http://ob0r3vf26.bkt.clouddn.com/blog_logo.jpg"
+                alt="朱鹏" />
+            
+              <p class="site-author-name" itemprop="name">朱鹏</p>
+              <p class="site-description motion-element" itemprop="description">享受技术带来的快乐</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">52</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">55</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Android-P"><span class="nav-number">1.</span> <span class="nav-text">Android P</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#在Android-P上运行的所有应用"><span class="nav-number">1.1.</span> <span class="nav-text">在Android P上运行的所有应用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#后台应用中的输入和数据隐私"><span class="nav-number">1.1.1.</span> <span class="nav-text">后台应用中的输入和数据隐私</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设备安全性变更"><span class="nav-number">1.1.2.</span> <span class="nav-text">设备安全性变更</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#影响所有应用的行为变更"><span class="nav-number">1.1.2.1.</span> <span class="nav-text">影响所有应用的行为变更</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#新增的APK密钥轮转"><span class="nav-number">1.1.2.1.1.</span> <span class="nav-text">新增的APK密钥轮转</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#传输层安全协议-TLS-实现变更"><span class="nav-number">1.1.2.1.2.</span> <span class="nav-text">传输层安全协议(TLS)实现变更</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#更严格的Seccomp过滤器"><span class="nav-number">1.1.2.1.3.</span> <span class="nav-text">更严格的Seccomp过滤器</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#对ChaCha20流式传输加密的支持"><span class="nav-number">1.1.2.1.4.</span> <span class="nav-text">对ChaCha20流式传输加密的支持</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#旧版加密支持"><span class="nav-number">1.1.2.1.5.</span> <span class="nav-text">旧版加密支持</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#影响以Android-P为目标平台的应用的行为变更"><span class="nav-number">1.1.2.2.</span> <span class="nav-text">影响以Android P为目标平台的应用的行为变更</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#默认情况下启用网络传输层安全协议-TLS"><span class="nav-number">1.1.2.2.1.</span> <span class="nav-text">默认情况下启用网络传输层安全协议(TLS)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#按进程分设基于网络的数据目录"><span class="nav-number">1.1.2.2.2.</span> <span class="nav-text">按进程分设基于网络的数据目录</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#以应用为单位的SELinux域名"><span class="nav-number">1.1.2.2.3.</span> <span class="nav-text">以应用为单位的SELinux域名</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#加密变更"><span class="nav-number">1.1.3.</span> <span class="nav-text">加密变更</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#参数和算法的Conscrypt实现"><span class="nav-number">1.1.3.1.</span> <span class="nav-text">参数和算法的Conscrypt实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#其他变更"><span class="nav-number">1.1.3.2.</span> <span class="nav-text">其他变更</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#应用兼容性变更"><span class="nav-number">1.1.4.</span> <span class="nav-text">应用兼容性变更</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ICU库更新"><span class="nav-number">1.1.5.</span> <span class="nav-text">ICU库更新</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#不再支持Android安全加密文件"><span class="nav-number">1.1.6.</span> <span class="nav-text">不再支持Android安全加密文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Java-UTF解码器"><span class="nav-number">1.1.7.</span> <span class="nav-text">Java UTF解码器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用证书的主机名验证"><span class="nav-number">1.1.8.</span> <span class="nav-text">使用证书的主机名验证</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#网络地址查询可能会导致网络违规"><span class="nav-number">1.1.9.</span> <span class="nav-text">网络地址查询可能会导致网络违规</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#套接字标记"><span class="nav-number">1.1.10.</span> <span class="nav-text">套接字标记</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#报告的套接字中可用字节数"><span class="nav-number">1.1.11.</span> <span class="nav-text">报告的套接字中可用字节数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#更详尽的VPN网络功能报告"><span class="nav-number">1.1.12.</span> <span class="nav-text">更详尽的VPN网络功能报告</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#应用无法再访问xt-qtaguid文件夹中的文件"><span class="nav-number">1.1.13.</span> <span class="nav-text">应用无法再访问xt_qtaguid文件夹中的文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#强制执行FLAG-ACTIVITY-NEW-TASK要求"><span class="nav-number">1.1.14.</span> <span class="nav-text">强制执行FLAG_ACTIVITY_NEW_TASK要求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#屏幕旋转变更"><span class="nav-number">1.1.15.</span> <span class="nav-text">屏幕旋转变更</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#针对Android-P的应用"><span class="nav-number">1.2.</span> <span class="nav-text">针对Android P的应用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#前台服务"><span class="nav-number">1.2.1.</span> <span class="nav-text">前台服务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设备串行访问限制"><span class="nav-number">1.2.2.</span> <span class="nav-text">设备串行访问限制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#视图焦点"><span class="nav-number">1.2.3.</span> <span class="nav-text">视图焦点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#文档滚动标签"><span class="nav-number">1.2.4.</span> <span class="nav-text">文档滚动标签</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Android-Oreo"><span class="nav-number">2.</span> <span class="nav-text">Android Oreo</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#针对所有API级别的应用"><span class="nav-number">2.1.</span> <span class="nav-text">针对所有API级别的应用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#后台执行限制"><span class="nav-number">2.1.1.</span> <span class="nav-text">后台执行限制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Android后台位置限制"><span class="nav-number">2.1.2.</span> <span class="nav-text">Android后台位置限制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#应用快捷键"><span class="nav-number">2.1.3.</span> <span class="nav-text">应用快捷键</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#语言区域和国际化"><span class="nav-number">2.1.4.</span> <span class="nav-text">语言区域和国际化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#提醒窗口"><span class="nav-number">2.1.5.</span> <span class="nav-text">提醒窗口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#输入和导航"><span class="nav-number">2.1.6.</span> <span class="nav-text">输入和导航</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#网页表单自动填充"><span class="nav-number">2.1.7.</span> <span class="nav-text">网页表单自动填充</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#无障碍功能"><span class="nav-number">2.1.8.</span> <span class="nav-text">无障碍功能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#网络连接和HTTP-S-连接"><span class="nav-number">2.1.9.</span> <span class="nav-text">网络连接和HTTP(S)连接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#蓝牙"><span class="nav-number">2.1.10.</span> <span class="nav-text">蓝牙</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#无缝连接"><span class="nav-number">2.1.11.</span> <span class="nav-text">无缝连接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安全性"><span class="nav-number">2.1.12.</span> <span class="nav-text">安全性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#隐私性"><span class="nav-number">2.1.13.</span> <span class="nav-text">隐私性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#记录未捕获的异常"><span class="nav-number">2.1.14.</span> <span class="nav-text">记录未捕获的异常</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#联系人提供程序使用情况统计方法的变更"><span class="nav-number">2.1.15.</span> <span class="nav-text">联系人提供程序使用情况统计方法的变更</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#集合的处理"><span class="nav-number">2.1.16.</span> <span class="nav-text">集合的处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Android企业版"><span class="nav-number">2.1.17.</span> <span class="nav-text">Android企业版</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#针对Android-8-0的应用"><span class="nav-number">2.2.</span> <span class="nav-text">针对Android 8.0的应用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#提醒窗口-1"><span class="nav-number">2.2.1.</span> <span class="nav-text">提醒窗口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#内容变更通知"><span class="nav-number">2.2.2.</span> <span class="nav-text">内容变更通知</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#视图焦点-1"><span class="nav-number">2.2.3.</span> <span class="nav-text">视图焦点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安全性-1"><span class="nav-number">2.2.4.</span> <span class="nav-text">安全性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#帐号访问和可检测性"><span class="nav-number">2.2.5.</span> <span class="nav-text">帐号访问和可检测性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#隐私性-1"><span class="nav-number">2.2.6.</span> <span class="nav-text">隐私性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#权限"><span class="nav-number">2.2.7.</span> <span class="nav-text">权限</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#媒体"><span class="nav-number">2.2.8.</span> <span class="nav-text">媒体</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#原生库"><span class="nav-number">2.2.9.</span> <span class="nav-text">原生库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#集合的处理-1"><span class="nav-number">2.2.10.</span> <span class="nav-text">集合的处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#类加载行为"><span class="nav-number">2.2.11.</span> <span class="nav-text">类加载行为</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Android-Nougat"><span class="nav-number">3.</span> <span class="nav-text">Android Nougat</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#电池和内存"><span class="nav-number">3.1.</span> <span class="nav-text">电池和内存</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#低电耗模式"><span class="nav-number">3.1.1.</span> <span class="nav-text">低电耗模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Project-Svelte：后台优化"><span class="nav-number">3.1.2.</span> <span class="nav-text">Project Svelte：后台优化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#权限更改"><span class="nav-number">3.2.</span> <span class="nav-text">权限更改</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#系统权限更改"><span class="nav-number">3.2.1.</span> <span class="nav-text">系统权限更改</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#在应用间共享文件"><span class="nav-number">3.3.</span> <span class="nav-text">在应用间共享文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#屏幕缩放"><span class="nav-number">3.4.</span> <span class="nav-text">屏幕缩放</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设置向导中的视觉设置"><span class="nav-number">3.5.</span> <span class="nav-text">设置向导中的视觉设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NDK应用链接至平台库"><span class="nav-number">3.6.</span> <span class="nav-text">NDK应用链接至平台库</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#检查应用是否使用私有库"><span class="nav-number">3.6.1.</span> <span class="nav-text">检查应用是否使用私有库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#更新应用"><span class="nav-number">3.6.2.</span> <span class="nav-text">更新应用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Android-for-Work"><span class="nav-number">3.7.</span> <span class="nav-text">Android for Work</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注解保留"><span class="nav-number">3.8.</span> <span class="nav-text">注解保留</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他重要说明"><span class="nav-number">3.9.</span> <span class="nav-text">其他重要说明</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Android-Marshmallow"><span class="nav-number">4.</span> <span class="nav-text">Android Marshmallow</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#运行时权限"><span class="nav-number">4.1.</span> <span class="nav-text">运行时权限</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#低电耗模式和应用待机模式"><span class="nav-number">4.2.</span> <span class="nav-text">低电耗模式和应用待机模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#取消支持Apache-HTTP客户端"><span class="nav-number">4.3.</span> <span class="nav-text">取消支持Apache HTTP客户端</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BoringSSL"><span class="nav-number">4.4.</span> <span class="nav-text">BoringSSL</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#硬件标识符访问权"><span class="nav-number">4.5.</span> <span class="nav-text">硬件标识符访问权</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#通知"><span class="nav-number">4.6.</span> <span class="nav-text">通知</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#音频管理器变更"><span class="nav-number">4.7.</span> <span class="nav-text">音频管理器变更</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#文本选择"><span class="nav-number">4.8.</span> <span class="nav-text">文本选择</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#浏览器书签变更"><span class="nav-number">4.9.</span> <span class="nav-text">浏览器书签变更</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Android密钥库变更"><span class="nav-number">4.10.</span> <span class="nav-text">Android密钥库变更</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#WLAN和网络连接变更"><span class="nav-number">4.11.</span> <span class="nav-text">WLAN和网络连接变更</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#相机服务变更"><span class="nav-number">4.12.</span> <span class="nav-text">相机服务变更</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#运行时"><span class="nav-number">4.13.</span> <span class="nav-text">运行时</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#APK验证"><span class="nav-number">4.14.</span> <span class="nav-text">APK验证</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#USB连接"><span class="nav-number">4.15.</span> <span class="nav-text">USB连接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Android-for-Work变更"><span class="nav-number">4.16.</span> <span class="nav-text">Android for Work变更</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Android-Lollipop"><span class="nav-number">5.</span> <span class="nav-text">Android Lollipop</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Android-Runtime-ART"><span class="nav-number">5.1.</span> <span class="nav-text">Android Runtime (ART)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#通知-1"><span class="nav-number">5.2.</span> <span class="nav-text">通知</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Material-Design样式"><span class="nav-number">5.2.1.</span> <span class="nav-text">Material Design样式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#声音和振动"><span class="nav-number">5.2.2.</span> <span class="nav-text">声音和振动</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#锁定屏幕可见性"><span class="nav-number">5.2.3.</span> <span class="nav-text">锁定屏幕可见性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#媒体播放"><span class="nav-number">5.2.4.</span> <span class="nav-text">媒体播放</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#浮动通知"><span class="nav-number">5.2.5.</span> <span class="nav-text">浮动通知</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#媒体控件和RemoteControlClient"><span class="nav-number">5.3.</span> <span class="nav-text">媒体控件和RemoteControlClient</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#getRecentTasks"><span class="nav-number">5.4.</span> <span class="nav-text">getRecentTasks()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Android-NDK中的64位支持"><span class="nav-number">5.5.</span> <span class="nav-text">Android NDK中的64位支持</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#绑定到服务"><span class="nav-number">5.6.</span> <span class="nav-text">绑定到服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#WebView"><span class="nav-number">5.7.</span> <span class="nav-text">WebView</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自定义权限唯一性要求"><span class="nav-number">5.8.</span> <span class="nav-text">自定义权限唯一性要求</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#使用重复的自定义权限的应用"><span class="nav-number">5.8.1.</span> <span class="nav-text">使用重复的自定义权限的应用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#需要注意的事项"><span class="nav-number">5.8.2.</span> <span class="nav-text">需要注意的事项</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#新安装和更新"><span class="nav-number">5.8.3.</span> <span class="nav-text">新安装和更新</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用Android-5-0系统更新的现有安装"><span class="nav-number">5.8.4.</span> <span class="nav-text">使用Android 5.0系统更新的现有安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#建议"><span class="nav-number">5.8.5.</span> <span class="nav-text">建议</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TLS-SSL默认配置变更"><span class="nav-number">5.9.</span> <span class="nav-text">TLS/SSL默认配置变更</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#服务器不支持任何已启用的加密套件"><span class="nav-number">5.9.1.</span> <span class="nav-text">服务器不支持任何已启用的加密套件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#应用对用于连接服务器的加密套件做出错误的假设"><span class="nav-number">5.9.2.</span> <span class="nav-text">应用对用于连接服务器的加密套件做出错误的假设</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#服务器不支持TLSv1-1、TLSv1-2或新的TLS扩展"><span class="nav-number">5.9.3.</span> <span class="nav-text">服务器不支持TLSv1.1、TLSv1.2或新的TLS扩展</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#支持托管配置文件"><span class="nav-number">5.10.</span> <span class="nav-text">支持托管配置文件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#处理Intent"><span class="nav-number">5.10.1.</span> <span class="nav-text">处理Intent</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在各个配置文件中共享文件"><span class="nav-number">5.10.2.</span> <span class="nav-text">在各个配置文件中共享文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#已移除锁定屏幕小部件支持"><span class="nav-number">5.10.3.</span> <span class="nav-text">已移除锁定屏幕小部件支持</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Android-KitKat"><span class="nav-number">6.</span> <span class="nav-text">Android KitKat</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#从外部存储空间读取"><span class="nav-number">6.1.</span> <span class="nav-text">从外部存储空间读取</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用WebView"><span class="nav-number">6.2.</span> <span class="nav-text">使用WebView</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用AlarmManager"><span class="nav-number">6.3.</span> <span class="nav-text">使用AlarmManager</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用ContentResolver同步数据"><span class="nav-number">6.4.</span> <span class="nav-text">使用ContentResolver同步数据</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">朱鹏</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> 您是第
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      个访客
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i> 本站总访问量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("niXM6CtlVEgvUHEvwNmi0F7S-gzGzoHsz", "LbP8mNzXFXinVUqMloOIy3fW");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

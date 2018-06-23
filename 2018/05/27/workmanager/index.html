@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Android,Jetpack,WorkManager," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Android Gradle dependencies {     implementation &amp;apos;android.arch.work:work-runtime:1.0.0-alpha03&amp;apos; //use -ktx for Kotlin } WorkManager API可以轻松指定可">
+<meta name="keywords" content="Android,Jetpack,WorkManager">
+<meta property="og:type" content="article">
+<meta property="og:title" content="新架构组件：WorkManager详解">
+<meta property="og:url" content="http://zhupeng.space/2018/05/27/workmanager/index.html">
+<meta property="og:site_name" content="Coding Life">
+<meta property="og:description" content="Android Gradle dependencies {     implementation &amp;apos;android.arch.work:work-runtime:1.0.0-alpha03&amp;apos; //use -ktx for Kotlin } WorkManager API可以轻松指定可延迟的异步任务以及何时运行。这些API可让创建任务并将其交给WorkManager，以便立即或在">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://ob0r3vf26.bkt.clouddn.com/images/workmanager-chain.svg">
+<meta property="og:updated_time" content="2018-06-23T12:02:45.256Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="新架构组件：WorkManager详解">
+<meta name="twitter:description" content="Android Gradle dependencies {     implementation &amp;apos;android.arch.work:work-runtime:1.0.0-alpha03&amp;apos; //use -ktx for Kotlin } WorkManager API可以轻松指定可延迟的异步任务以及何时运行。这些API可让创建任务并将其交给WorkManager，以便立即或在">
+<meta name="twitter:image" content="http://ob0r3vf26.bkt.clouddn.com/images/workmanager-chain.svg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://zhupeng.space/2018/05/27/workmanager/"/>
+
+
+
+
+
+  <title>新架构组件：WorkManager详解 | Coding Life</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Coding Life</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">思路决定出路</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://zhupeng.space/2018/05/27/workmanager/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="朱鹏">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://ob0r3vf26.bkt.clouddn.com/blog_logo.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Coding Life">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">新架构组件：WorkManager详解</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-27T10:56:36+08:00">
+                2018-05-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/05/27/workmanager/" class="leancloud_visitors" data-flag-title="新架构组件：WorkManager详解">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><strong>Android Gradle</strong></p>
+<pre><code>dependencies {
+    implementation &apos;android.arch.work:work-runtime:1.0.0-alpha03&apos; //use -ktx for Kotlin
+}
+</code></pre><p>WorkManager API可以轻松指定可延迟的异步任务以及何时运行。这些API可让创建任务并将其交给WorkManager，以便立即或在适当的时间运行。使用这些类可以设置一个任务，选择适合它运行的环境，并在符合条件时将其交给WorkManager运行。即使应用程序强制退出或设备重新启动，该任务仍可保证运行。</p>
+<a id="more"></a>
+<p>WorkManager在底层会根据设备API级别和应用程序状态等因素选择适当的方式来运行任务：</p>
+<ul>
+<li>对于API 23+使用JobScheduler</li>
+<li>对于API 14-22<ul>
+<li>如果在应用中使用Firebase JobDispatcher并且可选的Firebase依赖项使用Firebase JobDispatcher</li>
+<li>否则，使用自定义的AlarmManager + BroadcastReceiver实现</li>
+</ul>
+</li>
+</ul>
+<p>所有的工作必须有相应的Worker来执行计算。工作在后台线程中执行。</p>
+<h2 id="类"><a href="#类" class="headerlink" title="类"></a>类</h2><ul>
+<li><strong>Worker</strong>：指定需要执行的任务。WorkManager API包含一个抽象的Worker类。扩展这个类并且在这里执行这个工作。</li>
+<li><strong>WorkRequest</strong>：代表一个单独的任务。WorkRequest对象指定了哪个Worker类应该执行该任务。但是，还可以向WorkRequest对象添加详细信息，指定任务运行的环境等。每个WorkRequest都有一个自动生成的唯一ID; 可以使用该ID来执行诸如取消排队的任务或获取任务状态等内容。WorkRequest是一个抽象类；在代码中，将使用直接子类<strong>OneTimeWorkRequest</strong>或<strong>PeriodicWorkRequest</strong>。<ul>
+<li><strong>WorkRequest.Builder</strong>：用于创建WorkRequest对象的帮助类。同样，将使用其子类OneTimeWorkRequest.Builder或PeriodicWorkRequest.Builder。</li>
+<li><strong>Constraints</strong>：指定任务运行的条件限制（例如，“仅在连接到网络时”）。使用Constraints.Builder创建Constraints对象，并在创建WorkRequest之前将Constraints对象传递给WorkRequest.Builder。</li>
+</ul>
+</li>
+<li><strong>WorkManager</strong>：入队和管理工作请求。将WorkRequest对象传递给WorkManager以加入任务队列。WorkManager以这样的方式调度任务，以便分散系统资源的负载，同时遵守指定的约束条件。</li>
+<li><strong>WorkStatus</strong>：包含有关特定任务的信息。WorkManager为每个WorkRequest对象提供一个LiveData。LiveData保存一个WorkStatus对象; 通过观察LiveData，可以确定任务的当前状态，并在任务完成后获取任何返回的值。</li>
+</ul>
+<h2 id="工作流程"><a href="#工作流程" class="headerlink" title="工作流程"></a>工作流程</h2><p>首先，定义Worker类，并重写doWork()方法。Worker指定了如何执行操作，但不知道任务何时运行。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CompressWorker</span> <span class="keyword">extends</span> <span class="title">Worker</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> Worker.<span class="function">Result <span class="title">doWork</span><span class="params">()</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Do the work here--in this case, compress the stored images.</span></span><br><span class="line">        <span class="comment">// In this example no parameters are passed; the task is</span></span><br><span class="line">        <span class="comment">// assumed to be "compress the whole library."</span></span><br><span class="line">        myCompress();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Indicate success or failure with your return value:</span></span><br><span class="line">        <span class="keyword">return</span> Result.SUCCESS;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// (Returning RETRY tells WorkManager to try this task again</span></span><br><span class="line">        <span class="comment">// later; FAILURE says not to try again.)</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>接下来，基于该Worker创建一个OneTimeWorkRequest对象，然后使用WorkManager入队该任务：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">OneTimeWorkRequest compressionWork =</span><br><span class="line">        <span class="keyword">new</span> OneTimeWorkRequest.Builder(CompressWorker.class)</span><br><span class="line">    .build();</span><br><span class="line">WorkManager.getInstance().enqueue(compressionWork);</span><br></pre></td></tr></table></figure>
+<p>WorkManager选择合适的时间来运行任务，平衡诸如系统负载，设备是否插入等问题。在大多数情况下，如果不指定任何约束，WorkManager将立即运行任务。如果需要检查任务状态，可以通过获取适当的LiveData<workstatus>的句柄来获取WorkStatus对象。例如，如果想检查任务是否完成，可以使用如下代码：</workstatus></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">WorkManager.getInstance().getStatusById(compressionWork.getId())</span><br><span class="line">    .observe(lifecycleOwner, workStatus -&gt; &#123;</span><br><span class="line">        <span class="comment">// Do something with the status</span></span><br><span class="line">        <span class="keyword">if</span> (workStatus != <span class="keyword">null</span> &amp;&amp; workStatus.getState().isFinished()) &#123;</span><br><span class="line">            <span class="comment">// ...</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br></pre></td></tr></table></figure>
+<h3 id="任务约束"><a href="#任务约束" class="headerlink" title="任务约束"></a>任务约束</h3><p>可以指定任务运行时间的限制。例如，可能想要指定该任务只应在设备闲置并接通电源时运行。在这种情况下，需要创建一个OneTimeWorkRequest.Builder对象，并使用该构建器创建实际的OneTimeWorkRequest：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Create a Constraints that defines when the task should run</span></span><br><span class="line">Constraints myConstraints = <span class="keyword">new</span> Constraints.Builder()</span><br><span class="line">    .setRequiresDeviceIdle(<span class="keyword">true</span>)</span><br><span class="line">    .setRequiresCharging(<span class="keyword">true</span>)</span><br><span class="line">    <span class="comment">// Many other constraints are available, see the</span></span><br><span class="line">    <span class="comment">// Constraints.Builder reference</span></span><br><span class="line">     .build();</span><br><span class="line"></span><br><span class="line"><span class="comment">// ...then create a OneTimeWorkRequest that uses those constraints</span></span><br><span class="line">OneTimeWorkRequest compressionWork =</span><br><span class="line">                <span class="keyword">new</span> OneTimeWorkRequest.Builder(CompressWorker.class)</span><br><span class="line">     .setConstraints(myConstraints)</span><br><span class="line">     .build();</span><br></pre></td></tr></table></figure>
+<p>然后像以前一样将新的OneTimeWorkRequest对象传递给WorkManager.enqueue()。WorkManager在查找运行任务的时间时会考虑约束条件。</p>
+<h3 id="取消任务"><a href="#取消任务" class="headerlink" title="取消任务"></a>取消任务</h3><p>工作请求入队后，可以取消任务。要取消该任务，需要其工作ID，可以从WorkRequest对象中获取该工作ID。例如，以下代码取消上一节中的compressionWork请求：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">UUID compressionWorkId = compressionWork.getId();</span><br><span class="line">WorkManager.getInstance().cancelWorkById(compressionWorkId);</span><br></pre></td></tr></table></figure>
+<p>WorkManager会尽力取消任务，但实质上是不确定的 - 当尝试取消任务时，任务可能已经运行或完成。WorkManager还提供方法来取消唯一工作序列中的所有任务，或以尽力取消具有指定标记的所有任务。</p>
+<h2 id="高级功能"><a href="#高级功能" class="headerlink" title="高级功能"></a>高级功能</h2><p>WorkManager API的核心功能能够创建简单的，即发即弃的任务。除此之外，API还提供了高级功能，可以设置更多精细的请求。</p>
+<h3 id="重复执行的任务"><a href="#重复执行的任务" class="headerlink" title="重复执行的任务"></a>重复执行的任务</h3><p>可能需要重复执行一项任务。例如，照片管理器应用程序不会只想压缩其照片一次。更有可能的是，希望每隔一段时间检查一次共享照片，并查看是否有任何需要压缩的新图像或更改过的图像。这个循环任务可以压缩找到的图像，或者可以启动新的“压缩此图像”任务。</p>
+<p>要创建循环任务，请使用PeriodicWorkRequest.Builder类创建PeriodicWorkRequest对象，然后像使用OneTimeWorkRequest对象一样入队PeriodicWorkRequest。例如，假设定义了一个PhotoCheckWorker类来识别需要压缩的图像。如果想每12小时运行一次库存任务，将创建一个PeriodicWorkRequest对象，如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> PeriodicWorkRequest.Builder photoCheckBuilder =</span><br><span class="line">        <span class="keyword">new</span> PeriodicWorkRequest.Builder(PhotoCheckWorker.class, <span class="number">12</span>,</span><br><span class="line">                                        TimeUnit.HOURS);</span><br><span class="line"><span class="comment">// ...if you want, you can apply constraints to the builder here...</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Create the actual work object:</span></span><br><span class="line">PeriodicWorkRequest photoCheckWork = photoCheckBuilder.build();</span><br><span class="line"><span class="comment">// Then enqueue the recurring task:</span></span><br><span class="line">WorkManager.getInstance().enqueue(photoCheckWork);</span><br></pre></td></tr></table></figure>
+<p>WorkManager尝试按照请求的时间间隔运行任务，但要受到施加的限制和其他要求的限制。</p>
+<h3 id="链式任务"><a href="#链式任务" class="headerlink" title="链式任务"></a>链式任务</h3><p>应用可能需要按特定顺序运行多个任务。WorkManager允许创建和入队指定多个任务的工作序列，以及他们应该以什么顺序运行。</p>
+<p>例如，假设应用程序有三个OneTimeWorkRequest对象：workA，workB和workC。这些任务必须按照该顺序运行。要入队它们，请使用WorkManager.beginWith()方法创建一个序列，并传递第一个OneTimeWorkRequest对象; 该方法返回一个WorkContinuation对象，该对象定义了一系列任务。然后依次使用WorkContinuation.then()添加剩余的OneTimeWorkRequest对象，最后使用WorkContinuation.enqueue()入队整个序列：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">WorkManager.getInstance()</span><br><span class="line">    .beginWith(workA)</span><br><span class="line">        <span class="comment">// Note: WorkManager.beginWith() returns a</span></span><br><span class="line">        <span class="comment">// WorkContinuation object; the following calls are</span></span><br><span class="line">        <span class="comment">// to WorkContinuation methods</span></span><br><span class="line">    .then(workB)    <span class="comment">// FYI, then() returns a new WorkContinuation instance</span></span><br><span class="line">    .then(workC)</span><br><span class="line">    .enqueue();</span><br></pre></td></tr></table></figure>
+<p>WorkManager根据每个任务的指定约束以请求的顺序运行任务。如果任何任务返回Worker.Result.FAILURE，则整个序列结束。</p>
+<p>还可以将多个OneTimeWorkRequest对象传递给beginWith()和.then()调用中的任何一个。如果将多个OneTimeWorkRequest对象传递给单个方法调用，那么WorkManager将在运行序列的其余部分之前运行所有这些任务（并行）。 例如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">WorkManager.getInstance()</span><br><span class="line">    <span class="comment">// First, run all the A tasks (in parallel):</span></span><br><span class="line">    .beginWith(workA1, workA2, workA3)</span><br><span class="line">    <span class="comment">// ...when all A tasks are finished, run the single B task:</span></span><br><span class="line">    .then(workB)</span><br><span class="line">    <span class="comment">// ...then run the C tasks (in any order):</span></span><br><span class="line">    .then(workC1, workC2)</span><br><span class="line">    .enqueue();</span><br></pre></td></tr></table></figure>
+<p>可以通过使用WorkContinuation.combine()方法连接多个链来创建更复杂的任务序列。例如，假设想要像这样运行一个序列：</p>
+<p><img src="http://ob0r3vf26.bkt.clouddn.com/images/workmanager-chain.svg" alt="暂无图片" title="使用WorkContinuation设置复杂的链式任务"></p>
+<p>要建立这个序列，创建两个单独的链，然后将它们连接在一起成为第三个链：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">WorkContinuation chain1 = WorkManager.getInstance()</span><br><span class="line">    .beginWith(workA)</span><br><span class="line">    .then(workB);</span><br><span class="line">WorkContinuation chain2 = WorkManager.getInstance()</span><br><span class="line">    .beginWith(workC)</span><br><span class="line">    .then(workD);</span><br><span class="line">WorkContinuation chain3 = WorkContinuation</span><br><span class="line">    .combine(chain1, chain2)</span><br><span class="line">    .then(workE);</span><br><span class="line">chain3.enqueue();</span><br></pre></td></tr></table></figure>
+<p>在这种情况下，WorkManager在工作之前运行workA。它还在工作之前运行工作。Work和WorkD都完成后，WorkManager将运行workE。</p>
+<blockquote>
+<p>注意：虽然WorkManager按顺序运行每个子链，但不能保证chain1中的任务与chain2中的任务重叠。例如，workB可能在workC之前或之后运行，或者它们可能同时运行。唯一的承诺是每个子链中的任务将按顺序运行; 也就是说，workB在workA完成之后才开始。</p>
+</blockquote>
+<p>WorkContinuation方法有许多变体，可以为特定情况提供简要说明。例如，有一个WorkContinuation.combine(OneTimeWorkRequest，WorkContinuation …)方法，该方法指示WorkManager完成所有指定的WorkContinuation链，然后完成指定的OneTimeWorkRequest。</p>
+<h3 id="唯一的工作序列"><a href="#唯一的工作序列" class="headerlink" title="唯一的工作序列"></a>唯一的工作序列</h3><p>可以创建一个唯一的工作序列，只需调用beginUniqueWork()而不是beginWith()来开始序列。每个唯一的工作序列都有一个名字; WorkManager一次只允许一个工作序列使用该名称的。当创建新的唯一工作序列时，如果已经有一个未完成的序列具有相同的名称，可以指定WorkManager应该执行的操作：</p>
+<ul>
+<li>取消现有的序列并将其替换为新序列</li>
+<li>保持现有顺序并忽略新请求</li>
+<li>将新序列附加到现有序列，在现有序列的最后一个任务完成后运行新序列的第一个任务</li>
+</ul>
+<p>如果有一个不应该多次入队的任务，则唯一工作序列可能很有用。例如，如果应用程序需要将其数据同步到网络，则可能会排列一个名为“sync”的序列，并指定如果已经有一个具有该名称的序列，则应该忽略新任务。如果需要逐步建立一个长期的任务链，那么唯一工作序列也会很有用。例如，照片编辑应用程序可能会让用户撤消一长串的操作。每个撤销操作可能需要一段时间，但必须按正确的顺序执行。在这种情况下，应用程序可以创建一个“撤消”链并根据需要将每个撤销操作追加到链中。</p>
+<h3 id="标记的工作"><a href="#标记的工作" class="headerlink" title="标记的工作"></a>标记的工作</h3><p>可以通过将字符串标签分配给任何WorkRequest对象，将任务按逻辑分组。要设置标签，请调用WorkRequest.Builder.addTag()，例如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">OneTimeWorkRequest cacheCleanupTask =</span><br><span class="line">        <span class="keyword">new</span> OneTimeWorkRequest.Builder(MyCacheCleanupWorker.class)</span><br><span class="line">    .setConstraints(myConstraints)</span><br><span class="line">    .addTag(<span class="string">"cleanup"</span>)</span><br><span class="line">    .build();</span><br></pre></td></tr></table></figure>
+<p>WorkManager类提供了几种实用方法，可使用特定标签对所有任务进行操作。例如，WorkManager.cancelAllWorkByTag()取消具有特定标签的所有任务，并且WorkManager.getStatusesByTag()返回具有该标签的所有任务的所有WorkStatus的列表。</p>
+<h3 id="输入参数和返回值"><a href="#输入参数和返回值" class="headerlink" title="输入参数和返回值"></a>输入参数和返回值</h3><p>为了获得更大的灵活性，可以将参数传递给任务，并让任务返回结果。传递和返回值是键值对。要将参数传递给任务，请在创建WorkRequest对象之前调用WorkRequest.Builder.setInputData()方法。该方法使用Data.Builder创建的Data对象。Worker类可以通过调用Worker.getInputData()来访问这些参数。要输出一个返回值，调用带有Data对象的Worker.setOutputData(); 可以通过观察任务的LiveData<workstatus>来获取输出。</workstatus></p>
+<p>例如，假设有一个执行耗时计算的Worker类。类似代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Define the Worker class:</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MathWorker</span> <span class="keyword">extends</span> <span class="title">Worker</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Define the parameter keys:</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String KEY_X_ARG = <span class="string">"X"</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String KEY_Y_ARG = <span class="string">"Y"</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String KEY_Z_ARG = <span class="string">"Z"</span>;</span><br><span class="line">    <span class="comment">// ...and the result key:</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String KEY_RESULT = <span class="string">"result"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> Worker.<span class="function">Result <span class="title">doWork</span><span class="params">()</span> </span>&#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="comment">// Fetch the arguments (and specify default values):</span></span><br><span class="line">        <span class="keyword">int</span> x = getInputData().getInt(KEY_X_ARG, <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">int</span> y = getInputData().getInt(KEY_Y_ARG, <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">int</span> z = getInputData().getInt(KEY_Z_ARG, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// ...do the math...</span></span><br><span class="line">        <span class="keyword">int</span> result = myCrazyMathFunction(x, y, z);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//...set the output, and we're done!</span></span><br><span class="line">        Data output = <span class="keyword">new</span> Data.Builder()</span><br><span class="line">            .putInt(KEY_RESULT, result)</span><br><span class="line">            .build();</span><br><span class="line">        setOutputData(output);</span><br><span class="line">        <span class="keyword">return</span> Result.SUCCESS;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>要创建工作并传递参数，可以使用如下代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Create the Data object:</span></span><br><span class="line">Data myData = <span class="keyword">new</span> Data.Builder()</span><br><span class="line">    <span class="comment">// We need to pass three integers: X, Y, and Z</span></span><br><span class="line">    .putInt(KEY_X_ARG, <span class="number">42</span>)</span><br><span class="line">    .putInt(KEY_Y_ARG, <span class="number">421</span>)</span><br><span class="line">    .putInt(KEY_Z_ARG, <span class="number">8675309</span>)</span><br><span class="line">    <span class="comment">// ... and build the actual Data object:</span></span><br><span class="line">    .build();</span><br><span class="line"></span><br><span class="line"><span class="comment">// ...then create and enqueue a OneTimeWorkRequest that uses those arguments</span></span><br><span class="line">OneTimeWorkRequest mathWork = <span class="keyword">new</span> OneTimeWorkRequest.Builder(MathWorker.class)</span><br><span class="line">        .setInputData(myData)</span><br><span class="line">        .build();</span><br><span class="line">WorkManager.getInstance().enqueue(mathWork);</span><br></pre></td></tr></table></figure>
+<p>返回值将在任务的WorkStatus中可获得：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">WorkManager.getInstance().getStatusById(mathWork.getId())</span><br><span class="line">    .observe(lifecycleOwner, status -&gt; &#123;</span><br><span class="line">         <span class="keyword">if</span> (status != <span class="keyword">null</span> &amp;&amp; status.getState().isFinished()) &#123;</span><br><span class="line">           <span class="keyword">int</span> myResult = status.getOutputData().getInt(KEY_RESULT,</span><br><span class="line">                  myDefaultValue));</span><br><span class="line">           <span class="comment">// ... do something with the result ...</span></span><br><span class="line">         &#125;</span><br><span class="line">    &#125;);</span><br></pre></td></tr></table></figure>
+<p>如果是链式任务，则来自一个任务的输出可用作链中下一个任务的输入。如果它是一个简单的链，并且一个OneTimeWorkRequest后跟另一个OneTimeWorkRequest，则第一个任务通过调用setOutputData()返回其结果，下一个任务通过调用getInputData()来获取结果。如果链更复杂 - 例如，多个任务都将输出发送到单个后续任务 - 可以在OneTimeWorkRequest.Builder上定义一个InputMerger，以指定如果不同的任务使用相同的key返回输出时应该发生的情况。</p>
+<h2 id="类图"><a href="#类图" class="headerlink" title="类图"></a>类图</h2><p>后续补上</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/Jetpack/" rel="tag"># Jetpack</a>
+          
+            <a href="/tags/WorkManager/" rel="tag"># WorkManager</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/05/21/android-releases/" rel="next" title="Android版本变更">
+                <i class="fa fa-chevron-left"></i> Android版本变更
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/05/27/navigation/" rel="prev" title="新架构组件：Navigation详解">
+                新架构组件：Navigation详解 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="http://ob0r3vf26.bkt.clouddn.com/blog_logo.jpg"
+                alt="朱鹏" />
+            
+              <p class="site-author-name" itemprop="name">朱鹏</p>
+              <p class="site-description motion-element" itemprop="description">享受技术带来的快乐</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">52</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">55</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#类"><span class="nav-number">1.</span> <span class="nav-text">类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#工作流程"><span class="nav-number">2.</span> <span class="nav-text">工作流程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#任务约束"><span class="nav-number">2.1.</span> <span class="nav-text">任务约束</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#取消任务"><span class="nav-number">2.2.</span> <span class="nav-text">取消任务</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#高级功能"><span class="nav-number">3.</span> <span class="nav-text">高级功能</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#重复执行的任务"><span class="nav-number">3.1.</span> <span class="nav-text">重复执行的任务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#链式任务"><span class="nav-number">3.2.</span> <span class="nav-text">链式任务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#唯一的工作序列"><span class="nav-number">3.3.</span> <span class="nav-text">唯一的工作序列</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#标记的工作"><span class="nav-number">3.4.</span> <span class="nav-text">标记的工作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#输入参数和返回值"><span class="nav-number">3.5.</span> <span class="nav-text">输入参数和返回值</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#类图"><span class="nav-number">4.</span> <span class="nav-text">类图</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">朱鹏</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> 您是第
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      个访客
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i> 本站总访问量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("niXM6CtlVEgvUHEvwNmi0F7S-gzGzoHsz", "LbP8mNzXFXinVUqMloOIy3fW");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

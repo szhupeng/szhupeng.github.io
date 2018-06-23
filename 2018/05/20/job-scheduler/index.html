@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Android,JobScheduler," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="JobScheduler是Android 5.0（API 21）引入的用于调度任务或工作的Android框架API。值得注意的是，Android 7.0（API 24）增加在ContentProvider发生改变时触发你的工作计划的功能。">
+<meta name="keywords" content="Android,JobScheduler">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android 5.0 JobScheduler全方位解析">
+<meta property="og:url" content="http://zhupeng.space/2018/05/20/job-scheduler/index.html">
+<meta property="og:site_name" content="Coding Life">
+<meta property="og:description" content="JobScheduler是Android 5.0（API 21）引入的用于调度任务或工作的Android框架API。值得注意的是，Android 7.0（API 24）增加在ContentProvider发生改变时触发你的工作计划的功能。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-06-18T09:36:19.007Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android 5.0 JobScheduler全方位解析">
+<meta name="twitter:description" content="JobScheduler是Android 5.0（API 21）引入的用于调度任务或工作的Android框架API。值得注意的是，Android 7.0（API 24）增加在ContentProvider发生改变时触发你的工作计划的功能。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://zhupeng.space/2018/05/20/job-scheduler/"/>
+
+
+
+
+
+  <title>Android 5.0 JobScheduler全方位解析 | Coding Life</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Coding Life</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">思路决定出路</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://zhupeng.space/2018/05/20/job-scheduler/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="朱鹏">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://ob0r3vf26.bkt.clouddn.com/blog_logo.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Coding Life">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android 5.0 JobScheduler全方位解析</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-20T09:56:26+08:00">
+                2018-05-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/05/20/job-scheduler/" class="leancloud_visitors" data-flag-title="Android 5.0 JobScheduler全方位解析">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>JobScheduler是Android 5.0（API 21）引入的用于调度任务或工作的Android框架API。值得注意的是，Android 7.0（API 24）增加在ContentProvider发生改变时触发你的工作计划的功能。</p>
+<a id="more"></a>
+<h2 id="特性"><a href="#特性" class="headerlink" title="特性"></a>特性</h2><ul>
+<li>支持在一个任务上组合多个条件</li>
+<li>内置条件：设备待机、设备充电和连接网络</li>
+<li>支持持续的job，这意味着设备重启后，之前被中断的job可以继续执行</li>
+<li>支持设置job的最后执行期限</li>
+<li>根据你的配置，可以设置job在后台运行还是在主线程中运行</li>
+</ul>
+<h2 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h2><p>需要在Android设备满足某种场合才需要去执行处理数据：</p>
+<ul>
+<li>应用具有可以推迟的非面向用户的工作(定期数据库数据更新)</li>
+<li>应用具有当插入设备时希望优先执行的工作(充电时才希望执行的工作备份数据)</li>
+<li>需要访问网络或Wi-Fi连接时需要进行的任务(如向服务器拉取内置数据)</li>
+<li>希望作为一个批次定期运行的许多任务(s)</li>
+</ul>
+<h2 id="特征"><a href="#特征" class="headerlink" title="特征"></a>特征</h2><p>1、Job Scheduler只有在Api21或以上的系统支持。<br>2、Job Scheduler是将多个任务打包在一个场景下执行。<br>3、在系统重启以后,任务会依然保留在Job Scheduler当中,因此不需要监听系统启动状态重复设定。<br>4、如果在一定期限内还没有满足特定执行所需情况,Job Scheduler会将这些任务加入队列,并且随后会进行执行。</p>
+<h2 id="用法"><a href="#用法" class="headerlink" title="用法"></a>用法</h2><h3 id="创建JobService"><a href="#创建JobService" class="headerlink" title="创建JobService"></a>创建JobService</h3><p>派生JobService子类，定义需要执行的任务（UI线程）。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyJobService</span> <span class="keyword">extends</span> <span class="title">JobService</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = MyJobService.class.getSimpleName();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Messenger mActivityMessenger;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate();</span><br><span class="line">        Log.i(TAG, <span class="string">"Service created"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onDestroy</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onDestroy();</span><br><span class="line">        Log.i(TAG, <span class="string">"Service destroyed"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * When the app's MainActivity is created, it starts this service. This is so that the</span></span><br><span class="line"><span class="comment">     * activity and this service can communicate back and forth. See "setUiCallback()"</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">onStartCommand</span><span class="params">(Intent intent, <span class="keyword">int</span> flags, <span class="keyword">int</span> startId)</span> </span>&#123;</span><br><span class="line">        mActivityMessenger = intent.getParcelableExtra(MESSENGER_INTENT_KEY);</span><br><span class="line">        <span class="keyword">return</span> START_NOT_STICKY;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onStartJob</span><span class="params">(<span class="keyword">final</span> JobParameters params)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// The work that this service "does" is simply wait for a certain duration and finish</span></span><br><span class="line">        <span class="comment">// the job (on another thread).</span></span><br><span class="line"></span><br><span class="line">        sendMessage(MSG_COLOR_START, params.getJobId());</span><br><span class="line"></span><br><span class="line">        <span class="keyword">long</span> duration = params.getExtras().getLong(WORK_DURATION_KEY);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Uses a handler to delay the execution of jobFinished().</span></span><br><span class="line">        Handler handler = <span class="keyword">new</span> Handler();</span><br><span class="line">        handler.postDelayed(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                sendMessage(MSG_COLOR_STOP, params.getJobId());</span><br><span class="line">                jobFinished(params, <span class="keyword">false</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;, duration);</span><br><span class="line">        Log.i(TAG, <span class="string">"on start job: "</span> + params.getJobId());</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Return true as there's more work to be done with this job.</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onStopJob</span><span class="params">(JobParameters params)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// Stop tracking these job parameters, as we've 'finished' executing.</span></span><br><span class="line">        sendMessage(MSG_COLOR_STOP, params.getJobId());</span><br><span class="line">        Log.i(TAG, <span class="string">"on stop job: "</span> + params.getJobId());</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Return false to drop the job.</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">sendMessage</span><span class="params">(<span class="keyword">int</span> messageID, @Nullable Object params)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// If this service is launched by the JobScheduler, there's no callback Messenger. It</span></span><br><span class="line">        <span class="comment">// only exists when the MainActivity calls startService() with the callback in the Intent.</span></span><br><span class="line">        <span class="keyword">if</span> (mActivityMessenger == <span class="keyword">null</span>) &#123;</span><br><span class="line">            Log.d(TAG, <span class="string">"Service is bound, not started. There's no callback to send a message to."</span>);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        Message m = Message.obtain();</span><br><span class="line">        m.what = messageID;</span><br><span class="line">        m.obj = params;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            mActivityMessenger.send(m);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (RemoteException e) &#123;</span><br><span class="line">            Log.e(TAG, <span class="string">"Error passing service object back to activity."</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p style="background: #fff3e0;color: #dd2c00;font-size: 14px;padding: 16px;">public abstract boolean onStartJob(JobParameters params)</p>
+
+<p>当开始一个任务时，onStartJob是必须使用的方法，因为它是系统用来触发已经安排的工作/任务的。从上边的用例代码可以看到，该方法返回一个布尔值。不同的返回值对应了不同的处理方式。</p>
+<ul>
+<li>如果返回值是false，该系统假定任何任务运行不需要很长时间并且到方法返回时已经完成</li>
+<li>如果返回值是true，那么系统假设任务是需要一些时间并且是需要在自己的应用执行的<br>当给定的任务完成时需要通过调用<strong>public final void jobFinished(JobParameters params, boolean wantsReschedule)</strong>方法告知系统<br>该任务已经处理完成。<br>如果返回值为true，需要手动调用jobFinished来停止该任务。</li>
+</ul>
+<p style="background: #fff3e0;color: #dd2c00;font-size: 14px;padding: 16px;">public final void jobFinished (JobParameters params, boolean wantsReschedule)</p>
+
+<p>回调通知已完成执行的JobManager。这可以从任何线程调用，因为它最终将在应用程序的主线程上运行。当系统收到该消息时，它将释放正在保存的唤醒。</p>
+<ul>
+<li>参数params：传入的param需要和onStartJob中的param一致</li>
+<li>参数wantsReschedule：如果这项工作应按照计划时间指定的停止条件进行重新安排，则传入true。否则的话传入false。就是让系统知道这个任务是否应该在最初的条件下被重复执行。</li>
+</ul>
+<p style="background: #fff3e0;color: #dd2c00;font-size: 14px;padding: 16px;">public abstract boolean onStopJob(JobParameters params)</p>
+
+<p>当收到取消请求时调用，onStopJob是系统用来取消挂起的任务的。重要的是要注意到，如果onStartJob返回false，当取消请求被接收时，该系统假定没有目前运行的工作。换句话说，它根本就不调用onStopJob。那此时就需要手动调用jobFinished方法了。</p>
+<blockquote>
+<p>注意：工作服务需要在应用程序的主线程上运行。这意味着，须使用另一个线程处理程序，或运行时间更长的任务异步任务用以不阻塞主线程。</p>
+</blockquote>
+<h3 id="绑定JobService任务"><a href="#绑定JobService任务" class="headerlink" title="绑定JobService任务"></a>绑定JobService任务</h3><p>同Service一样，需要在AndroidManifest.xml中添加一个Service节点让应用拥有绑定和使用这个JobService的权限。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">service</span> <span class="attr">android:name</span>=<span class="string">"MyJobService"</span></span></span><br><span class="line"><span class="tag">         <span class="attr">android:permission</span>=<span class="string">"android.permission.BIND_JOB_SERVICE"</span> &gt;</span></span><br><span class="line">    ...</span><br><span class="line"><span class="tag">&lt;/<span class="name">service</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="获取JobScheduler对象"><a href="#获取JobScheduler对象" class="headerlink" title="获取JobScheduler对象"></a>获取JobScheduler对象</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">JobScheduler tm = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);</span><br></pre></td></tr></table></figure>
+<h3 id="构建JobInfo对象"><a href="#构建JobInfo对象" class="headerlink" title="构建JobInfo对象"></a>构建JobInfo对象</h3><p>使用JobInfo.Builder来构建一个JobInfo对象</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">JobInfo.Builder builder = <span class="keyword">new</span> JobInfo.Builder(mJobId++, <span class="keyword">new</span> ComponentName(<span class="keyword">this</span>, MyJobService.class));</span><br></pre></td></tr></table></figure>
+<p>JobInfo常量：</p>
+<ul>
+<li>BACKOFF_POLICY_EXPONENTIAL、BACKOFF_POLICY_LINEAR<br>与public JobInfo.Builder setBackoffCriteria(long initialBackoffMillis, int backoffPolicy)方法中的中backoffPolicy对应</li>
+<li>DEFAULT_INITIAL_BACKOFF_MILLIS<br>默认的执行延迟时间（毫秒）</li>
+<li>MAX_BACKOFF_DELAY_MILLIS<br>最大的执行延迟时间（毫秒）</li>
+<li>NETWORK_BYTES_UNKNOWN</li>
+<li>NETWORK_TYPE_ANY<br>与public JobInfo.Builder setRequiredNetworkType(int networkType)方法中networkType相对应，网络状态联网就行</li>
+<li>NETWORK_TYPE_NONE<br>与public JobInfo.Builder setRequiredNetworkType(int networkType)方法中networkType相对应，默认的网络连接状态</li>
+<li>NETWORK_TYPE_CELLULAR</li>
+<li>NETWORK_TYPE_METERED</li>
+<li>NETWORK_TYPE_NOT_ROAMING<br>与public JobInfo.Builder setRequiredNetworkType(int networkType)方法中networkType相对应，移动网络连接情况</li>
+<li>NETWORK_TYPE_UNMETERED<br>与public JobInfo.Builder setRequiredNetworkType(int networkType)方法中networkType相对应，WIFI连接情况</li>
+</ul>
+<p>JobInfo.Builder接收两个参数：</p>
+<ul>
+<li>jobId：要运行的任务的标识符</li>
+<li>jobService：Service组件的类名</li>
+</ul>
+<p>JobInfo.Builder常用方法：</p>
+<ul>
+<li><strong>addTriggerContentUri(JobInfo.TriggerContentUri uri)</strong>（API 24）<br>添加一个TriggerContentUri，该Uri将利用ContentObserver来监控一个Content Uri，当且仅当其发生变化时将触发任务的执行。为了持续监控content的变化，需要在最近的任务触发后再调度一个新的任务（需要注意的是触发器URI不能与setPeriodic(long)或setPersisted(boolean)组合使用。要持续监控内容更改，需要在完成JobService处理最近的更改之前，调度新的JobInfo，观察相同的URI。因为设置此属性与定期或持久化Job不兼容，这样做会在调用build()时抛出IllegalArgumentException异常。)</li>
+<li><strong>setBackoffCriteria(long initialBackoffMillis, int backoffPolicy)</strong>（API 21）<br>特殊：设置回退/重试的策略。类似网络原理中的冲突退避，当一个任务的调度失败时需要重试，所采取的策略。第一个参数时第一次尝试重试的等待间隔，单位为毫秒，预设的参数有：DEFAULT_INITIAL_BACKOFF_MILLIS（30000）、MAX_BACKOFF_DELAY_MILLIS（18000000）。第二个参数是对应的退避策略，预设的参数有：BACKOFF_POLICY_EXPONENTIAL二进制退避。等待间隔呈指数增长BACKOFF_POLICY_LINEAR。</li>
+<li><strong>setClipData(ClipData clip, int grantFlags)</strong>（API 26）<br>设置与此任务关联的ClipData。提供ClipData的主要目的是允许授予与剪贴（clip）关联的数据的URI权限。通过grantFlags指定要授予执行的权限的确切类型，grantFlags必须为Intent.FLAG_GRANT_READ_URI_PERMISSION, Intent.FLAG_GRANT_WRITE_URI_PERMISSION和Intent.FLAG_GRANT_PREFIX_URI_PERMISSION的组合。如果ClipData包含Intents的项，则这些Intents中的任何授权标志都将被忽略。只有作为该方法参数提供的标志才有用，并且将应用于剪贴中的所有Uri或Intent项（或剪贴的子项）。由于设置此属性与持久任务不兼容，因此在调用build()时会抛出IllegalArgumentException异常。</li>
+<li><strong>setEstimatedNetworkBytes(long downloadBytes, long uploadBytes)</strong>（API 28）<br>设置此任务将执行的网络流量的估计大小（以字节为单位）。无法提供合理估算的任务应使用标记值JobInfo.NETWORK_BYTES_UNKNOWN。请注意，当设备网络连接较差时，系统可能会选择延迟那些网络使用量估计较大的任务，以节省电量。此处提供的值仅反映基础任务将执行的流量；如果使用JobWorkItem，那么还需要定义每个工作项在构建时使用的网络流量。</li>
+<li><strong>setExtras(PersistableBundle extras)</strong>（API 21）<br>设置可选的附加数据。这是持久的，所以只允许原始类型。</li>
+<li><strong>setImportantWhileForeground(boolean importantWhileForeground)</strong>（API 28）<br>将其设置为true表示此任务非常重要，而调度应用程序位于前台或临时白名单中以用于后台限制。这意味着系统在这段时间内会放松对这项工作的休眠限制。应用程序应将此标志仅用于短期工作，这些工作对于应用程序在前台正常运行至关重要。请注意，一旦调度应用程序不再由后台限制和后台列入白名单，或由于约束条件不满而导致任务失败，则此任务的行为与没有此标志的其他任务的行为相同。</li>
+<li><strong>setMinimumLatency(long minLatencyMillis)</strong>（API 21）<br>指定任务的延迟执行时间（毫秒）。因为在定期作业上设置此属性没有意义，所以在调用build()时会抛出IllegalArgumentException异常。</li>
+<li><strong>setOverrideDeadline(long maxExecutionDelayMillis)</strong>（API 21）<br>设置任务调度延迟的最后期限。即使到了规定时间时还未满足其他条件，任务也将在截止日期前执行。因为在定期作业上设置此属性没有意义，所以在调用build()时会抛出IllegalArgumentException异常。</li>
+<li><strong>setPeriodic(long intervalMillis)</strong>（API 21）<br>指定该任务应该按照提供的时间间隔重复执行，每个时间段不得超过一次。无法控制在此间隔内何时执行该作业，只能保证在此间隔内最多执行一次。该函数和setMinimumLatency(long)或setOverrideDeadline(long)在构建器上一起设置将导致错误。</li>
+<li><strong>setPeriodic(long intervalMillis, long flexMillis)</strong>（API 24）<br>指定该任务应该按照提供的时间间隔和弹性时间进行重复执行。该任务可以在任何时间在周期末的弹性窗口中执行。</li>
+<li><strong>setPersisted(boolean isPersisted)</strong>（API 21）<br>设置是否在设备重新启动后继续执行此任务。需要RECEIVE_BOOT_COMPLETED权限。</li>
+<li><strong>setPrefetch(boolean prefetch)</strong>（API 28）<br>将其设置为true表示此任务旨在预取内容，以便对该设备的特定用户的体验进行重大改进。系统可能会使用此信号来放宽最初请求的网络限制，例如允许JobInfo.NETWORK_TYPE_UNMETERED作业在计量数据可用时存在多余的计量网络上运行。系统还可以将此信号与最终用户使用模式结合使用，以确保数据在用户启动应用程序之前被预取。</li>
+<li><strong>setRequiredNetwork(NetworkRequest networkRequest)</strong>（API 28）<br>设置任务所需的网络类型的详细说明。如果任务不需要网络连接，则不需要调用此方法，因为默认值为null。调用该方法将网络定义为对任务的严格条件。如果请求的网络不可用，任务永远不会运行。但setOverrideDeadline(long)可以更改此行为。调用此方法将覆盖以前由setRequiredNetworkType(int)定义的任何条件; 通常只会调用其中的一种方法。<p style="background: #e1f5fe;color: #0288d1;font-size: 14px;padding: 16px;">当任务在JobService.onStartJob(JobParameters)中执行时，请确保使用JobParameters.getNetwork()返回的特定网络，否则将使用可能不符合此限制的默认网络。</p></li>
+<li><strong>setRequiredNetworkType(int networkType)</strong>（API 21）<br>设置任务所需的网络类型的基本描述。如果需要更精确地控制网络功能，请使用setRequiredNetwork(NetworkRequest)。如果任务不需要网络连接，则不需要调用此方法，因为默认值为JobInfo.NETWORK_TYPE_NONE。另外的可选值还有JobInfo.NETWORK_TYPE_ANY，表示需要任意一种网络才使得任务可以执行。JobInfo.NETWORK_TYPE_UNMETERED，表示设备不是蜂窝网络(比如在WIFI连接时)时任务才会被执行。还有JobInfo.NETWORK_TYPE_NOT_ROAMING和JobInfo.NETWORK_TYPE_METERED。调用该方法将网络定义为对任务的严格条件。如果请求的网络不可用，任务永远不会运行。但setOverrideDeadline(long)可以更改此行为。调用此方法将覆盖之前由setRequiredNetwork(NetworkRequest)定义的任何条件; 通常只需调用其中的一种方法。<p style="background: #e1f5fe;color: #0288d1;font-size: 14px;padding: 16px;">当任务在JobService.onStartJob(JobParameters)中执行时，请确保使用JobParameters.getNetwork()返回的特定网络，否则将使用可能不符合此限制的默认网络。</p></li>
+<li><strong>setRequiresBatteryNotLow(boolean batteryNotLow)</strong>（API 26）<br>指定要执行此任务，设备的电池电量不得低。这默认为false。如果属实，则只有当电池电量不低时才会执行该任务，这通常是用户发出“电量不足”警告的点。</li>
+<li><strong>setRequiresCharging(boolean requiresCharging)</strong>（API 21）<br>指定要执行此任务，设备必须正在充电（或者是非电池供电设备连接到永久电源，如Android TV设备）。默认为false。<p style="background: #e1f5fe;color: #0288d1;font-size: 14px;padding: 16px;">为了执行任务，电池供电的设备“充电”与简单地连接电源并不完全相同。如果设备非常繁忙，即使电源连接，电池仍然耗尽，具有此限制的作业将不会运行。这可能发生在一些常见的使用情况下，例如视频聊天，特别是如果设备插入USB而不是墙上电源。也就是说要插入充电器，而且还要在电池处于健康状态的情况下才会触发，一般来说是手机电量大于15%。</p></li>
+<li><strong>setRequiresDeviceIdle(boolean requiresDeviceIdle)</strong>（API 21）<br>设置为true时，确保该任务在设备处于活动状态时不会运行。默认为false：即有人正在与设备进行交互，作业也可以运行。此状态是系统提供的松散定义。一般来说，这意味着该设备目前没有被交互使用，并且还没有被使用一段时间。因此，现在是执行资源繁重工作的好时机。请记住，电池使用量仍将归因于应用程序，并在电池状态中显示给用户。<p style="background: #e1f5fe;color: #0288d1;font-size: 14px;padding: 16px;">尽管名称相似，但这个任务约束与系统的“设备闲置”或“休眠”状态无关。此限制条件仅用于确定是否允许任务在设备正在使用时运行。</p></li>
+<li><strong>setRequiresStorageNotLow(boolean storageNotLow)</strong>（API 26）<br>指定要执行此任务，设备的可用存储空间不得低。默认为false。如果设置为true，则只有在设备未处于低存储状态时才会执行任务，这通常是用户获得“低存储量”警告的关键点。</li>
+<li><strong>setTransientExtras(Bundle extras)</strong>（API 26）<br>设置可选的短暂的附加数据。由于设置此属性与持久作业不兼容，因此在调用build()时会抛出IllegalArgumentException异常。</li>
+<li><strong>setTriggerContentMaxDelay(long durationMs)</strong>（API 24）<br>设置从content变化到任务被执行中间的最大延迟。（以毫秒为单位）。</li>
+<li><strong>setTriggerContentUpdateDelay(long durationMs)</strong>（API 24）<br>设置从content变化到任务被执行中间的延迟。如果在延迟期间content发生了变化，延迟将被重置为在最近一次变化时开始。</li>
+</ul>
+<h3 id="开启任务"><a href="#开启任务" class="headerlink" title="开启任务"></a>开启任务</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tm.schedule(JobInfo job);</span><br></pre></td></tr></table></figure>
+<p>在调用schedule方法时，会返回一个int类型的值来标记这次任务是否执行成功，如果返回小于0的错误码，这表示该次任务执行失败，反之则成功(成功会返回该任务的ID)。如果需要停止一个任务，就通过JobScheduler中cancel(int jobId)来实现；如果想取消所有的任务，可以调用JobScheduler对象的cancelAll()来实现。</p>
+<h3 id="JobScheduler使用"><a href="#JobScheduler使用" class="headerlink" title="JobScheduler使用"></a>JobScheduler使用</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">Activity</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = MainActivity.class.getSimpleName();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> MSG_UNCOLOR_START = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> MSG_UNCOLOR_STOP = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> MSG_COLOR_START = <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> MSG_COLOR_STOP = <span class="number">3</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String MESSENGER_INTENT_KEY</span><br><span class="line">            = BuildConfig.APPLICATION_ID + <span class="string">".MESSENGER_INTENT_KEY"</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String WORK_DURATION_KEY =</span><br><span class="line">            BuildConfig.APPLICATION_ID + <span class="string">".WORK_DURATION_KEY"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> EditText mDelayEditText;</span><br><span class="line">    <span class="keyword">private</span> EditText mDeadlineEditText;</span><br><span class="line">    <span class="keyword">private</span> EditText mDurationTimeEditText;</span><br><span class="line">    <span class="keyword">private</span> RadioButton mWiFiConnectivityRadioButton;</span><br><span class="line">    <span class="keyword">private</span> RadioButton mAnyConnectivityRadioButton;</span><br><span class="line">    <span class="keyword">private</span> CheckBox mRequiresChargingCheckBox;</span><br><span class="line">    <span class="keyword">private</span> CheckBox mRequiresIdleCheckbox;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> ComponentName mServiceComponent;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> mJobId = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Handler for incoming messages from the service.</span></span><br><span class="line">    <span class="keyword">private</span> IncomingMessageHandler mHandler;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.sample_main);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Set up UI.</span></span><br><span class="line">        mDelayEditText = (EditText) findViewById(R.id.delay_time);</span><br><span class="line">        mDurationTimeEditText = (EditText) findViewById(R.id.duration_time);</span><br><span class="line">        mDeadlineEditText = (EditText) findViewById(R.id.deadline_time);</span><br><span class="line">        mWiFiConnectivityRadioButton = (RadioButton) findViewById(R.id.checkbox_unmetered);</span><br><span class="line">        mAnyConnectivityRadioButton = (RadioButton) findViewById(R.id.checkbox_any);</span><br><span class="line">        mRequiresChargingCheckBox = (CheckBox) findViewById(R.id.checkbox_charging);</span><br><span class="line">        mRequiresIdleCheckbox = (CheckBox) findViewById(R.id.checkbox_idle);</span><br><span class="line">        mServiceComponent = <span class="keyword">new</span> ComponentName(<span class="keyword">this</span>, MyJobService.class);</span><br><span class="line"></span><br><span class="line">        mHandler = <span class="keyword">new</span> IncomingMessageHandler(<span class="keyword">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onStop</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">// A service can be "started" and/or "bound". In this case, it's "started" by this Activity</span></span><br><span class="line">        <span class="comment">// and "bound" to the JobScheduler (also called "Scheduled" by the JobScheduler). This call</span></span><br><span class="line">        <span class="comment">// to stopService() won't prevent scheduled jobs to be processed. However, failing</span></span><br><span class="line">        <span class="comment">// to call stopService() would keep it alive indefinitely.</span></span><br><span class="line">        stopService(<span class="keyword">new</span> Intent(<span class="keyword">this</span>, MyJobService.class));</span><br><span class="line">        <span class="keyword">super</span>.onStop();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onStart</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onStart();</span><br><span class="line">        <span class="comment">// Start service and provide it a way to communicate with this class.</span></span><br><span class="line">        Intent startServiceIntent = <span class="keyword">new</span> Intent(<span class="keyword">this</span>, MyJobService.class);</span><br><span class="line">        Messenger messengerIncoming = <span class="keyword">new</span> Messenger(mHandler);</span><br><span class="line">        startServiceIntent.putExtra(MESSENGER_INTENT_KEY, messengerIncoming);</span><br><span class="line">        startService(startServiceIntent);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Executed when user clicks on SCHEDULE JOB.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">scheduleJob</span><span class="params">(View v)</span> </span>&#123;</span><br><span class="line">        JobInfo.Builder builder = <span class="keyword">new</span> JobInfo.Builder(mJobId++, mServiceComponent);</span><br><span class="line"></span><br><span class="line">        String delay = mDelayEditText.getText().toString();</span><br><span class="line">        <span class="keyword">if</span> (!TextUtils.isEmpty(delay)) &#123;</span><br><span class="line">            builder.setMinimumLatency(Long.valueOf(delay) * <span class="number">1000</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        String deadline = mDeadlineEditText.getText().toString();</span><br><span class="line">        <span class="keyword">if</span> (!TextUtils.isEmpty(deadline)) &#123;</span><br><span class="line">            builder.setOverrideDeadline(Long.valueOf(deadline) * <span class="number">1000</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">boolean</span> requiresUnmetered = mWiFiConnectivityRadioButton.isChecked();</span><br><span class="line">        <span class="keyword">boolean</span> requiresAnyConnectivity = mAnyConnectivityRadioButton.isChecked();</span><br><span class="line">        <span class="keyword">if</span> (requiresUnmetered) &#123;</span><br><span class="line">            builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (requiresAnyConnectivity) &#123;</span><br><span class="line">            builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY);</span><br><span class="line">        &#125;</span><br><span class="line">        builder.setRequiresDeviceIdle(mRequiresIdleCheckbox.isChecked());</span><br><span class="line">        builder.setRequiresCharging(mRequiresChargingCheckBox.isChecked());</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Extras, work duration.</span></span><br><span class="line">        PersistableBundle extras = <span class="keyword">new</span> PersistableBundle();</span><br><span class="line">        String workDuration = mDurationTimeEditText.getText().toString();</span><br><span class="line">        <span class="keyword">if</span> (TextUtils.isEmpty(workDuration)) &#123;</span><br><span class="line">            workDuration = <span class="string">"1"</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        extras.putLong(WORK_DURATION_KEY, Long.valueOf(workDuration) * <span class="number">1000</span>);</span><br><span class="line"></span><br><span class="line">        builder.setExtras(extras);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Schedule job</span></span><br><span class="line">        Log.d(TAG, <span class="string">"Scheduling job"</span>);</span><br><span class="line">        JobScheduler tm = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);</span><br><span class="line">        tm.schedule(builder.build());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Executed when user clicks on CANCEL ALL.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">cancelAllJobs</span><span class="params">(View v)</span> </span>&#123;</span><br><span class="line">        JobScheduler tm = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);</span><br><span class="line">        tm.cancelAll();</span><br><span class="line">        Toast.makeText(MainActivity.<span class="keyword">this</span>, R.string.all_jobs_cancelled, Toast.LENGTH_SHORT).show();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Executed when user clicks on FINISH LAST TASK.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">finishJob</span><span class="params">(View v)</span> </span>&#123;</span><br><span class="line">        JobScheduler jobScheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);</span><br><span class="line">        List&lt;JobInfo&gt; allPendingJobs = jobScheduler.getAllPendingJobs();</span><br><span class="line">        <span class="keyword">if</span> (allPendingJobs.size() &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="comment">// Finish the last one</span></span><br><span class="line">            <span class="keyword">int</span> jobId = allPendingJobs.get(<span class="number">0</span>).getId();</span><br><span class="line">            jobScheduler.cancel(jobId);</span><br><span class="line">            Toast.makeText(</span><br><span class="line">                    MainActivity.<span class="keyword">this</span>, String.format(getString(R.string.cancelled_job), jobId),</span><br><span class="line">                    Toast.LENGTH_SHORT).show();</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            Toast.makeText(</span><br><span class="line">                    MainActivity.<span class="keyword">this</span>, getString(R.string.no_jobs_to_cancel),</span><br><span class="line">                    Toast.LENGTH_SHORT).show();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * A &#123;<span class="doctag">@link</span> Handler&#125; allows you to send messages associated with a thread. A &#123;<span class="doctag">@link</span> Messenger&#125;</span></span><br><span class="line"><span class="comment">     * uses this handler to communicate from &#123;<span class="doctag">@link</span> MyJobService&#125;. It's also used to make</span></span><br><span class="line"><span class="comment">     * the start and stop views blink for a short period of time.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">IncomingMessageHandler</span> <span class="keyword">extends</span> <span class="title">Handler</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Prevent possible leaks with a weak reference.</span></span><br><span class="line">        <span class="keyword">private</span> WeakReference&lt;MainActivity&gt; mActivity;</span><br><span class="line"></span><br><span class="line">        IncomingMessageHandler(MainActivity activity) &#123;</span><br><span class="line">            <span class="keyword">super</span>(<span class="comment">/* default looper */</span>);</span><br><span class="line">            <span class="keyword">this</span>.mActivity = <span class="keyword">new</span> WeakReference&lt;&gt;(activity);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handleMessage</span><span class="params">(Message msg)</span> </span>&#123;</span><br><span class="line">            MainActivity mainActivity = mActivity.get();</span><br><span class="line">            <span class="keyword">if</span> (mainActivity == <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="comment">// Activity is no longer available, exit.</span></span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            View showStartView = mainActivity.findViewById(R.id.onstart_textview);</span><br><span class="line">            View showStopView = mainActivity.findViewById(R.id.onstop_textview);</span><br><span class="line">            Message m;</span><br><span class="line">            <span class="keyword">switch</span> (msg.what) &#123;</span><br><span class="line">                <span class="comment">/*</span></span><br><span class="line"><span class="comment">                 * Receives callback from the service when a job has landed</span></span><br><span class="line"><span class="comment">                 * on the app. Turns on indicator and sends a message to turn it off after</span></span><br><span class="line"><span class="comment">                 * a second.</span></span><br><span class="line"><span class="comment">                 */</span></span><br><span class="line">                <span class="keyword">case</span> MSG_COLOR_START:</span><br><span class="line">                    <span class="comment">// Start received, turn on the indicator and show text.</span></span><br><span class="line">                    showStartView.setBackgroundColor(getColor(R.color.start_received));</span><br><span class="line">                    updateParamsTextView(msg.obj, <span class="string">"started"</span>);</span><br><span class="line"></span><br><span class="line">                    <span class="comment">// Send message to turn it off after a second.</span></span><br><span class="line">                    m = Message.obtain(<span class="keyword">this</span>, MSG_UNCOLOR_START);</span><br><span class="line">                    sendMessageDelayed(m, <span class="number">1000L</span>);</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                <span class="comment">/*</span></span><br><span class="line"><span class="comment">                 * Receives callback from the service when a job that previously landed on the</span></span><br><span class="line"><span class="comment">                 * app must stop executing. Turns on indicator and sends a message to turn it</span></span><br><span class="line"><span class="comment">                 * off after two seconds.</span></span><br><span class="line"><span class="comment">                 */</span></span><br><span class="line">                <span class="keyword">case</span> MSG_COLOR_STOP:</span><br><span class="line">                    <span class="comment">// Stop received, turn on the indicator and show text.</span></span><br><span class="line">                    showStopView.setBackgroundColor(getColor(R.color.stop_received));</span><br><span class="line">                    updateParamsTextView(msg.obj, <span class="string">"stopped"</span>);</span><br><span class="line"></span><br><span class="line">                    <span class="comment">// Send message to turn it off after a second.</span></span><br><span class="line">                    m = obtainMessage(MSG_UNCOLOR_STOP);</span><br><span class="line">                    sendMessageDelayed(m, <span class="number">2000L</span>);</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                <span class="keyword">case</span> MSG_UNCOLOR_START:</span><br><span class="line">                    showStartView.setBackgroundColor(getColor(R.color.none_received));</span><br><span class="line">                    updateParamsTextView(<span class="keyword">null</span>, <span class="string">""</span>);</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                <span class="keyword">case</span> MSG_UNCOLOR_STOP:</span><br><span class="line">                    showStopView.setBackgroundColor(getColor(R.color.none_received));</span><br><span class="line">                    updateParamsTextView(<span class="keyword">null</span>, <span class="string">""</span>);</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">updateParamsTextView</span><span class="params">(@Nullable Object jobId, String action)</span> </span>&#123;</span><br><span class="line">            TextView paramsTextView = (TextView) mActivity.get().findViewById(R.id.task_params);</span><br><span class="line">            <span class="keyword">if</span> (jobId == <span class="keyword">null</span>) &#123;</span><br><span class="line">                paramsTextView.setText(<span class="string">""</span>);</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            String jobIdText = String.valueOf(jobId);</span><br><span class="line">            paramsTextView.setText(String.format(<span class="string">"Job ID %s %s"</span>, jobIdText, action));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">getColor</span><span class="params">(@ColorRes <span class="keyword">int</span> color)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> mActivity.get().getResources().getColor(color);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>兼容5.0之前版本：android Trigger</p>
+</blockquote>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/JobScheduler/" rel="tag"># JobScheduler</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/05/20/service-loader/" rel="next" title="ServiceLoader使用分析">
+                <i class="fa fa-chevron-left"></i> ServiceLoader使用分析
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/05/21/android-releases/" rel="prev" title="Android版本变更">
+                Android版本变更 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="http://ob0r3vf26.bkt.clouddn.com/blog_logo.jpg"
+                alt="朱鹏" />
+            
+              <p class="site-author-name" itemprop="name">朱鹏</p>
+              <p class="site-description motion-element" itemprop="description">享受技术带来的快乐</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">52</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">55</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#特性"><span class="nav-number">1.</span> <span class="nav-text">特性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#应用场景"><span class="nav-number">2.</span> <span class="nav-text">应用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#特征"><span class="nav-number">3.</span> <span class="nav-text">特征</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#用法"><span class="nav-number">4.</span> <span class="nav-text">用法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#创建JobService"><span class="nav-number">4.1.</span> <span class="nav-text">创建JobService</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#绑定JobService任务"><span class="nav-number">4.2.</span> <span class="nav-text">绑定JobService任务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#获取JobScheduler对象"><span class="nav-number">4.3.</span> <span class="nav-text">获取JobScheduler对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#构建JobInfo对象"><span class="nav-number">4.4.</span> <span class="nav-text">构建JobInfo对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#开启任务"><span class="nav-number">4.5.</span> <span class="nav-text">开启任务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JobScheduler使用"><span class="nav-number">4.6.</span> <span class="nav-text">JobScheduler使用</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">朱鹏</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> 您是第
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      个访客
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i> 本站总访问量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("niXM6CtlVEgvUHEvwNmi0F7S-gzGzoHsz", "LbP8mNzXFXinVUqMloOIy3fW");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
